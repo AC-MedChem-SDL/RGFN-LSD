@@ -1,5 +1,7 @@
 # --- build outputs -----------------------------------------------------------
-build/                  # tools/make_anon_snapshot.sh writes build/anon/ here
+# tools/make_anon_snapshot.sh writes build/anon/ here. NOTE: gitignore has no
+# trailing comments -- a '#' after a pattern becomes part of the pattern.
+build/
 dist/
 *.egg-info/
 __pycache__/

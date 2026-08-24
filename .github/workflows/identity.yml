@@ -1,0 +1,42 @@
+# The anonymity gate.
+#
+# Dropped from the anonymous snapshot (tools/make_anon_snapshot.sh DROPs it), so
+# it may name the machinery freely. Deliberately depends on nothing but stdlib +
+# pytest: this must keep working even if the scientific stack is broken.
+name: identity
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install test dependencies
+        run: python -m pip install --quiet pytest
+
+      - name: The gate must work before we trust it
+        run: python -m pytest tests/test_check_identity.py -q
+
+      - name: No identity outside the allowlisted files
+        run: python tools/check_identity.py
+
+      - name: The anonymous snapshot builds clean
+        # This is the real assertion: the build re-runs the linter with an EMPTY
+        # allowlist and exits non-zero if any identity survives into the artifact.
+        run: tools/make_anon_snapshot.sh
+
+      - name: The snapshot carries no authored history
+        run: |
+          authors=$(git -C build/anon log --format='%an <%ae>' | sort -u)
+          echo "$authors"
+          test "$authors" = "Anonymous <anonymous@example.com>"
