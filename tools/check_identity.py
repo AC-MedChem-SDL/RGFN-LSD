@@ -51,6 +51,12 @@ BINARY_SUFFIXES = {".pdf", ".png", ".jpg", ".jpeg", ".gif", ".xlsx", ".xls", ".d
 
 PDF_META_RE = re.compile(rb"/(Creator|Producer|Author|Title|Subject|Keywords)\s*\(([^)]{0,300})\)")
 
+# Line-level escape hatch, for lines that must contain a forbidden pattern to do
+# their job: this checker's own test fixtures, and documentation showing an
+# example of what not to write. Use it sparingly and always with a reason -- it is
+# the one way identity can walk past the gate.
+SUPPRESS_RE = re.compile(r"identity-check:\s*ignore")
+
 
 @dataclass
 class Rule:
@@ -254,6 +260,8 @@ def scan(root: Path, files: list[Path], rules: list[Rule],
         for lineno, line in enumerate(content.splitlines(), start=1):
             if len(line) > 4000:
                 line = line[:4000]
+            if SUPPRESS_RE.search(line):
+                continue
             if not allowed:
                 for rule in rules:
                     m = rule.pattern.search(line)

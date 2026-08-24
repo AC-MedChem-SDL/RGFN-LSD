@@ -105,7 +105,8 @@ def test_empty_allowlist_re_exposes_allowlisted_files(tree: Path) -> None:
 
 
 def test_machine_specific_abspath_is_caught(tree: Path) -> None:
-    (tree / "src" / "paths.sh").write_text("OUT=/home/someone/runs\n")
+    path = "OUT=/home/someone/runs\n"  # identity-check: ignore (fixture data)
+    (tree / "src" / "paths.sh").write_text(path)
     r = run(tree)
     assert r.returncode == 1
     assert "ABSPATH" in r.stdout
@@ -118,7 +119,8 @@ def test_portable_abspaths_are_not_flagged(tree: Path) -> None:
 
 
 def test_abspath_check_can_be_disabled(tree: Path) -> None:
-    (tree / "src" / "paths.sh").write_text("OUT=/home/someone/runs\n")
+    path = "OUT=/home/someone/runs\n"  # identity-check: ignore (fixture data)
+    (tree / "src" / "paths.sh").write_text(path)
     assert run(tree, "--no-abspath").returncode == 0
 
 
@@ -169,3 +171,18 @@ def test_gitignore_has_no_trailing_comments() -> None:
         if line.strip() and not line.strip().startswith("#") and "#" in line
     ]
     assert not offenders, f"trailing comments render these patterns inert: {offenders}"
+
+
+def test_suppression_marker_is_honoured(tree: Path) -> None:
+    """The escape hatch for lines that must contain a forbidden pattern."""
+    (tree / "src" / "doc.md").write_text(
+        "never write Ada Placeholder here  <!-- identity-check: ignore -->\n")
+    assert run(tree).returncode == 0
+
+
+def test_suppression_is_line_scoped_not_file_scoped(tree: Path) -> None:
+    """One suppressed line must not blanket the rest of the file."""
+    (tree / "src" / "doc.md").write_text(
+        "example: Ada Placeholder  <!-- identity-check: ignore -->\n"
+        "real leak: Ada Placeholder\n")
+    assert run(tree).returncode == 1
