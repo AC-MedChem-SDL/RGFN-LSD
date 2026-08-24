@@ -21,8 +21,10 @@ migrated from a larger research working tree. Code, configs, and committed
 artifacts land here progressively; anything not yet present is still in the
 research repo. What *is* here is expected to work.
 
+<!-- IDENTITY:BEGIN -->
 Present today: the anonymity toolchain (`tools/`, `docs/ANONYMITY.md`), licensing,
 and project metadata.
+<!-- IDENTITY:END -->
 
 ## Why there are two repositories
 
@@ -48,7 +50,6 @@ reproduce/         one script per published figure and table
 artifacts/         the small committed intermediates those scripts read
 setup/             fetch scripts for non-vendored third-party code
 cluster/           site-specific job submission (not needed to reproduce)
-tools/             release engineering, including the anonymity gate
 docs/              method notes, definitions, limitations, CLAIMS.md
 ```
 
