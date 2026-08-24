@@ -67,12 +67,14 @@ of GPU-hours of docking. So reproduction is stratified, and each tier stands alo
 T1 is the one that matters: it is the claim that the numbers in the paper come
 from the code in this repository, and it needs no accelerator.
 
+<!-- IDENTITY:BEGIN -->
 ## Anonymity
 
 Author identity is confined to `NOTICE`, `CITATION.cff`, and the block at the top
 of this file. `tools/check_identity.py` enforces that; `tools/make_anon_snapshot.sh`
 builds the double-blind review artifact and refuses to emit one if any identity
 survives. See [`docs/ANONYMITY.md`](docs/ANONYMITY.md).
+<!-- IDENTITY:END -->
 
 ## Licence
 
