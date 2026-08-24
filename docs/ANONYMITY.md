@@ -71,6 +71,20 @@ is concentrated. Four rules concentrate it:
    `<!-- IDENTITY:BEGIN -->` / `<!-- IDENTITY:END -->`; the build strips them, so
    one README stays automatically in sync with its anonymous twin.
 
+### The escape hatch
+
+Some lines must contain a forbidden pattern to do their job — this checker's own
+test fixtures, and documentation showing an example of what *not* to write. Those
+lines opt out individually:
+
+```python
+path = "OUT=/home/someone/runs\n"  # identity-check: ignore (fixture data)
+```
+
+It is line-scoped, never file-scoped, and it is the only way identity can pass the
+gate. Always give a reason in the comment. If you find yourself reaching for it in
+ordinary code, the code wants the path-resolution layer instead.
+
 ## 4. What the linter cannot check
 
 Run these by eye before submitting:
