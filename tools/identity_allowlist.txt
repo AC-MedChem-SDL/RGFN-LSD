@@ -1,0 +1,21 @@
+# Files where author identity is PERMITTED, as repo-relative globs.
+# Keep this list as short as it can possibly be: every entry is a place the
+# anonymous build must overwrite or delete, and the snapshot script asserts it.
+#
+# Note: the PATHNAME surface is never allowlisted. A file *named* after a cluster
+# node leaks regardless of which directory it sits in.
+
+# LICENSE is verbatim Apache-2.0 boilerplate: identical in the public and
+# anonymous builds, and identity-free, so it needs no exemption.
+NOTICE
+CITATION.cff
+README.md
+
+# the deny-list has to contain the strings it forbids
+tools/identity_denylist.txt
+tools/identity_denylist.local.txt
+
+# vendored upstream copyright notices must survive verbatim (license obligation)
+third_party/**/LICENSE*
+third_party/**/NOTICE*
+third_party/**/COPYING*

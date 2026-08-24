@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+title: "LSD-Flow: reaction budgets, not per-molecule synthesizability"
+message: "If you use this software, please cite it using these metadata."
+type: software
+license: Apache-2.0
+repository-code: "https://github.com/AC-MedChem-SDL/RGFN-LSD"
+authors:
+  # Full author list and ordering are not final; see docs/paper_planning.
+  - family-names: Stevens
+    given-names: Mark
+    orcid: "https://orcid.org/0009-0007-4586-117X"

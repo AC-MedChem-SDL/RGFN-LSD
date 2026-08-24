@@ -1,0 +1,48 @@
+# Identity deny-list for tools/check_identity.py
+#
+# Format:  category:kind:pattern      kind = literal | regex   (always case-insensitive)
+# Categories are labels for the report only; add freely.
+#
+# THIS FILE IS EXCLUDED FROM THE ANONYMOUS SNAPSHOT (it necessarily contains the
+# very strings it forbids). tools/make_anon_snapshot.sh drops all of tools/.
+# Keep a private, uncommitted identity_denylist.local.txt for anything that should
+# not be in the public repo either.
+#
+# DO NOT add the upstream RGFN authors here. Vendored MIT code must keep its
+# copyright notice; that is third-party attribution to a published paper we cite,
+# not our identity, and reviewers read it correctly.
+
+# --- people -----------------------------------------------------------------
+person:literal:Mark Stevens
+person:regex:mark[ ._-]?a?[ ._-]?stevens
+person:literal:markymoo
+person:literal:MarkAStevens04
+person:literal:doylethecat
+person:regex:[\w.+-]+@(mail\.)?utoronto\.ca
+person:regex:\d{4}-\d{4}-\d{4}-\d{3}[\dX]
+person:literal:0009-0007-4586-117X
+person:regex:orcid\.org
+
+# --- sites, clusters, allocations, institutions ------------------------------
+site:literal:balam
+site:literal:trillium
+site:literal:scinet
+site:literal:def-naeilum
+site:literal:naeilum
+site:regex:\butoronto\b
+site:literal:University of Toronto
+site:literal:Acceleration Consortium
+site:literal:MedChem-SDL
+site:literal:Compute Canada
+site:literal:Alliance Canada
+
+# --- services and internal tooling -------------------------------------------
+service:literal:agent_comms
+service:regex:wandb\.ai/[\w.-]+
+service:regex:zenodo\.\d{4,}
+service:regex:10\.5281/zenodo
+
+# --- hosting identity ---------------------------------------------------------
+hosting:literal:AC-MedChem-SDL
+hosting:regex:github\.com/(MarkAStevens04|AC-MedChem-SDL)
+hosting:literal:RGFN-Fork-v1
