@@ -19,10 +19,14 @@ set -euo pipefail
 REPO="$(git rev-parse --show-toplevel)"
 OUT="$REPO/build/anon"
 ZIP=""
+# Venue submission caps (total upload, PDF included). GEM/NeurIPS workshop: 50 MB.
+# Keep headroom for the paper itself, so the artifact is checked against less.
+MAX_MB=40
 while [ $# -gt 0 ]; do
   case "$1" in
     --out) OUT="$2"; shift 2 ;;
     --zip) ZIP="$2"; shift 2 ;;
+    --max-mb) MAX_MB="$2"; shift 2 ;;
     -h|--help) sed -n '2,20p' "$0"; exit 0 ;;
     *) echo "unknown argument: $1" >&2; exit 2 ;;
   esac
@@ -40,8 +44,21 @@ DROP=(
   docs/ANONYMITY.md
 )
 
+# On NFS, rm -rf can fail with "Directory not empty" because files still open
+# elsewhere linger as .nfs* handles -- and the previous run left a git repo here.
+# Move the stale tree aside rather than aborting the build.
+rm_robust() {
+  target="$1"
+  [ -e "$target" ] || return 0
+  rm -rf "$target" 2>/dev/null && return 0
+  aside="${target}.stale.$$"
+  mv "$target" "$aside" || { echo "cannot clear $target" >&2; return 1; }
+  rm -rf "$aside" 2>/dev/null || true   # best effort; ignored next run
+  return 0
+}
+
 echo "==> staging tracked files at HEAD"
-rm -rf "$OUT"; mkdir -p "$OUT"
+rm_robust "$OUT"; mkdir -p "$OUT"
 git -C "$REPO" archive HEAD | tar -x -C "$OUT"
 
 echo "==> dropping non-shipping paths"
@@ -117,7 +134,25 @@ GIT_AUTHOR_DATE="$STAMP" GIT_COMMITTER_DATE="$STAMP" \
 if [ -n "$ZIP" ]; then
   echo "==> writing $ZIP"
   # Exclude .git: a zip is for supplementary upload, where history is pure risk.
-  (cd "$OUT" && zip -qr "$ZIP" . -x '.git/*') && echo "    $(du -h "$ZIP" | cut -f1)  $ZIP"
+  (cd "$OUT" && zip -qr "$ZIP" . -x '.git/*')
+  bytes=$(wc -c < "$ZIP" | tr -d ' ')
+  cap=$(( MAX_MB * 1048576 ))
+  # Compare bytes, not truncated megabytes: integer MB rounds a 900 KB artifact to
+  # 0 and would silently pass a zero cap.
+  human=$(awk -v b="$bytes" 'BEGIN{printf "%.1f", b/1048576}')
+  echo "    ${human} MB  $ZIP"
+  if [ "$bytes" -gt "$cap" ]; then
+    echo ""
+    echo "FAILED: artifact is ${human} MB, over the ${MAX_MB} MB budget."
+    echo "Do not raise the cap. Move large assets to the deposit and leave a"
+    echo "checksum in artifacts/MANIFEST.csv -- reviewers need the numbers a"
+    echo "figure was drawn from, not the rendered figure."
+    echo "Largest entries:"
+    (cd "$OUT" && find . -path ./.git -prune -o -type f -print0 \
+      | xargs -0 du -k 2>/dev/null | sort -rn | head -10 \
+      | awk '{printf "      %6.1f MB  %s\n", $1/1024, $2}')
+    exit 1
+  fi
 fi
 
 echo ""

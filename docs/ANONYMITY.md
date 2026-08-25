@@ -85,6 +85,47 @@ It is line-scoped, never file-scoped, and it is the only way identity can pass t
 gate. Always give a reason in the comment. If you find yourself reaching for it in
 ordinary code, the code wants the path-resolution layer instead.
 
+## 3b. Delivery, per venue
+
+Channel 5 is settled by *how* the artifact is handed over, not by scrubbing. The
+targets differ, and their requirements nest — anything built for the strictest
+double-blind case satisfies the others.
+
+| | Review | Code policy | Deliver as |
+|---|---|---|---|
+| **GEM (NeurIPS workshop)** | double-blind, non-archival | *"highly encouraged but not mandatory"* | supplementary zip, **50 MB cap on the whole submission** including the PDF |
+| **ICLR** | double-blind, archival | optional, plus a reproducibility statement | supplementary zip, or an anonymising proxy with an expiry past discussion |
+| **NCS** | single-blind, archival | **mandatory** availability statement + DOI-archived deposit | this repo, named, plus the deposit |
+
+Rules that follow from the table:
+
+- **Never link this repository in a double-blind submission.** A URL under a named
+  organisation is non-anonymous however clean its files are.
+- **The size cap is a hard limit, and it is a design constraint, not a packaging
+  problem.** `make_anon_snapshot.sh --max-mb` defaults to 40, leaving headroom for
+  the paper. When it trips, the answer is to move rendered assets out and keep the
+  numbers they were drawn from: a reviewer needs the CSV behind a figure far more
+  than the PNG of it.
+- **Non-archival is not a licence to skip anonymisation.** GEM runs one round of
+  double-blind review like any other venue.
+- **A non-archival workshop paper does not block the later archival submissions,**
+  so no DOI is needed — and none should be cited, since a deposit record shows its
+  authors even when the files are restricted.
+
+### Check the paper, not just the repo
+
+The PDF is what actually gets desk-rejected, and it is a binary the checker
+already understands — it parses `/Author`, `/Creator`, `/Title` and scans raw
+bytes. LaTeX toolchains routinely embed the source path, so a build run from a
+home directory can carry a username into the metadata:
+
+```bash
+python3 tools/check_identity.py --root path/to/paper --all
+```
+
+Run it on the submission directory before every upload, and on the zip's contents
+after building it.
+
 ## 4. What the linter cannot check
 
 Run these by eye before submitting:
