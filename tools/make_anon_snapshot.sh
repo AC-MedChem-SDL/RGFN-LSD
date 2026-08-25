@@ -42,6 +42,12 @@ DROP=(
   CITATION.cff
   CLAUDE.md
   docs/ANONYMITY.md
+  # These test the release tooling in tools/, which the snapshot drops -- shipping
+  # them would hand a reviewer tests that error on a missing directory. Named
+  # individually rather than dropping tests/ wholesale, so method tests ship as soon
+  # as they exist.
+  tests/test_check_identity.py
+  tests/test_make_anon_snapshot.py
 )
 
 # On NFS, rm -rf can fail with "Directory not empty" because files still open
