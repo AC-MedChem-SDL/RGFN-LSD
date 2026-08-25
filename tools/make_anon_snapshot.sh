@@ -120,6 +120,9 @@ for p in root.rglob("*.pdf"):
 print(f"    ({n} PDF(s) normalised)")
 PY
 
+# Dropping files can leave empty directories behind, which read as missing content.
+find "$OUT" -mindepth 1 -type d -empty -delete
+
 echo "==> ASSERTING the snapshot is clean with NO allowlist"
 if ! python3 "$REPO/tools/check_identity.py" --root "$OUT" --all --allowlist /dev/null; then
   echo ""
