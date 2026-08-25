@@ -1,0 +1,5 @@
+target,gate,higher_is_better,calibrated,basis
+seh,5.0,True,True,"Logs/034, Logs/051; 7.0 kept as the paper-comparable variant"
+drd2,0.5,True,True,Logs/028 gate fix; Logs/066 held-out AUROC 0.949
+clpp,-8.0,False,True,"Logs/045 Youden-optimal, AUROC 0.895 vs matched decoys"
+6td3,-2.0,False,False,"PROVISIONAL, no AUROC calibration; Logs/072 measured reward exploitation"

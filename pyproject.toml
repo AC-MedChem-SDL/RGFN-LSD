@@ -31,6 +31,9 @@ dependencies = [
 # Only lsdflow.adapters needs these: reading a trained checkpoint and enumerating
 # a hub's children means running the generator.
 generators = ["torch>=2.0"]
+# reproduce/ writes its tables with the standard library alone and skips the plot if
+# matplotlib is absent, so a reader can check every number without a plotting stack.
+figures = ["matplotlib>=3.6"]
 dev = ["pytest>=7"]
 
 [tool.setuptools.packages.find]
