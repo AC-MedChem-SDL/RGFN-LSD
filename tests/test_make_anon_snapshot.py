@@ -29,9 +29,10 @@ def build_repo(tmp_path: Path, extra: dict[str, str] | None = None) -> Path:
     (repo / "tools" / "anon_templates").mkdir()
     shutil.copy(REPO / "tools" / "anon_templates" / "NOTICE",
                 repo / "tools" / "anon_templates" / "NOTICE")
-    (repo / "NOTICE").write_text("Copyright 2026 Mark Stevens\n")
-    (repo / "README.md").write_text(
-        "# x\n<!-- IDENTITY:BEGIN -->\nby Mark Stevens\n<!-- IDENTITY:END -->\n")
+    notice = "Copyright 2026 Mark Stevens\n"  # identity-check: ignore (fixture)
+    (repo / "NOTICE").write_text(notice)
+    readme = "# x\n<!-- IDENTITY:BEGIN -->\nby Mark Stevens\n<!-- IDENTITY:END -->\n"  # identity-check: ignore (fixture)
+    (repo / "README.md").write_text(readme)
     for rel, body in (extra or {}).items():
         target = repo / rel
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -56,7 +57,8 @@ def test_clean_repo_builds(tmp_path: Path) -> None:
 
 def test_identity_outside_an_identity_block_blocks_the_build(tmp_path: Path) -> None:
     """The assertion the whole release process rests on."""
-    repo = build_repo(tmp_path, {"docs/leak.md": "we ran this on balam\n"})
+    leak = {"docs/leak.md": "we ran this on balam\n"}  # identity-check: ignore (fixture)
+    repo = build_repo(tmp_path, leak)
     r = run_build(repo)
     assert r.returncode == 1
     assert "FAILED" in r.stdout
@@ -76,7 +78,7 @@ def test_notice_is_substituted_and_readme_block_stripped(tmp_path: Path) -> None
     assert run_build(repo).returncode == 0
     out = repo / "build" / "anon"
     assert "Anonymous Authors" in (out / "NOTICE").read_text()
-    assert "Mark Stevens" not in (out / "README.md").read_text()
+    assert "Mark Stevens" not in (out / "README.md").read_text()  # identity-check: ignore
 
 
 def test_oversize_artifact_is_refused(tmp_path: Path) -> None:

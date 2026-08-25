@@ -150,10 +150,16 @@ Run these by eye before submitting:
 
 ```bash
 python3 tools/check_identity.py                  # gate this repo (exit 1 on findings)
+python3 tools/check_identity.py --all            # ALSO see files not yet staged
 python3 tools/check_identity.py --report         # inventory without failing
 tools/make_anon_snapshot.sh --zip build/anon.zip # build + assert + package
 git -C build/anon log --format='%an <%ae> %ad'   # confirm the history by eye
 ```
+
+**Use `--all` before committing a new file.** The default reads `git ls-files`, so a
+file that has never been staged is invisible to the gate. This has already bitten
+once: a new test file carrying real identity as fixture data passed a local run and
+was caught only by CI, which sees the tree after checkout.
 
 Add a term to `tools/identity_denylist.txt` the moment you notice it — the file is
 data, not code, and enlarging it costs nothing. Keep anything that should not
