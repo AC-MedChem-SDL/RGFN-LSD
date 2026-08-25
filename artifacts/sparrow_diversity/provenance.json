@@ -1,0 +1,394 @@
+{
+  "harvested_from_subdir": "rgfn_runs/lsdflow_sparrow/bc_sb",
+  "n_runs": 54,
+  "n_rows": 308,
+  "n_rows_r100": 50,
+  "skipped": [
+    "bc_enum_smoke_N500",
+    "bc_sb_smoke_N100",
+    "enumdiv_dbg_N500",
+    "lam_dbg_N500",
+    "metrics_smoke_N2000"
+  ],
+  "sources": [
+    {
+      "run_tag": "bc_enum_sb_seh42_N10000",
+      "file": "bc_enum_sb_seh42_N10000/select_frontier.csv",
+      "md5": "5b2fec9b7be67dc4b82d11a1a083a4d4",
+      "mtime_utc": "2026-08-11T15:48:20.123489+00:00",
+      "bytes": 456
+    },
+    {
+      "run_tag": "bc_enum_sb_seh42_N2000",
+      "file": "bc_enum_sb_seh42_N2000/select_frontier.csv",
+      "md5": "eaeaad211e5e6bb641fe1f2e1aa5dc38",
+      "mtime_utc": "2026-08-11T15:44:40.555422+00:00",
+      "bytes": 465
+    },
+    {
+      "run_tag": "bc_enum_sb_seh42_N21000",
+      "file": "bc_enum_sb_seh42_N21000/select_frontier.csv",
+      "md5": "2a3143d87f86eb8a5960723971ad41c8",
+      "mtime_utc": "2026-08-11T15:51:53.169960+00:00",
+      "bytes": 455
+    },
+    {
+      "run_tag": "bc_enum_sb_seh42_N5000",
+      "file": "bc_enum_sb_seh42_N5000/select_frontier.csv",
+      "md5": "c028a47753f2f1ba981b263a081460e6",
+      "mtime_utc": "2026-08-11T15:46:11.019073+00:00",
+      "bytes": 455
+    },
+    {
+      "run_tag": "bc_enum_sb_seh42_N50000",
+      "file": "bc_enum_sb_seh42_N50000/select_frontier.csv",
+      "md5": "cc85765d1481888c1aa9bdc386b7ebc8",
+      "mtime_utc": "2026-08-11T15:56:32.400069+00:00",
+      "bytes": 466
+    },
+    {
+      "run_tag": "bc_sb_seh_seed42_N1000",
+      "file": "bc_sb_seh_seed42_N1000/select_frontier.csv",
+      "md5": "51bc503039b0f5bfd31523b1067d7190",
+      "mtime_utc": "2026-08-06T21:58:02.693884+00:00",
+      "bytes": 466
+    },
+    {
+      "run_tag": "bc_sb_seh_seed42_N10000",
+      "file": "bc_sb_seh_seed42_N10000/select_frontier.csv",
+      "md5": "d58cb26f536433ee5c2e41c0225743d4",
+      "mtime_utc": "2026-08-06T23:15:56.950554+00:00",
+      "bytes": 472
+    },
+    {
+      "run_tag": "bc_sb_seh_seed42_N2000",
+      "file": "bc_sb_seh_seed42_N2000/select_frontier.csv",
+      "md5": "93af7c15ad828667d5f19c5d28b78e08",
+      "mtime_utc": "2026-08-06T22:43:36.236618+00:00",
+      "bytes": 471
+    },
+    {
+      "run_tag": "bc_sb_seh_seed42_N21000",
+      "file": "bc_sb_seh_seed42_N21000/select_frontier.csv",
+      "md5": "bb587b50993865afa29c2ebee29edaff",
+      "mtime_utc": "2026-08-06T23:26:36.522625+00:00",
+      "bytes": 469
+    },
+    {
+      "run_tag": "bc_sb_seh_seed42_N500",
+      "file": "bc_sb_seh_seed42_N500/select_frontier.csv",
+      "md5": "73d3b48e2883c3617936183b3a4c5c4b",
+      "mtime_utc": "2026-08-06T21:56:17.538392+00:00",
+      "bytes": 458
+    },
+    {
+      "run_tag": "bc_sb_seh_seed42_N5000",
+      "file": "bc_sb_seh_seed42_N5000/select_frontier.csv",
+      "md5": "22e8b6f8ebe9f2a6a408e903ef5521fa",
+      "mtime_utc": "2026-08-06T23:07:07.322531+00:00",
+      "bytes": 468
+    },
+    {
+      "run_tag": "bc_sb_seh_seed43_N1000",
+      "file": "bc_sb_seh_seed43_N1000/select_frontier.csv",
+      "md5": "02d9555d0b384cfa9d6dc74c3f3f4547",
+      "mtime_utc": "2026-08-07T05:14:49.745243+00:00",
+      "bytes": 460
+    },
+    {
+      "run_tag": "bc_sb_seh_seed43_N10000",
+      "file": "bc_sb_seh_seed43_N10000/select_frontier.csv",
+      "md5": "c8146dc476bb3efffbf947ca4bdd6e24",
+      "mtime_utc": "2026-08-07T05:48:26.142175+00:00",
+      "bytes": 465
+    },
+    {
+      "run_tag": "bc_sb_seh_seed43_N2000",
+      "file": "bc_sb_seh_seed43_N2000/select_frontier.csv",
+      "md5": "6a8df0f81669d26a387bcf96b72b1518",
+      "mtime_utc": "2026-08-07T05:20:35.051515+00:00",
+      "bytes": 469
+    },
+    {
+      "run_tag": "bc_sb_seh_seed43_N21000",
+      "file": "bc_sb_seh_seed43_N21000/select_frontier.csv",
+      "md5": "dd9cf0bffa1eda4116c56c117ade05be",
+      "mtime_utc": "2026-08-07T06:00:31.575563+00:00",
+      "bytes": 468
+    },
+    {
+      "run_tag": "bc_sb_seh_seed43_N500",
+      "file": "bc_sb_seh_seed43_N500/select_frontier.csv",
+      "md5": "5077e77fa73fc1b00bd20bebe05962fc",
+      "mtime_utc": "2026-08-07T05:13:04.676633+00:00",
+      "bytes": 465
+    },
+    {
+      "run_tag": "bc_sb_seh_seed43_N5000",
+      "file": "bc_sb_seh_seed43_N5000/select_frontier.csv",
+      "md5": "b31b0be1ea2cd443d92ef484a054dc8d",
+      "mtime_utc": "2026-08-07T05:41:43.615848+00:00",
+      "bytes": 473
+    },
+    {
+      "run_tag": "bc_sb_seh_seed44_N1000",
+      "file": "bc_sb_seh_seed44_N1000/select_frontier.csv",
+      "md5": "f948e460e5cca644b1738676d67d1bf1",
+      "mtime_utc": "2026-08-07T05:25:27.081976+00:00",
+      "bytes": 462
+    },
+    {
+      "run_tag": "bc_sb_seh_seed44_N10000",
+      "file": "bc_sb_seh_seed44_N10000/select_frontier.csv",
+      "md5": "f68c8169d8c0674061a0ca90f7eddae1",
+      "mtime_utc": "2026-08-07T06:04:14.401176+00:00",
+      "bytes": 465
+    },
+    {
+      "run_tag": "bc_sb_seh_seed44_N2000",
+      "file": "bc_sb_seh_seed44_N2000/select_frontier.csv",
+      "md5": "7f0e89ead02c6ff1e43d841c3e2346c1",
+      "mtime_utc": "2026-08-07T05:45:02.894258+00:00",
+      "bytes": 465
+    },
+    {
+      "run_tag": "bc_sb_seh_seed44_N21000",
+      "file": "bc_sb_seh_seed44_N21000/select_frontier.csv",
+      "md5": "8f733ba777dffa9eef41a55be74e83bf",
+      "mtime_utc": "2026-08-07T06:23:02.728960+00:00",
+      "bytes": 474
+    },
+    {
+      "run_tag": "bc_sb_seh_seed44_N500",
+      "file": "bc_sb_seh_seed44_N500/select_frontier.csv",
+      "md5": "0f8ddf7dac949c23f0bcb16e052d548e",
+      "mtime_utc": "2026-08-07T05:07:30.466383+00:00",
+      "bytes": 471
+    },
+    {
+      "run_tag": "bc_sb_seh_seed44_N5000",
+      "file": "bc_sb_seh_seed44_N5000/select_frontier.csv",
+      "md5": "f436774e5a0ad044b31a9407500dbd55",
+      "mtime_utc": "2026-08-07T05:57:45.677696+00:00",
+      "bytes": 470
+    },
+    {
+      "run_tag": "bcsbR100_seed42_L0_N21000",
+      "file": "bcsbR100_seed42_L0_N21000/select_frontier.csv",
+      "md5": "0a7e7ac14852a3101bcb4a1b975b95da",
+      "mtime_utc": "2026-08-19T08:03:06.035326+00:00",
+      "bytes": 554
+    },
+    {
+      "run_tag": "bcsbR100_seed42_L1_N21000",
+      "file": "bcsbR100_seed42_L1_N21000/select_frontier.csv",
+      "md5": "71528a38b5f2bedf2268924009ef4825",
+      "mtime_utc": "2026-08-19T08:51:18.370660+00:00",
+      "bytes": 553
+    },
+    {
+      "run_tag": "bcsbR100_seed43_L0_N21000",
+      "file": "bcsbR100_seed43_L0_N21000/select_frontier.csv",
+      "md5": "f7f4120de5222ea288fb0c05adce0771",
+      "mtime_utc": "2026-08-18T00:08:50.318068+00:00",
+      "bytes": 751
+    },
+    {
+      "run_tag": "bcsbR100_seed43_L0p1_N21000",
+      "file": "bcsbR100_seed43_L0p1_N21000/select_frontier.csv",
+      "md5": "84fb8f7cf8240679715d706f7a048742",
+      "mtime_utc": "2026-08-18T00:35:01.689052+00:00",
+      "bytes": 761
+    },
+    {
+      "run_tag": "bcsbR100_seed43_L1_N21000",
+      "file": "bcsbR100_seed43_L1_N21000/select_frontier.csv",
+      "md5": "63ad506359d349b4829ccdec95665253",
+      "mtime_utc": "2026-08-18T04:01:01.958448+00:00",
+      "bytes": 771
+    },
+    {
+      "run_tag": "bcsbR100_seed44_L0_N21000",
+      "file": "bcsbR100_seed44_L0_N21000/select_frontier.csv",
+      "md5": "f67e59a624ae375f3303303452573152",
+      "mtime_utc": "2026-08-18T00:48:36.849462+00:00",
+      "bytes": 763
+    },
+    {
+      "run_tag": "bcsbR100_seed44_L0p1_N21000",
+      "file": "bcsbR100_seed44_L0p1_N21000/select_frontier.csv",
+      "md5": "87f4f6517450cd6ee6ec0e1e0ab38d46",
+      "mtime_utc": "2026-08-18T01:28:04.256391+00:00",
+      "bytes": 771
+    },
+    {
+      "run_tag": "bcsbR100_seed44_L1_N21000",
+      "file": "bcsbR100_seed44_L1_N21000/select_frontier.csv",
+      "md5": "54c7344b0fad0955e8c4c4cf21830ba1",
+      "mtime_utc": "2026-08-18T02:04:39.642038+00:00",
+      "bytes": 765
+    },
+    {
+      "run_tag": "bcsb_div2_L100_N21000",
+      "file": "bcsb_div2_L100_N21000/select_frontier.csv",
+      "md5": "b1ab32f66defed725697e917efa166aa",
+      "mtime_utc": "2026-08-15T07:21:16.509943+00:00",
+      "bytes": 742
+    },
+    {
+      "run_tag": "bcsb_div2_L10_N21000",
+      "file": "bcsb_div2_L10_N21000/select_frontier.csv",
+      "md5": "c4f9d355c863d396cace53fd935d056b",
+      "mtime_utc": "2026-08-15T06:20:29.031968+00:00",
+      "bytes": 726
+    },
+    {
+      "run_tag": "bcsb_div2_L1_N21000",
+      "file": "bcsb_div2_L1_N21000/select_frontier.csv",
+      "md5": "93265c74a9891a86305e386a77586059",
+      "mtime_utc": "2026-08-15T02:49:11.421543+00:00",
+      "bytes": 714
+    },
+    {
+      "run_tag": "bcsb_div_L0_N21000",
+      "file": "bcsb_div_L0_N21000/select_frontier.csv",
+      "md5": "bbf6121c88cc1936650a8f7c9c4953ab",
+      "mtime_utc": "2026-08-13T19:04:44.296536+00:00",
+      "bytes": 843
+    },
+    {
+      "run_tag": "bcsb_div_L0p1_N21000",
+      "file": "bcsb_div_L0p1_N21000/select_frontier.csv",
+      "md5": "fd3a08830c1fc2da07e857bcee3d0cc4",
+      "mtime_utc": "2026-08-13T19:36:24.599668+00:00",
+      "bytes": 874
+    },
+    {
+      "run_tag": "bcsb_div_L100_N21000",
+      "file": "bcsb_div_L100_N21000/select_frontier.csv",
+      "md5": "2f21da619df9afa6ed69f6806436a25c",
+      "mtime_utc": "2026-08-13T21:44:41.425756+00:00",
+      "bytes": 914
+    },
+    {
+      "run_tag": "bcsb_div_L10_N21000",
+      "file": "bcsb_div_L10_N21000/select_frontier.csv",
+      "md5": "6935f46f29665b4d34fc12b5e23f3be4",
+      "mtime_utc": "2026-08-13T21:04:59.323943+00:00",
+      "bytes": 900
+    },
+    {
+      "run_tag": "bcsb_div_L1_N21000",
+      "file": "bcsb_div_L1_N21000/select_frontier.csv",
+      "md5": "23bc25f09f07ebddc7321dc89d347c22",
+      "mtime_utc": "2026-08-13T20:34:02.917442+00:00",
+      "bytes": 877
+    },
+    {
+      "run_tag": "bcsb_hi2_L0_N21000",
+      "file": "bcsb_hi2_L0_N21000/select_frontier.csv",
+      "md5": "8511ee1a82898f909e35118ceb6373c0",
+      "mtime_utc": "2026-08-14T21:00:29.131490+00:00",
+      "bytes": 539
+    },
+    {
+      "run_tag": "bcsb_hi2_L1_N21000",
+      "file": "bcsb_hi2_L1_N21000/select_frontier.csv",
+      "md5": "1fd4992479567e883a4efb87493f1662",
+      "mtime_utc": "2026-08-15T01:45:09.146648+00:00",
+      "bytes": 553
+    },
+    {
+      "run_tag": "enumR100_L0_N50000",
+      "file": "enumR100_L0_N50000/select_frontier.csv",
+      "md5": "a189145b1ac230f43c03e3376037378f",
+      "mtime_utc": "2026-08-17T23:57:09.395159+00:00",
+      "bytes": 732
+    },
+    {
+      "run_tag": "enumR100_L0p1_N50000",
+      "file": "enumR100_L0p1_N50000/select_frontier.csv",
+      "md5": "d90815ddec778c7094a6e7af056b97ff",
+      "mtime_utc": "2026-08-18T00:08:32.294184+00:00",
+      "bytes": 744
+    },
+    {
+      "run_tag": "enumR100_L10_N50000",
+      "file": "enumR100_L10_N50000/select_frontier.csv",
+      "md5": "e2ae9e6dc9141aee188e3957d40fe2de",
+      "mtime_utc": "2026-08-18T08:22:21.948019+00:00",
+      "bytes": 785
+    },
+    {
+      "run_tag": "enumR100_L1_N50000",
+      "file": "enumR100_L1_N50000/select_frontier.csv",
+      "md5": "73b6ec1d59ec175646546f21fa3f4487",
+      "mtime_utc": "2026-08-18T06:56:17.786815+00:00",
+      "bytes": 778
+    },
+    {
+      "run_tag": "enumR100_seed43_L0_N50000",
+      "file": "enumR100_seed43_L0_N50000/select_frontier.csv",
+      "md5": "6ad6e208560eb4b627f9ead7c2619498",
+      "mtime_utc": "2026-08-19T07:55:34.796120+00:00",
+      "bytes": 558
+    },
+    {
+      "run_tag": "enumR100_seed43_L1_N50000",
+      "file": "enumR100_seed43_L1_N50000/select_frontier.csv",
+      "md5": "c150e68c3e5f5c220261298e5f888bda",
+      "mtime_utc": "2026-08-19T08:08:05.819043+00:00",
+      "bytes": 569
+    },
+    {
+      "run_tag": "enumR100_seed44_L0_N50000",
+      "file": "enumR100_seed44_L0_N50000/select_frontier.csv",
+      "md5": "a30116e775633cf1fb92f1bee62a7ac7",
+      "mtime_utc": "2026-08-19T08:00:38.193596+00:00",
+      "bytes": 555
+    },
+    {
+      "run_tag": "enumR100_seed44_L1_N50000",
+      "file": "enumR100_seed44_L1_N50000/select_frontier.csv",
+      "md5": "48ac9a94a7e940dba6da08a8302dbfe6",
+      "mtime_utc": "2026-08-19T08:11:38.391394+00:00",
+      "bytes": 563
+    },
+    {
+      "run_tag": "enumdiv2_L10_N50000",
+      "file": "enumdiv2_L10_N50000/select_frontier.csv",
+      "md5": "c9fd161a20794f7d51e2b50f55d126c3",
+      "mtime_utc": "2026-08-15T05:52:08.164999+00:00",
+      "bytes": 650
+    },
+    {
+      "run_tag": "enumdiv2_L1_N50000",
+      "file": "enumdiv2_L1_N50000/select_frontier.csv",
+      "md5": "a76f0bc9628ac4ea479f92b44819cb4e",
+      "mtime_utc": "2026-08-15T05:33:22.878152+00:00",
+      "bytes": 644
+    },
+    {
+      "run_tag": "enumdiv_L0_N50000",
+      "file": "enumdiv_L0_N50000/select_frontier.csv",
+      "md5": "7d8e237497f56b1d6b34aaf32dd0c6e6",
+      "mtime_utc": "2026-08-14T01:37:05.540689+00:00",
+      "bytes": 707
+    },
+    {
+      "run_tag": "enumdiv_L0p1_N50000",
+      "file": "enumdiv_L0p1_N50000/select_frontier.csv",
+      "md5": "8ddb6a5b09318824490cc52dc4dd9726",
+      "mtime_utc": "2026-08-14T02:08:29.181693+00:00",
+      "bytes": 728
+    },
+    {
+      "run_tag": "enumdiv_L1_N50000",
+      "file": "enumdiv_L1_N50000/select_frontier.csv",
+      "md5": "ba34ffa112164fdfbbd8467d384efae7",
+      "mtime_utc": "2026-08-14T05:39:31.825974+00:00",
+      "bytes": 753
+    }
+  ],
+  "note": "Provenance for Table 2. See artifacts/sparrow_diversity/PROVENANCE.md for which numbers in Logs/062 stand and which are withdrawn."
+}
