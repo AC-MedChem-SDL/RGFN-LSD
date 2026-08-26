@@ -1,7 +1,7 @@
 {
   "harvested_from_subdir": "experiments/lsd_hubs/matrix16",
-  "n_cells": 39,
-  "n_files": 117,
+  "n_cells": 40,
+  "n_files": 120,
   "skipped": [
     "results/fraggfn_drd2 (no curves)",
     "results/fraggfn_seh (no curves)",
@@ -123,6 +123,30 @@
       "file": "summary.json",
       "src": "results/fraggfn_seh/summary.json",
       "md5": "76e31cd5ae7101428cfbe660b6d6e767",
+      "redacted": true
+    },
+    {
+      "seed": 42,
+      "cell": "rgfn_6td3",
+      "file": "curve_hub_batching.csv",
+      "src": "results/rgfn_6td3/curve_hub_batching.csv",
+      "md5": "c37897372625e1b2560523b93f2beef0",
+      "redacted": false
+    },
+    {
+      "seed": 42,
+      "cell": "rgfn_6td3",
+      "file": "curve_best_candidate.csv",
+      "src": "results/rgfn_6td3/curve_best_candidate.csv",
+      "md5": "c3fc4355fde327a3ab94c11665541d13",
+      "redacted": false
+    },
+    {
+      "seed": 42,
+      "cell": "rgfn_6td3",
+      "file": "summary.json",
+      "src": "results/rgfn_6td3/summary.json",
+      "md5": "c739593e0e7156e6478f3ac88364e8bb",
       "redacted": true
     },
     {

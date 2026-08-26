@@ -27,6 +27,9 @@ import shutil
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _common import md5, redact_paths  # noqa: E402
+
 SEED_DIRS = {"results": 42, "results_seed43": 43, "results_seed44": 44}
 ARMS = ("hub_batching", "best_candidate")
 # Cell tags carrying these markers are sensitivity-sweep variants, not cells of the
@@ -52,33 +55,6 @@ GATES = [
     {"target": "6td3", "gate": -2.0, "higher_is_better": False, "calibrated": False,
      "basis": "PROVISIONAL, no AUROC calibration; Logs/072 measured reward exploitation"},
 ]
-
-
-def redact_paths(obj, depth: int = 0):
-    """Replace absolute paths with their trailing components, in place.
-
-    Run summaries carry bookkeeping paths -- which slice files were merged, where a
-    pool was read from -- that no figure reads but that do carry a username into a
-    committed artifact. Keeping the last two components preserves what is actually
-    informative (how many slices, which ones) and drops the machine prefix. This is
-    redaction, not deletion: the md5 of the unredacted original is in provenance.json.
-    """
-    if isinstance(obj, dict):
-        return {k: redact_paths(v, depth + 1) for k, v in obj.items()}
-    if isinstance(obj, list):
-        return [redact_paths(v, depth + 1) for v in obj]
-    if isinstance(obj, str) and obj.startswith("/"):
-        parts = Path(obj).parts[-2:]
-        return str(Path(*parts)) if parts else obj
-    return obj
-
-
-def md5(path: Path) -> str:
-    h = hashlib.md5()
-    with path.open("rb") as fh:
-        for block in iter(lambda: fh.read(1 << 20), b""):
-            h.update(block)
-    return h.hexdigest()
 
 
 def main() -> int:

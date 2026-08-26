@@ -1,0 +1,187 @@
+{
+  "harvested_from_subdir": "experiments/lsd_hubs",
+  "n_order_arms": 11,
+  "n_ceiling_cells": 14,
+  "missing": [
+    "hub_order/hubord_incumbent_k0",
+    "hub_order/hubord_cand_order_k0",
+    "hub_order/hubord_cand_order_fixedset_k0"
+  ],
+  "sources": [
+    {
+      "half": "floor",
+      "arm": "hubord_incumbent",
+      "file": "summary.json",
+      "md5": "4dde9aa94c3fd2ef74026264d9c28469",
+      "redacted": true
+    },
+    {
+      "half": "floor",
+      "arm": "hubord_flow_top",
+      "file": "summary.json",
+      "md5": "d5a40274b67c33fe985cbb90ba131cce",
+      "redacted": true
+    },
+    {
+      "half": "floor",
+      "arm": "hubord_flow_top_k0",
+      "file": "summary.json",
+      "md5": "aca66d6bd5bf38e7fd4f7ad6b0e88a9d",
+      "redacted": true
+    },
+    {
+      "half": "floor",
+      "arm": "hubord_cand_order",
+      "file": "summary.json",
+      "md5": "2feaa95af68e173ee3f62af5e00a069e",
+      "redacted": true
+    },
+    {
+      "half": "floor",
+      "arm": "hubord_cand_order_fixedset",
+      "file": "summary.json",
+      "md5": "9d0cdd2fe846c990ecc4dbd141d4eff9",
+      "redacted": true
+    },
+    {
+      "half": "floor",
+      "arm": "hubord_random",
+      "file": "summary.json",
+      "md5": "aedc24e18572e25b870dc36360a218bb",
+      "redacted": true
+    },
+    {
+      "half": "floor",
+      "arm": "hubord_random_k0",
+      "file": "summary.json",
+      "md5": "159ccb28bda17141574249b8261ecb65",
+      "redacted": true
+    },
+    {
+      "half": "floor",
+      "arm": "hubord_flow_bottom",
+      "file": "summary.json",
+      "md5": "6654ccfbebb50dc0e30d58e60d6f90cd",
+      "redacted": true
+    },
+    {
+      "half": "floor",
+      "arm": "hubord_flow_bottom_k0",
+      "file": "summary.json",
+      "md5": "1c0336c3b19b2ee086022517a08517e5",
+      "redacted": true
+    },
+    {
+      "half": "floor",
+      "arm": "hubord_flow_bottom_600",
+      "file": "summary.json",
+      "md5": "6fd2ef7fda2c15fcc51518b0e26c8876",
+      "redacted": true
+    },
+    {
+      "half": "floor",
+      "arm": "hubord_flow_bottom_600_k0",
+      "file": "summary.json",
+      "md5": "936671f69b41e29a1f62ca900d441fec",
+      "redacted": true
+    },
+    {
+      "half": "ceiling",
+      "arm": "fraggfn_6td3",
+      "file": "summary.json",
+      "md5": "96bd99241e98da2dfa574f9f11f2e952",
+      "redacted": true
+    },
+    {
+      "half": "ceiling",
+      "arm": "fraggfn_clpp",
+      "file": "summary.json",
+      "md5": "631dec74327ae8ce5feadc47ccc3ba3f",
+      "redacted": true
+    },
+    {
+      "half": "ceiling",
+      "arm": "fraggfn_drd2",
+      "file": "summary.json",
+      "md5": "c6803d8e9014bc68882bf298f0608d66",
+      "redacted": true
+    },
+    {
+      "half": "ceiling",
+      "arm": "fraggfn_seh",
+      "file": "summary.json",
+      "md5": "a6acbf1a10c8f439d86b9d6ffb48a580",
+      "redacted": true
+    },
+    {
+      "half": "ceiling",
+      "arm": "rgfn_drd2",
+      "file": "summary.json",
+      "md5": "fd036020ce58de33ebd47ac287718d10",
+      "redacted": true
+    },
+    {
+      "half": "ceiling",
+      "arm": "rgfn_seh",
+      "file": "summary.json",
+      "md5": "d8548fa96be1e0459736fd7dad3e606f",
+      "redacted": true
+    },
+    {
+      "half": "ceiling",
+      "arm": "rxnflow_6td3",
+      "file": "summary.json",
+      "md5": "0483573ebdebdca539048294a7e524b1",
+      "redacted": true
+    },
+    {
+      "half": "ceiling",
+      "arm": "rxnflow_clpp",
+      "file": "summary.json",
+      "md5": "32d10707a6d046a2d10611485fa415d0",
+      "redacted": true
+    },
+    {
+      "half": "ceiling",
+      "arm": "rxnflow_drd2",
+      "file": "summary.json",
+      "md5": "94724345a22a75fdb73b574fc33b98b3",
+      "redacted": true
+    },
+    {
+      "half": "ceiling",
+      "arm": "rxnflow_seh",
+      "file": "summary.json",
+      "md5": "f1294cc72d5bec6acfbd82fbe4de9e9a",
+      "redacted": true
+    },
+    {
+      "half": "ceiling",
+      "arm": "scent_6td3",
+      "file": "summary.json",
+      "md5": "54daf4132d0f5216fa321ab34a00ee37",
+      "redacted": true
+    },
+    {
+      "half": "ceiling",
+      "arm": "scent_clpp",
+      "file": "summary.json",
+      "md5": "9ae0beb42f837b6d98994a91b33e37fb",
+      "redacted": true
+    },
+    {
+      "half": "ceiling",
+      "arm": "scent_drd2",
+      "file": "summary.json",
+      "md5": "f14a3226d451c112aea705b348c3820a",
+      "redacted": true
+    },
+    {
+      "half": "ceiling",
+      "arm": "scent_seh",
+      "file": "summary.json",
+      "md5": "4eb128322faf6268e2c31d7c77bdbba9",
+      "redacted": true
+    }
+  ]
+}

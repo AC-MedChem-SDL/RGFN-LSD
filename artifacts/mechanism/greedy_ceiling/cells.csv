@@ -1,0 +1,15 @@
+cell,gate,target,best_candidate_modes_at_100rxn,best_candidate_reward_gen_calls,best_candidate_rxn_per_mode,best_candidate_selection_wall_s,greedy_oracle_modes_at_100rxn,greedy_oracle_reward_gen_calls,greedy_oracle_rxn_per_mode,greedy_oracle_selection_wall_s,greedy_oracle_static_modes_at_100rxn,greedy_oracle_static_reward_gen_calls,greedy_oracle_static_rxn_per_mode,greedy_oracle_static_selection_wall_s,hub_batching_modes_at_100rxn,hub_batching_reward_gen_calls,hub_batching_rxn_per_mode,hub_batching_selection_wall_s,pool_limited
+fraggfn_6td3,-2.0,6td3,20,0,5.0,0.321,84,240555,1.213,128.346,60,49665,1.533,1.041,60,49665,1.533,12.8,False
+fraggfn_clpp,-8.0,clpp,20,0,4.84,0.266,96,301560,1.053,100.943,96,11235,1.093,0.443,96,11235,1.093,2.905,False
+fraggfn_drd2,0.5,drd2,20,0,4.68,0.274,88,198765,1.12,73.619,88,13755,1.173,0.454,88,13755,1.173,3.023,False
+fraggfn_seh,7.0,seh,20,0,4.997,0.527,84,301770,1.227,54.182,76,38745,1.333,0.419,76,38745,1.333,3.402,False
+rgfn_drd2,0.5,drd2,25,0,3.843,0.206,92,214804,1.09,55.955,82,27807,1.197,0.415,82,27807,1.197,2.528,False
+rgfn_seh,7.0,seh,9,0,4.0,0.022,52,194490,2.938,0.405,35,194016,2.993,0.088,35,194016,2.993,0.639,True
+rxnflow_6td3,-2.0,6td3,34,0,2.977,0.234,92,304267,1.087,74.153,82,41241,1.193,0.622,82,41241,1.193,4.559,False
+rxnflow_clpp,-8.0,clpp,33,0,2.977,0.245,95,284970,1.083,40.318,81,50371,1.223,0.414,81,50371,1.223,3.142,False
+rxnflow_drd2,0.5,drd2,33,0,2.935,1.146,72,162042,1.593,31.245,55,108373,1.833,0.594,55,108373,1.833,5.588,False
+rxnflow_seh,7.0,seh,33,0,3.0,0.103,59,232213,2.328,1.351,44,232213,2.446,0.106,44,232213,2.446,0.946,True
+scent_6td3,-2.0,6td3,28,0,3.32,0.857,80,550569,1.067,131.723,76,53620,1.157,0.834,76,53620,1.157,3.997,False
+scent_clpp,-8.0,clpp,27,0,3.42,2.126,80,340761,1.073,144.793,69,55317,1.29,0.912,69,55317,1.29,5.815,False
+scent_drd2,0.5,drd2,26,0,3.673,0.294,78,344469,1.097,67.129,75,100538,1.16,0.719,75,100538,1.16,1.29,False
+scent_seh,7.0,seh,28,0,3.383,0.941,76,438984,1.163,80.123,70,155764,1.303,0.756,70,155764,1.303,1.004,False
