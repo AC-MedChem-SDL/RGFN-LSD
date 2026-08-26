@@ -1,0 +1,23 @@
+{
+  "harvested_from_subdir": "experiments/lsd_hubs/campaign/results/yield_preference",
+  "n_rows": 8,
+  "sources": [
+    {
+      "file": "strategy_yield_drd2_drd2_seed43.csv",
+      "md5": "04fc7aa5991cfe8fa750fc5b5ea41fa9"
+    },
+    {
+      "file": "strategy_yield_drd2_drd2_seed44.csv",
+      "md5": "4601fa1447bf55f72883ab79f9e5013f"
+    },
+    {
+      "file": "strategy_yield_seh_seed43.csv",
+      "md5": "2f48f685551f28f281138e9f8d63132f"
+    },
+    {
+      "file": "strategy_yield_seh_seed44.csv",
+      "md5": "bb4f0189f1be958a68b9caf0f0707cb8"
+    }
+  ],
+  "note": "Per-molecule route detail (strategy_yield_detail_*.csv) intentionally not harvested: the summary carries every quantity the figure reads."
+}
