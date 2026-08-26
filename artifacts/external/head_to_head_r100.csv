@@ -1,7 +1,4 @@
 arm,config,modes_at_100rxn,side,exact,gate,is_headline_config,modes_lower,modes_upper,n_selected,solver,used_rxns
-S3-GFN + MultiAiZ + SPARROW selects,SPARROW chooses under a 100-reaction budget,24,competitor,True,7.0,,24,24,89,Optimal,100
-S3-GFN + MultiAiZ + diversity-aware greedy,their strongest pipeline; frontier sampled every 25 modes,38,competitor,True,7.0,,38,38,38,greedy,98
-LSD-Flow (hub-batching),"free-frag, K=0",82,ours,True,7.0,True,82,82,,greedy walk,100
-LSD-Flow (hub-batching) — scent_seh_1kx200_freefrag,"free-frag, K=0, 1k x 200 hubs",80,ours,True,7.0,False,80,80,,greedy walk,100
-LSD-Flow (hub-batching) — scent_seh,naive reward child policy,33,ours,True,7.0,False,33,33,,greedy walk,100
-LSD-Flow (hub-batching) — scent_seh_sparrow_headline,"free-frag, K=100, SPARROW-priced",27,ours,True,7.0,False,27,27,,greedy walk,100
+S3-GFN → retrosynthesis → SPARROW selects,SPARROW chooses under a 100-reaction budget,24,competitor,True,7.0,,24,24,89,Optimal,100
+S3-GFN → retrosynthesis → greedy selection,their strongest pipeline; frontier sampled every 25 modes,38,competitor,True,7.0,,38,38,38,greedy,98
+hub-batching,"free-frag child policy, no pre-selected fragments",82,ours,True,7.0,True,82,82,,greedy walk,100

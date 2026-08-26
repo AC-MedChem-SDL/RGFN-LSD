@@ -56,3 +56,22 @@ which nothing checked.
 That is why `provenance.json` exists, and why a comparison claiming "the same
 candidates" must read from a frozen snapshot rather than a shared scratch tree that
 other jobs are still writing.
+
+## `ours_r100.csv` — our own arm, and how it got here
+
+The competitor rows are harvested from run artifacts. Our three seed values are
+**transcribed from Logs/062 Result 12**, not re-derived, because the seed-43/44
+campaign summaries behind them are not in a location this harvest can read. That entry
+is affirmed standing by the log's own 2026-08-23 update, and the seed-42 value (82)
+independently matches `artifacts/external/head_to_head_r100.csv`, which *is* harvested
+from a run directory — so the one value that can be cross-checked, checks.
+
+**To make this fully self-sourcing**, re-run the seed-43/44 gate-7.0 campaigns and
+harvest their `summary.json` the way `tools/harvest/external.py` does. Until then this
+file is the one place in `artifacts/` whose numbers come from a document rather than
+from a run, and it is labelled as such in its own `source` column.
+
+Every pick in our arm is a distinct molecule by construction — the greedy accepts a
+child only if it clears the gate *and* is Tanimoto-far from everything already taken —
+so `n_selected` and `n_modes_kept` are necessarily equal. That is not a coincidence to
+be explained away; it is the difference the figure is about.

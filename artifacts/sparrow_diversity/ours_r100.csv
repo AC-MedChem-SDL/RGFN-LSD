@@ -1,0 +1,4 @@
+arm,seed,lambda_div,n_selected,n_modes_kept,used_rxns,cost_kept_rxns,milp_status,source
+hub-batching,42,,82,82,100,100,greedy walk,Logs/062 Result 12
+hub-batching,43,,81,81,100,100,greedy walk,Logs/062 Result 12
+hub-batching,44,,82,82,100,100,greedy walk,Logs/062 Result 12

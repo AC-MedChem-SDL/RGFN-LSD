@@ -1,22 +1,25 @@
 #!/usr/bin/env python3
-"""Appendix figure — batching wins on expected molecules and concentrates the risk.
+"""Appendix figure — how much material survives a route, and why.
 
-The cost metric counts reactions *attempted*. Every reaction has a yield, so the
-library that gets planned is not the library that arrives. Putting yield back in gives
-two results, and the second is the one a chemist cares about.
+A reaction count treats every reaction as equal. Real ones are not: each has a
+**yield**, the fraction of material that survives the step. Compound those along a
+route and you get the route yield -- the share of theoretical material that reaches
+the final compound. SCENT's library ships a per-reaction yield (0.65-0.95) and this
+is what the delivered libraries look like through it.
 
-**The expected count still favours batching, by a lot** -- 2.7-5.3x more molecules
-actually delivered.
+The result is not the one we expected. Hub-batching's routes are SHORTER (fewer steps
+to compound away), so on DRD2 its libraries carry a *higher* mean route yield than
+picking the best candidates one at a time, and on sEH a slightly lower one. A reaction
+count cannot see either.
 
-**But the failures stop being independent.** Hub-batching's savings come from many
-final molecules descending from one shared intermediate. When that intermediate fails,
-everything below it fails with it. So the spread in what arrives widens 1.8-4.9x
-relative to treating each molecule as an independent coin flip -- while the baseline's
-spread barely moves at all (1.00-1.06x), because it barely shares anything. The
-correlated risk is a property of batching, not of the chemistry.
-
-This is a risk caveat on a real win, not a reversal, and it belongs in the paper
-rather than in a footnote: it is the first thing an experimentalist would ask.
+**On what this figure deliberately does not show.** An earlier version drew error bars
+from a batch-failure model that treats each route yield as a coin-flip probability of
+success (``yield_by_strategy.py``: ``X_b ~ Bern(q)``). That is a modelling assumption,
+not a measurement -- yield is a mass fraction, not a success rate -- and drawing it as
+an error bar lends it a precision it has not earned. The structural point behind it is
+real and worth a sentence of prose: molecules built off one shared intermediate share
+its route prefix, so their outcomes are correlated in a way independent molecules' are
+not. Quantifying that honestly needs a failure model somebody is willing to defend.
 
 Reads only ``artifacts/yield_risk/``. No cluster, no GPU.
 
@@ -59,65 +62,40 @@ def draw(cells, out_path: Path) -> str:
         return "matplotlib not installed - table written, figure skipped"
 
     names = sorted(cells)
-    fig, (axl, axr) = plt.subplots(1, 2, figsize=(11, 4.3),
-                                   gridspec_kw={"width_ratios": [1.25, 1]})
     COL = {"hub_batching": "#1f6f8b", "best_candidate": "#9aa5a7"}
-    width = 0.34
+    fig, (axl, axr) = plt.subplots(1, 2, figsize=(10.5, 4.1),
+                                   gridspec_kw={"width_ratios": [1, 1]})
+    w = 0.36
 
-    # ---- left: expected molecules, with BOTH error bars ----
+    # ---- left: mean route yield. Product of step yields per molecule, averaged. ----
     for i, cell in enumerate(names):
         for j, arm in enumerate(ARMS):
             r = cells[cell].get(arm)
             if r is None:
                 continue
-            x = i + (j - 0.5) * width
-            exp = f(r, "expected_molecules")
-            axl.bar(x, exp, width * 0.92, color=COL[arm], zorder=2,
-                    label=LABEL[arm] if i == 0 else None)
-            # thin bar = if failures were independent; thick = with shared prefixes.
-            axl.errorbar(x, exp, yerr=f(r, "sd_if_independent"), fmt="none",
-                         ecolor="#3b4a4c", elinewidth=2.4, capsize=7, zorder=4)
-            axl.errorbar(x, exp, yerr=f(r, "sd_with_shared_prefixes"), fmt="none",
-                         ecolor="#c0603a", elinewidth=1.1, capsize=3.5, zorder=3)
+            axl.bar(i + (j - 0.5) * w, f(r, "mean_route_yield"), w * 0.92,
+                    color=COL[arm], zorder=2, label=LABEL[arm] if i == 0 else None)
     axl.set_xticks(range(len(names)))
-    axl.set_xticklabels(names, fontsize=8)
-    axl.set_ylabel("molecules actually delivered\n(expected, after yield)")
-    axl.set_title("Batching still delivers 2.7–5.3× more molecules —\n"
-                  "but the orange spread is the honest one", fontsize=9.5)
-    axl.legend(frameon=False, fontsize=8, loc="upper left")
+    axl.set_xticklabels(names, fontsize=8.5)
+    axl.set_ylabel("mean route yield  (\u2191)")
+    axl.set_title("Fraction of material surviving a full route  (\u2191)", fontsize=10.5)
+    axl.legend(frameon=False, fontsize=8.5, loc="upper left")
     axl.spines[["top", "right"]].set_visible(False)
-    # Below the axis, not inside the plot: the tall drd2 bars leave no clear space.
-    axl.set_xlabel("dark caps: failures treated as independent   ·   "
-                   "orange caps: shared prefixes accounted for",
-                   fontsize=7.5, color="#3b4a4c", labelpad=8)
+    axl.set_ylim(0, max(f(r, "mean_route_yield")
+                        for c in cells.values() for r in c.values()) * 1.32)
 
-    # ---- right: the inflation factor, i.e. the mechanism ----
-    ys, labels, colors, notes = [], [], [], []
-    for cell in names:
-        for arm in ARMS:
+    # ---- right: the explanation -- route length ----
+    for i, cell in enumerate(names):
+        for j, arm in enumerate(ARMS):
             r = cells[cell].get(arm)
             if r is None:
                 continue
-            ind, shr = f(r, "sd_if_independent"), f(r, "sd_with_shared_prefixes")
-            ys.append(shr / ind if ind else float("nan"))
-            labels.append(f"{cell} · {LABEL[arm]}")
-            colors.append(COL[arm])
-            notes.append(f"largest batch {int(f(r,'largest_batch'))}"
-                         f" · {f(r,'pct_in_multi_batches'):.0f}% shared")
-    ypos = list(range(len(ys)))
-    axr.barh(ypos, ys, color=colors, height=0.6, zorder=3)
-    axr.axvline(1.0, color="#3b4a4c", lw=1.2, zorder=4)
-    # Horizontal, above the plot: rotated at the baseline it collided with the axis label.
-    axr.annotate("1× = no correlated risk", xy=(1.09, -0.72), fontsize=7.5,
-                 color="#3b4a4c", ha="left", va="bottom", annotation_clip=False)
-    for y, v, n in zip(ypos, ys, notes):
-        axr.text(v + 0.08, y, n, fontsize=6.6, va="center", color="#5f7275")
-    axr.set_yticks(ypos)
-    axr.set_yticklabels(labels, fontsize=7)
-    axr.set_xlim(0, max(ys) * 1.62)   # room for the per-bar annotations
-    axr.set_ylim(len(ys) - 0.4, -1.0)  # headroom for the baseline note
-    axr.set_xlabel("spread inflation once shared steps are counted\n(× the independent-failure spread)")
-    axr.set_title("The risk is concentrated by batching,\nnot by the chemistry", fontsize=9.5)
+            axr.bar(i + (j - 0.5) * w, f(r, "mean_route_len"), w * 0.92,
+                    color=COL[arm], zorder=2)
+    axr.set_xticks(range(len(names)))
+    axr.set_xticklabels(names, fontsize=8.5)
+    axr.set_ylabel("mean steps per molecule  (\u2193)")
+    axr.set_title("...which is mostly route length  (\u2193)", fontsize=10.5)
     axr.spines[["top", "right"]].set_visible(False)
 
     fig.tight_layout()
@@ -163,18 +141,23 @@ def main() -> int:
                           "largest_batch": int(f(r, "largest_batch")),
                           "worst_batch_loss_prob": f(r, "worst_batch_loss_prob")})
 
-    ratios, infl_hub, infl_bc = [], [], []
+    ylds, lens = [], []
     for cell, arms in cells.items():
         if not {"hub_batching", "best_candidate"} <= set(arms):
             continue
         h, b = arms["hub_batching"], arms["best_candidate"]
-        ratios.append(f(h, "expected_molecules") / f(b, "expected_molecules"))
-        infl_hub.append(f(h, "sd_with_shared_prefixes") / f(h, "sd_if_independent"))
-        infl_bc.append(f(b, "sd_with_shared_prefixes") / f(b, "sd_if_independent"))
-    print(f"\n  expected molecules delivered : {min(ratios):.2f}x-{max(ratios):.2f}x in our favour")
-    print(f"  spread inflation, hub-batching: {min(infl_hub):.2f}x-{max(infl_hub):.2f}x")
-    print(f"  spread inflation, baseline    : {min(infl_bc):.2f}x-{max(infl_bc):.2f}x"
-          f"   <- essentially none, so the correlated risk is batching's, not the chemistry's")
+        ylds.append((cell, f(h, "mean_route_yield"), f(b, "mean_route_yield")))
+        lens.append((cell, f(h, "mean_route_len"), f(b, "mean_route_len")))
+    print("\n  mean route yield (hub vs best-candidate):")
+    for cell, hv, bv in sorted(ylds):
+        arrow = "higher" if hv > bv else "lower"
+        print(f"    {cell:<14} {hv:.3f} vs {bv:.3f}   ({arrow} for hub-batching)")
+    print("  mean steps per molecule:")
+    for cell, hv, bv in sorted(lens):
+        print(f"    {cell:<14} {hv:.2f} vs {bv:.2f}")
+    print("\n  NOTE: the batch-failure columns (sd_*, worst_batch_loss_prob) are carried in")
+    print("  the CSV but NOT plotted -- they rest on treating a route yield as a coin-flip")
+    print("  success probability, which is an assumption rather than a measurement.")
 
     with (out / "figA1_yield_risk.csv").open("w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=list(table[0]))

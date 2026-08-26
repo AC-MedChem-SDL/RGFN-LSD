@@ -32,6 +32,12 @@ import sys
 from pathlib import Path
 
 
+# The four arms that answer the question. Everything else is a control on a control --
+# "is this an artifact of the hub pool rather than the ordering?" -- which belongs in an
+# appendix, not in the panel that has to land in one look. --all-arms restores them.
+MAIN_ARMS = ("flow_top", "cand_order", "random", "flow_bottom")
+
+
 def root() -> Path:
     return Path(__file__).resolve().parents[1] / "artifacts" / "mechanism"
 
@@ -121,26 +127,33 @@ def draw(floor, ceil, out_path: Path) -> str:
     front = {id(p) for p in pareto([p for p in floor if p["finished"]])}
 
     # ---- left: the floor, on the two cost axes ----
-    # Two arms can sit almost on top of each other (357/5648 vs 365/5685), so
-    # alternate the label offset rather than letting them overprint.
+    # No colour encoding. The earlier version coloured by "reads a signal", which was
+    # not true of the data: reverse-flow reads the flow and deliberately inverts it.
+    # What actually distinguishes the points is whether they finished the library and
+    # whether anything dominates them, and both are shown by shape and position.
     for idx, p in enumerate(floor):
-        informed, done = p["informed"], p["finished"]
-        color = "#1f6f8b" if informed else "#c0603a"
-        axl.scatter(p["reactions"], p["compute_s"], s=90 if id(p) in front else 55,
+        done = p["finished"]
+        axl.scatter(p["reactions"], p["compute_s"],
+                    s=115 if id(p) in front else 62,
                     marker="o" if done else "X",
-                    color=color, alpha=1.0 if done else 0.55,
-                    edgecolor="black" if id(p) in front else "none",
-                    linewidth=0.9, zorder=3)
-        note = p["label"] if done else f"{p['label']} — only {int(p['modes'])}/300 modes"
-        axl.annotate(note, (p["reactions"], p["compute_s"]), fontsize=7,
-                     xytext=(7, 4 if idx % 2 == 0 else -11),
-                     textcoords="offset points")
-    axl.set_xlabel("bench cost  (reactions to 300 modes)")
-    axl.set_ylabel("selection cost  (enumeration wall-clock, s)")
-    axl.set_title("Floor: what the ordering is worth\n"
-                  "blue = reads flow or reward · orange = no signal · X = never finished",
-                  fontsize=9)
+                    facecolor="#2c3f42" if done else "none",
+                    edgecolor="#2c3f42",
+                    linewidth=1.6 if id(p) in front else 1.1,
+                    alpha=1.0 if done else 0.85, zorder=3)
+        note = p["label"] if done else f"{p['label']}\n(never finished — {int(p['modes'])}/300 modes)"
+        axl.annotate(note, (p["reactions"], p["compute_s"]), fontsize=7.6,
+                     xytext=(9, 4 if idx % 2 == 0 else -14),
+                     textcoords="offset points", color="#2c3f42")
+    axl.set_xlabel("bench cost:  reactions to 300 modes  (\u2190)")
+    axl.set_ylabel("selection cost:  enumeration wall-clock, s  (\u2193)")
+    axl.set_title("Floor: does the walk order matter?  (\u2199)", fontsize=10.5)
+    axl.scatter([], [], s=115, facecolor="#2c3f42", edgecolor="#2c3f42",
+                label="on the frontier")
+    axl.scatter([], [], s=62, facecolor="none", edgecolor="#2c3f42", marker="X",
+                label="never finished the library")
+    axl.legend(frameon=False, fontsize=7.8, loc="upper left")
     axl.spines[["top", "right"]].set_visible(False)
+    axl.margins(0.16)
 
     # ---- right: the ceiling, share of achievable gain per cell ----
     cells = [c["cell"] for c in ceil]
@@ -151,14 +164,17 @@ def draw(floor, ceil, out_path: Path) -> str:
     axr.axvline(med, color="#c0603a", lw=1.4, ls="--", zorder=4,
                 label=f"median {med:.3f}")
     axr.axvline(1.0, color="#666666", lw=1.0, zorder=4)
-    axr.text(1.002, len(cells) - 0.4, "oracle greedy", fontsize=7,
-             color="#666666", rotation=90, va="top")
+    axr.annotate("re-deciding at every step", xy=(1.02, -0.8), fontsize=7.5,
+                 color="#666666", ha="left", va="bottom", annotation_clip=False)
     axr.set_yticks(list(ypos))
     axr.set_yticklabels(cells, fontsize=7)
-    axr.set_xlim(0, 1.08)
-    axr.set_xlabel("share of the achievable gain recovered\nby the one-shot flow ranking")
-    axr.set_title("Ceiling: how much is left on the table", fontsize=9)
-    axr.legend(frameon=False, fontsize=8, loc="lower right")
+    axr.set_xlim(0, 1.24)
+    axr.set_ylim(len(cells) - 0.4, -1.2)
+    axr.set_xlabel("share of the best-possible improvement that\n"
+                   "deciding once already captures  (\u2191)")
+    axr.set_title("Ceiling: how close is deciding once to\n"
+                  "re-deciding at every step?  (\u2191)", fontsize=10.5)
+    axr.legend(frameon=False, fontsize=8, loc="upper right")
     axr.spines[["top", "right"]].set_visible(False)
 
     fig.tight_layout()
@@ -172,6 +188,8 @@ def draw(floor, ceil, out_path: Path) -> str:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--all-arms", action="store_true",
+                    help="include the control arms held back from the main figure")
     ap.add_argument("--prebuild-k", type=int, default=20,
                     help="which prebuild-K setting to draw the floor at (default 20)")
     ap.add_argument("--out", type=Path, default=None)
@@ -184,6 +202,12 @@ def main() -> int:
     out.mkdir(parents=True, exist_ok=True)
 
     floor = floor_table(read_csv(base / "hub_ordering" / "arms.csv"), args.prebuild_k)
+    if not args.all_arms:
+        held = [p["label"] for p in floor if p["arm"] not in MAIN_ARMS]
+        floor = [p for p in floor if p["arm"] in MAIN_ARMS]
+        if held:
+            print(f"held back from the main figure ({len(held)}, --all-arms to include): "
+                  + "; ".join(held) + "\n")
     ceil = ceiling_table(read_csv(base / "greedy_ceiling" / "cells.csv"))
     if not floor or not ceil:
         sys.exit("no rows -- re-run tools/harvest/mechanism.py")
@@ -202,9 +226,12 @@ def main() -> int:
         finished = "" if p["finished"] else f"  FAILED ({int(p['modes'])}/300)"
         print(f"  {p['label']:<34}{p['reactions']:>10.0f}{p['compute_s']:>11.0f}"
               f"{p['modes']:>7.0f}{mark}{finished}")
-    informed_off = [p for p in front if not p["informed"]]
-    print(f"\n  frontier arms reading a signal: {len(front) - len(informed_off)}/{len(front)}"
-          + ("  (both no-signal controls are dominated)" if not informed_off else ""))
+    # State what is actually true of the points rather than re-asserting the old
+    # colour encoding: reverse-flow DOES read the flow, it just inverts it.
+    dominated = [p["label"] for p in floor if p not in front]
+    print(f"\n  on the frontier: {', '.join(p['label'] for p in front)}")
+    if dominated:
+        print(f"  dominated on both axes: {', '.join(dominated)}")
 
     print(f"\nCEILING — {len(ceil)} cells")
     for label, subset in (("all cells", ceil),

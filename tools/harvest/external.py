@@ -27,12 +27,31 @@ from _common import md5, redact_paths  # noqa: E402
 # the one the paper's external comparison is written against (free-frag child policy,
 # no pre-selected fragments); the others are kept so the spread is visible rather
 # than hidden behind a single quoted number.
+# Only the headline configuration is a table row. The other runs that exist for this
+# cell are not competitors and were misleading as rows:
+#   scent_seh_1kx200_freefrag  - a hub-pool construction variant of the same method
+#   scent_seh                  - the naive child policy, superseded
+#   scent_seh_sparrow_headline - NOT a competitor at all. That run does our own
+#       selection and uses SPARROW only to PRICE it; SPARROW never chooses anything.
+#       It is verification, and it belongs in a sentence (see VERIFICATION below),
+#       not in a row where a reader would read it as a rival pipeline.
 OURS = [
-    ("scent_seh_freefrag",        "free-frag, K=0",               True),
-    ("scent_seh_1kx200_freefrag", "free-frag, K=0, 1k x 200 hubs", False),
-    ("scent_seh",                 "naive reward child policy",     False),
-    ("scent_seh_sparrow_headline", "free-frag, K=100, SPARROW-priced", False),
+    ("scent_seh_freefrag", "free-frag child policy, no pre-selected fragments", True),
 ]
+
+# Independent pricing of our own selection, from the reconciliation audit. Logs/049
+# reported 3.12%, but that was measured on the NAIVE child policy; the re-audit against
+# the headline configuration is the number that belongs beside a headline row.
+VERIFICATION = {
+    "headline_gap_pct": 0.75,
+    "headline_config": "sEH, free-frag, K=20",
+    "direction": "count-once charges what we actually spent; SPARROW charges only what "
+                 "hindsight needed, so our published cost is conservative",
+    "source": "Logs/049 + its re-audit recorded in RESEARCH_CONTEXT",
+    "caveat": "DRD2 at K=20 reads 12.69%, traced entirely to pre-select-K's 26 up-front "
+              "reactions (~17 unused by a 100-mode selection); at K=0 it is exactly "
+              "0.00% (110/110)",
+}
 
 
 def main() -> int:
@@ -62,7 +81,7 @@ def main() -> int:
                 if r["budget_rxns"] != "100":
                     continue
                 rows.append({
-                    "arm": "S3-GFN + MultiAiZ + SPARROW selects", "side": "competitor",
+                    "arm": "S3-GFN \u2192 retrosynthesis \u2192 SPARROW selects", "side": "competitor",
                     "config": "SPARROW chooses under a 100-reaction budget",
                     "modes_at_100rxn": r["n_modes"], "modes_lower": r["n_modes"],
                     "modes_upper": r["n_modes"], "used_rxns": r["used_rxns"],
@@ -90,7 +109,7 @@ def main() -> int:
         lo = max(below) if below else 0
         hi = (min(above) - 1) if above else lo
         rows.append({
-            "arm": "S3-GFN + MultiAiZ + diversity-aware greedy", "side": "competitor",
+            "arm": "S3-GFN \u2192 retrosynthesis \u2192 greedy selection", "side": "competitor",
             "config": "their strongest pipeline; frontier sampled every 25 modes",
             "modes_at_100rxn": str(lo) if lo == hi else f"{lo}-{hi}",
             "modes_lower": lo, "modes_upper": hi,
@@ -135,7 +154,7 @@ def main() -> int:
         if modes is None:
             continue
         rows.append({
-            "arm": "LSD-Flow (hub-batching)" + ("" if headline else f" — {tag}"),
+            "arm": "hub-batching" + ("" if headline else f" \u2014 {tag}"),
             "side": "ours", "config": config,
             "modes_at_100rxn": modes, "modes_lower": modes, "modes_upper": modes,
             "used_rxns": 100, "n_selected": "", "solver": "greedy walk",
@@ -157,6 +176,7 @@ def main() -> int:
     (out / "provenance.json").write_text(json.dumps({
         "harvested_from_subdir": "experiments/lsd_hubs/campaign/results",
         "n_rows": len(rows), "notes": notes, "sources": sources,
+        "verification": VERIFICATION,
     }, indent=2) + "\n")
 
     print(f"harvested {len(rows)} arms")

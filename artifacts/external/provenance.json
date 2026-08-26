@@ -1,6 +1,6 @@
 {
   "harvested_from_subdir": "experiments/lsd_hubs/campaign/results",
-  "n_rows": 6,
+  "n_rows": 3,
   "notes": [
     "The diversity-aware greedy arm is EXACT at R=100: 38 modes for 98 reactions, with the next mode taking it to 101. Read off a 1-mode grid, every point Optimal."
   ],
@@ -20,30 +20,13 @@
     {
       "file": "scent_seh_freefrag/pareto.csv",
       "md5": "e8ee66d440debd9845cb005985fa1e90"
-    },
-    {
-      "file": "scent_seh_1kx200_freefrag/summary.json",
-      "md5": "28a9870148c42171cbe9787a94c4bd00"
-    },
-    {
-      "file": "scent_seh_1kx200_freefrag/pareto.csv",
-      "md5": "9c279a23b3e062e43e148d477c379e59"
-    },
-    {
-      "file": "scent_seh/summary.json",
-      "md5": "06dfdaad98a11ace455049beaaeefde9"
-    },
-    {
-      "file": "scent_seh/pareto.csv",
-      "md5": "ab3e0d2a306923b847c67791fadad8c5"
-    },
-    {
-      "file": "scent_seh_sparrow_headline/sweep_summary.json",
-      "md5": "2533efbaab9c47c76a19f6d4087c6727"
-    },
-    {
-      "file": "scent_seh_sparrow_headline/pareto.csv",
-      "md5": "a62479f7426a036acb81234dce3a7b27"
     }
-  ]
+  ],
+  "verification": {
+    "headline_gap_pct": 0.75,
+    "headline_config": "sEH, free-frag, K=20",
+    "direction": "count-once charges what we actually spent; SPARROW charges only what hindsight needed, so our published cost is conservative",
+    "source": "Logs/049 + its re-audit recorded in RESEARCH_CONTEXT",
+    "caveat": "DRD2 at K=20 reads 12.69%, traced entirely to pre-select-K's 26 up-front reactions (~17 unused by a 100-mode selection); at K=0 it is exactly 0.00% (110/110)"
+  }
 }

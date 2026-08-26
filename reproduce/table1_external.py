@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import sys
 from pathlib import Path
 
@@ -49,8 +50,8 @@ def main() -> int:
     ours = int(headline["modes_lower"])
 
     print(f"Table 1 — modes delivered at 100 reactions (sEH, gate {headline['gate']})\n")
-    print(f"| {'pipeline':<50} | {'modes @ 100 rxn':>15} | {'vs ours':>10} |")
-    print(f"|{'-'*52}|{'-'*17}|{'-'*12}|")
+    print(f"| {'pipeline':<50} | {'modes @ 100 rxn (\u2191)':>19} | {'vs ours':>10} |")
+    print(f"|{'-'*52}|{'-'*21}|{'-'*12}|")
     table = []
     for r in rows:
         lo, hi = int(r["modes_lower"]), int(r["modes_upper"])
@@ -63,7 +64,7 @@ def main() -> int:
             # our LOWER ratio, which is the conservative end and the one to lead with.
             ratio = f"{ours/hi:.2f}-{ours/lo:.2f}x"
         star = " *" if r is headline else ""
-        print(f"| {r['arm'][:50]:<50} | {str(r['modes_at_100rxn']):>15} | {ratio:>10} |{star}")
+        print(f"| {r['arm'][:50]:<50} | {str(r['modes_at_100rxn']):>19} | {ratio:>10} |{star}")
         table.append({**r, "ratio_vs_headline": ratio})
     print(f"\n  * the headline configuration ({headline['config']})")
 
@@ -81,9 +82,14 @@ def main() -> int:
     for r in inexact:
         print(f"  {r['arm']} is an interval [{r['modes_lower']}, {r['modes_upper']}] — "
               f"frontier granularity, not uncertainty. Lead with the conservative end.")
-    spread = sorted(int(r["modes_lower"]) for r in rows if r["side"] == "ours")
-    print(f"\n  Our own arms span {spread[0]}-{spread[-1]} modes at R=100 across "
-          f"{len(spread)} configurations. Name the config in the caption.")
+    # The verification sentence: SPARROW pricing OUR selection, not competing with it.
+    prov = json.loads((src.parent / "provenance.json").read_text())
+    v = prov.get("verification")
+    if v:
+        print(f"\n  Verification (a sentence, not a row): we independently priced "
+              f"hub-batching's own\n  selection with SPARROW and the two agree to "
+              f"{v['headline_gap_pct']}% on {v['headline_config']}.\n"
+              f"  {v['direction']}.\n  Caveat: {v['caveat']}.")
 
     with (out / "table1_external.csv").open("w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=list(table[0]))

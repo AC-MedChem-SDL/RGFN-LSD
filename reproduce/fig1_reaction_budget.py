@@ -162,6 +162,13 @@ def summarise(rows, budgets, gates, include_uncal: bool):
     return table, lines
 
 
+MODEL_ORDER = ["rgfn", "scent", "rxnflow", "fraggfn"]
+MODEL_LABEL = {"rgfn": "RGFN", "scent": "SCENT", "rxnflow": "RxnFlow", "fraggfn": "FragGFN"}
+TARGET_ORDER = ["seh", "drd2", "clpp", "6td3"]
+TARGET_LABEL = {"seh": "sEH", "drd2": "DRD2", "clpp": "ClpP", "6td3": "6TD3"}
+HUB_C, BC_C = "#1f6f8b", "#9aa5a7"
+
+
 def draw(rows, out_path: Path, gates, budget: int) -> str:
     try:
         import matplotlib
@@ -172,43 +179,76 @@ def draw(rows, out_path: Path, gates, budget: int) -> str:
 
     cal = {t for t, g in gates.items() if g["calibrated"].lower() == "true"}
     at_R = [r for r in rows if r["budget_rxns"] == budget and r["comparable"]]
-    cells = sorted({r["cell"] for r in at_R},
-                   key=lambda c: (target_of(c) not in cal, target_of(c) or "", c))
-    if not cells:
+    if not at_R:
         return "no comparable cells to draw"
 
-    fig, ax = plt.subplots(figsize=(9, 4.2))
-    for i, cell in enumerate(cells):
-        pts = [r for r in at_R if r["cell"] == cell]
-        uncal = target_of(cell) not in cal
-        for r in pts:  # seed scatter, jittered so overlapping seeds stay visible
-            off = (r["seed"] - 43) * 0.13
-            ax.scatter(i + off - 0.16, r["bc_modes"], s=26, marker="s",
-                       color="#b0b0b0" if not uncal else "#dcdcdc",
-                       edgecolor="none", zorder=3)
-            ax.scatter(i + off + 0.16, r["hub_modes"], s=30, marker="o",
-                       color="#1f6f8b" if not uncal else "#a8c6d2",
-                       edgecolor="none", zorder=3)
-        ax.axvline(i + 0.5, color="#eeeeee", lw=0.8, zorder=1)
-    n_cal = sum(1 for c in cells if target_of(c) in cal)
-    if 0 < n_cal < len(cells):
-        ax.axvline(n_cal - 0.5, color="#cc6666", lw=1.2, ls="--", zorder=2)
-        ax.text(n_cal - 0.4, ax.get_ylim()[1], " un-calibrated gate ",
-                color="#cc6666", fontsize=7, va="top")
-    ax.set_xticks(range(len(cells)))
-    ax.set_xticklabels(cells, rotation=45, ha="right", fontsize=7)
-    ax.set_ylabel(f"distinct high-reward molecules\nat {budget} reactions")
-    ax.set_title(f"Modes delivered at a fixed {budget}-reaction budget "
-                 f"(~one plate), per cell, all seeds", fontsize=10)
-    ax.scatter([], [], s=30, marker="o", color="#1f6f8b", label="hub-batching")
-    ax.scatter([], [], s=26, marker="s", color="#b0b0b0", label="best-candidate")
-    ax.legend(frameon=False, fontsize=8, loc="upper right")
-    ax.spines[["top", "right"]].set_visible(False)
-    fig.tight_layout()
+    # One slot per (model, target); models separated by a gap so the four sections read
+    # as sections. Within a slot the two arms sit adjacent, which is the comparison the
+    # eye should make first.
+    GAP = 1.0
+    slots, xs = [], {}
+    for mi, model in enumerate(MODEL_ORDER):
+        for ti, target in enumerate(TARGET_ORDER):
+            pts = [r for r in at_R if r["generator"] == model and r["target"] == target]
+            if not pts:
+                continue
+            x = mi * (len(TARGET_ORDER) + GAP) + ti
+            xs[(model, target)] = x
+            slots.append((model, target, x, pts))
+    if not slots:
+        return "no cells matched the model/target order"
+
+    fig, ax = plt.subplots(figsize=(11.5, 4.6))
+    w = 0.40
+    for model, target, x, pts in slots:
+        uncal = target not in cal
+        for sign, key, color in ((-1, "bc_modes", BC_C), (+1, "hub_modes", HUB_C)):
+            vals = [r[key] for r in pts]
+            mean = sum(vals) / len(vals)
+            ax.bar(x + sign * w / 2, mean, w * 0.94, color=color, zorder=2,
+                   hatch="//" if uncal else None,
+                   edgecolor="white" if uncal else "none", linewidth=0.0)
+            # Individual seeds on top of the mean: the bar is the summary, the dots are
+            # the evidence, and a reader can see the seed spread without a second panel.
+            for j, v in enumerate(vals):
+                ax.scatter(x + sign * w / 2 + (j - (len(vals) - 1) / 2) * 0.09, v,
+                           s=7, color="#20343a", zorder=4, linewidths=0)
+        ax.text(x, -3.0, TARGET_LABEL[target], ha="center", va="top", fontsize=8.5)
+
+    # Model section labels and separators
+    top = max(r["hub_modes"] for r in at_R) * 1.16
+    for mi, model in enumerate(MODEL_ORDER):
+        present = [x for (m, t), x in xs.items() if m == model]
+        if not present:
+            continue
+        ax.text(sum(present) / len(present), -13.5, MODEL_LABEL[model], ha="center",
+                va="top", fontsize=11, fontweight="semibold")
+        if mi:
+            ax.axvline(min(present) - (GAP + 1) / 2, color="#d8e2e2", lw=1, zorder=1)
+
+    ax.set_ylim(0, top)
+    ax.set_xlim(-1.1, max(xs.values()) + 1.1)
+    ax.set_xticks([])
+    ax.set_ylabel(f"distinct high-reward molecules\nat {budget} reactions  (\u2191)")
+    ax.set_title(f"Distinct molecules delivered on a fixed {budget}-reaction budget  (\u2191)",
+                 fontsize=11.5, pad=30)
+    ax.bar(0, 0, color=HUB_C, label="hub-batching")
+    ax.bar(0, 0, color=BC_C, label="best-candidate")
+    if any(t not in cal for _, t, _, _ in slots):
+        ax.bar(0, 0, facecolor="#c9d4d6", hatch="//", edgecolor="white",
+               label="un-calibrated gate")
+    # Above the axes, not inside: several bars reach the top of the panel and any
+    # in-plot corner collides with one of them.
+    ax.legend(frameon=False, fontsize=9, ncol=3, handlelength=1.4, columnspacing=1.6,
+              loc="lower center", bbox_to_anchor=(0.5, 1.02))
+    ax.spines[["top", "right", "bottom"]].set_visible(False)
+    ax.tick_params(axis="y", length=3)
+    ax.margins(x=0.01)
+
+    fig.subplots_adjust(bottom=0.17)
     for ext in ("png", "pdf"):
-        # Strip figure metadata: matplotlib stamps a creator and a timestamp, which
-        # is both a weak fingerprint and the reason figures are not byte-reproducible.
         fig.savefig(out_path.parent / f"{out_path.stem}.{ext}", dpi=200,
+                    bbox_inches="tight",
                     metadata={"Creator": None, "Producer": None, "CreationDate": None})
     plt.close(fig)
     return f"wrote {out_path.stem}.png and .pdf"
