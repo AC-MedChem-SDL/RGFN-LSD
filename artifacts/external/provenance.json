@@ -2,7 +2,7 @@
   "harvested_from_subdir": "experiments/lsd_hubs/campaign/results",
   "n_rows": 6,
   "notes": [
-    "The diversity-aware greedy arm is an INTERVAL [25, 49] at R=100: its frontier is sampled every 25 modes (25 modes -> 70 rxns, 50 -> 128), so no grid point lands at 100 reactions. Re-running the greedy trim at finer mode granularity would make this exact and costs seconds, since greedy mode selection is prefix-stable."
+    "The diversity-aware greedy arm is EXACT at R=100: 38 modes for 98 reactions, with the next mode taking it to 101. Read off a 1-mode grid, every point Optimal."
   ],
   "sources": [
     {
@@ -11,7 +11,7 @@
     },
     {
       "file": "s3gfn_seh_greedy_N500/greedy_frontier.csv",
-      "md5": "e6d0a7d7bdf814baa6d6ef2dd7c454b2"
+      "md5": "a9562d157cdf85791808b03cd1d4800b"
     },
     {
       "file": "scent_seh_freefrag/summary.json",

@@ -77,7 +77,11 @@ def main() -> int:
     # means this arm can be BOUNDED at R=100, not pointed. Reporting the upper bound
     # as if measured would overstate the competitor; reporting the lower bound as if
     # measured would flatter us. So carry the interval.
-    gre = res / "s3gfn_seh_greedy_N500" / "greedy_frontier.csv"
+    # Prefer the 1-mode-granularity re-run when it exists: the original frontier was
+    # sampled every 25 modes, which can only BOUND the readout at 100 reactions.
+    gre = res / "s3gfn_seh_greedy_N500_fine" / "greedy_frontier.csv"
+    if not gre.is_file():
+        gre = res / "s3gfn_seh_greedy_N500" / "greedy_frontier.csv"
     if gre.is_file():
         with gre.open() as fh:
             grid = [(int(r["n_modes"]), int(r["used_rxns"])) for r in csv.DictReader(fh)]
@@ -88,15 +92,23 @@ def main() -> int:
         rows.append({
             "arm": "S3-GFN + MultiAiZ + diversity-aware greedy", "side": "competitor",
             "config": "their strongest pipeline; frontier sampled every 25 modes",
-            "modes_at_100rxn": f"{lo}-{hi}", "modes_lower": lo, "modes_upper": hi,
-            "used_rxns": "<=100", "n_selected": "", "solver": "greedy",
-            "exact": False, "gate": 7.0,
+            "modes_at_100rxn": str(lo) if lo == hi else f"{lo}-{hi}",
+            "modes_lower": lo, "modes_upper": hi,
+            "used_rxns": max((u for m, u in grid if u <= 100), default=0),
+            "n_selected": lo, "solver": "greedy",
+            "exact": lo == hi, "gate": 7.0,
         })
-        notes.append(f"The diversity-aware greedy arm is an INTERVAL [{lo}, {hi}] at R=100: its "
-                     f"frontier is sampled every 25 modes ({grid[0][0]} modes -> {grid[0][1]} rxns, "
-                     f"{grid[1][0]} -> {grid[1][1]}), so no grid point lands at 100 reactions. "
-                     f"Re-running the greedy trim at finer mode granularity would make this exact "
-                     f"and costs seconds, since greedy mode selection is prefix-stable.")
+        step = (grid[1][0] - grid[0][0]) if len(grid) > 1 else 0
+        if lo == hi:
+            notes.append(f"The diversity-aware greedy arm is EXACT at R=100: {lo} modes for "
+                         f"{max(u for m, u in grid if u <= 100)} reactions, with the next mode "
+                         f"taking it to {min(u for m, u in grid if u > 100)}. Read off a "
+                         f"{step}-mode grid, every point Optimal.")
+        else:
+            notes.append(f"The diversity-aware greedy arm is an INTERVAL [{lo}, {hi}] at R=100: "
+                         f"its frontier is sampled every {step} modes, so no grid point lands at "
+                         f"100 reactions. Re-run it at 1-mode granularity to make this exact -- "
+                         f"greedy mode selection is prefix-stable, so it costs seconds.")
         sources.append({"file": "s3gfn_seh_greedy_N500/greedy_frontier.csv", "md5": md5(gre)})
 
     # ---- our arms, every config, so the spread is visible ----

@@ -69,11 +69,15 @@ def main() -> int:
 
     exact = [r for r in rows if r["side"] == "competitor" and r["exact"] == "True"]
     inexact = [r for r in rows if r["side"] == "competitor" and r["exact"] != "True"]
-    if exact:
-        r = exact[0]
-        print(f"\n  Against the arm with an exact R=100 solve "
-              f"({r['solver']}, spent {r['used_rxns']} reactions): "
-              f"{ours}/{r['modes_lower']} = {ours/int(r['modes_lower']):.2f}x")
+    print()
+    for r in exact:
+        print(f"  vs {r['arm']}: {ours}/{r['modes_lower']} = "
+              f"{ours/int(r['modes_lower']):.2f}x   "
+              f"({r['solver']}, spent {r['used_rxns']} reactions)")
+    if len(exact) > 1:
+        worst = max(exact, key=lambda r: int(r["modes_lower"]))
+        print(f"\n  Lead with the conservative one: "
+              f"{ours/int(worst['modes_lower']):.2f}x against their strongest arm.")
     for r in inexact:
         print(f"  {r['arm']} is an interval [{r['modes_lower']}, {r['modes_upper']}] — "
               f"frontier granularity, not uncertainty. Lead with the conservative end.")
