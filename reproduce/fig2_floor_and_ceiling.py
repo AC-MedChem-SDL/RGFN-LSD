@@ -186,7 +186,9 @@ def draw(floor, ceil, out_path: Path) -> str:
     axr.set_xlim(0, 1.10)
     axr.set_ylim(len(cells) - 0.4, -1.2)
     axr.set_xlabel("share of improvement recovered")
-    axr.set_title("Reaction savings recovered, compared to optimal  (\u2192)",
+    # "Ceiling:" pairs with the left panel's "Floor:" -- the two titles are what tell a
+    # reader the panels answer the same question from opposite ends.
+    axr.set_title("Ceiling: reaction savings recovered, compared to optimal  (\u2192)",
                   fontsize=10.5)
     axr.spines[["top", "right"]].set_visible(False)
 

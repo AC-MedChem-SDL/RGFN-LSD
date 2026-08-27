@@ -92,8 +92,8 @@ def collect(root: Path):
             "rxn_per_mode": [num(r["used_rxns"]) / num(r["n_modes_kept"]) for r in rows],
             "n": len(rows),
         })
-    # Ours last: the competitors set the expectation and our bar reads as the answer.
-    arms.append(ours_entry)
+    # Ours first: the reference the competitor bars are read against.
+    arms.insert(0, ours_entry)
     return arms, dropped
 
 
