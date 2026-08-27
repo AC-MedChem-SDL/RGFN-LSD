@@ -33,6 +33,10 @@ import sys
 from pathlib import Path
 
 GREY, BLUE = "#9aa5a7", "#1f6f8b"
+# The gate and tau these runs were actually measured at. NOT the 5.0 headline bar that
+# Figure 1's surrogate cells use -- this comparison is at the paper-comparable 7.0, and
+# labelling it 5.0 would misstate what the bars mean.
+GATE, TAU = 7.0, 0.5
 
 
 def num(v, default=float("nan")):
@@ -81,7 +85,7 @@ def collect(root: Path):
     for lam in sorted({num(r["lambda_div"]) for r in keep}):
         rows = [r for r in keep if abs(num(r["lambda_div"]) - lam) < 1e-9]
         arms.append({
-            "label": f"SPARROW selects\nλ={lam:g}",
+            "label": f"SPARROW\nλ={lam:g}",
             "selected": [num(r["n_selected"]) for r in rows],
             "distinct": [num(r["n_modes_kept"]) for r in rows],
             "rxn_per_cand": [num(r["used_rxns"]) / num(r["n_selected"]) for r in rows],
@@ -116,27 +120,35 @@ def draw(arms, out_path: Path) -> str:
     for i, a in enumerate(arms):
         d, s = statistics.mean(a["distinct"]), statistics.mean(a["selected"])
         axl.bar(i, d, 0.56, color=BLUE, zorder=3,
-                label="distinct molecules" if i == 0 else None)
+                label=f"modes (reward > {GATE:g}, T < {TAU:g})" if i == 0 else None)
         axl.bar(i, max(s - d, 0), 0.56, bottom=d, color=GREY, zorder=3,
-                label="compounds that collapse to a duplicate" if i == 0 else None)
+                label=f"candidates (reward > {GATE:g})" if i == 0 else None)
         whisk(axl, i, a["distinct"])
-        axl.text(i, s + 2.5, f"{d:.0f} of {s:.0f}", ha="center", fontsize=8.5,
-                 color="#20343a")
+    # The budget caps the count. Every candidate in this pool is a synthesised product,
+    # so an additional compound costs at least one reaction -- measured at ~1.01-1.23
+    # reactions per compound across these arms -- and 100 reactions therefore cannot
+    # buy more than 100 molecules. The cap is the budget, not the chemistry.
+    axl.axhline(100, color="#2c3f42", lw=1.1, ls=(0, (5, 3)), zorder=4)
+    # Below the line, not above: the axis stops at 100, so anything above is clipped.
+    # Sits over the gap between our bar and the cap, which is otherwise empty.
+    axl.annotate("theoretical maximum", xy=(0, 100), fontsize=7.5, color="#2c3f42",
+                 ha="center", va="top", xytext=(0, -4), textcoords="offset points")
     axl.set_xticks(list(xs))
     axl.set_xticklabels([a["label"] for a in arms], fontsize=8.5)
-    axl.set_ylabel("compounds bought on a 100-reaction budget")
-    axl.set_title("What 100 reactions actually buys  (↑ distinct)", fontsize=10.5)
+    axl.set_ylabel("number of molecules")
+    axl.set_title("Modes depending on selection algorithm", fontsize=10.5)
     axl.legend(frameon=False, fontsize=8, loc="upper center",
                bbox_to_anchor=(0.5, -0.13), ncol=1)
     axl.spines[["top", "right"]].set_visible(False)
-    axl.set_ylim(0, max(statistics.mean(a["selected"]) for a in arms) * 1.22)
+    axl.set_ylim(0, 100)
 
     # ---- right: the two efficiency numbers side by side.
     w = 0.36
     for i, a in enumerate(arms):
         for j, (key, color, lab) in enumerate(
-                ((("rxn_per_cand"), GREY, "reactions per compound"),
-                 (("rxn_per_mode"), BLUE, "reactions per distinct molecule"))):
+                ((("rxn_per_cand"), GREY, f"reactions per candidate (reward > {GATE:g})"),
+                 (("rxn_per_mode"), BLUE,
+                  f"reactions per mode (reward > {GATE:g}, T < {TAU:g})"))):
             m = statistics.mean(a[key])
             axr.bar(i + (j - 0.5) * w, m, w * 0.92, color=color, zorder=3,
                     label=lab if i == 0 else None)
@@ -150,8 +162,9 @@ def draw(arms, out_path: Path) -> str:
     axr.set_ylim(0.8, 80)
     axr.set_yticks([1, 2, 5, 10, 20, 50])
     axr.set_yticklabels(["1", "2", "5", "10", "20", "50"])
-    axr.set_ylabel("reactions, log scale  (↓)")
-    axr.set_title("Cheap compounds vs cheap distinct molecules  (↓)", fontsize=10.5)
+    axr.set_ylabel("reactions per molecule")
+    axr.set_title("Reactions per molecule with different synthesis protocols  (\u2193)",
+                  fontsize=10.5)
     axr.legend(frameon=False, fontsize=8, loc="upper center",
                bbox_to_anchor=(0.5, -0.13), ncol=1)
     axr.spines[["top", "right"]].set_visible(False)

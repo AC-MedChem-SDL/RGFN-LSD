@@ -64,40 +64,54 @@ def draw(cells, out_path: Path) -> str:
     except ImportError:
         return "matplotlib not installed - table written, figure skipped"
 
-    names = sorted(cells)
+    # Merge seeds: two seeds per target is not two conditions, and drawing them as
+    # separate bars implies a distinction that is not there. Bars are the mean, the
+    # whisker is the full range across seeds.
+    TARGET = {"drd2": "DRD2", "seh": "sEH"}
+    merged: dict[str, dict[str, list]] = {}
+    for cell, arms in cells.items():
+        tgt = TARGET.get(cell.split("_")[0], cell.split("_")[0])
+        for arm, r in arms.items():
+            merged.setdefault(tgt, {}).setdefault(arm, []).append(r)
+    names = sorted(merged, key=lambda n: n != "sEH")
     COL = {"hub_batching": "#1f6f8b", "best_candidate": "#9aa5a7"}
-    fig, (axl, axr) = plt.subplots(1, 2, figsize=(10.5, 4.1),
+
+    def stat(tgt, arm, key):
+        vals = [f(r, key) for r in merged[tgt].get(arm, [])]
+        return (sum(vals) / len(vals), min(vals), max(vals)) if vals else (0, 0, 0)
+
+    def bar(ax, i, j, tgt, arm, key, label=None):
+        m, lo, hi = stat(tgt, arm, key)
+        x = i + (j - 0.5) * w
+        ax.bar(x, m, w * 0.92, color=COL[arm], zorder=2, label=label)
+        if hi > lo:
+            ax.plot([x, x], [lo, hi], color="#20343a", lw=1.1, zorder=5)
+            for y in (lo, hi):
+                ax.plot([x - 0.05, x + 0.05], [y, y], color="#20343a", lw=1.1, zorder=5)
+    fig, (axl, axr) = plt.subplots(1, 2, figsize=(9.5, 4.1),
                                    gridspec_kw={"width_ratios": [1, 1]})
     w = 0.36
 
     # ---- left: mean route yield. Product of step yields per molecule, averaged. ----
-    for i, cell in enumerate(names):
+    for i, tgt in enumerate(names):
         for j, arm in enumerate(ARMS):
-            r = cells[cell].get(arm)
-            if r is None:
-                continue
-            axl.bar(i + (j - 0.5) * w, f(r, "mean_route_yield"), w * 0.92,
-                    color=COL[arm], zorder=2, label=LABEL[arm] if i == 0 else None)
+            bar(axl, i, j, tgt, arm, "mean_route_yield", LABEL[arm] if i == 0 else None)
     axl.set_xticks(range(len(names)))
-    axl.set_xticklabels(names, fontsize=8.5)
-    axl.set_ylabel("mean route yield  (\u2191)")
+    axl.set_xticklabels(names, fontsize=9.5)
+    axl.set_ylabel("mean route yield")
     axl.set_title("Fraction of material surviving a full route  (\u2191)", fontsize=10.5)
-    axl.legend(frameon=False, fontsize=8.5, loc="upper left")
+    axl.legend(frameon=False, fontsize=8.5, loc="upper right")
     axl.spines[["top", "right"]].set_visible(False)
     axl.set_ylim(0, max(f(r, "mean_route_yield")
-                        for c in cells.values() for r in c.values()) * 1.32)
+                        for c in cells.values() for r in c.values()) * 1.30)
 
     # ---- right: the explanation -- route length ----
-    for i, cell in enumerate(names):
+    for i, tgt in enumerate(names):
         for j, arm in enumerate(ARMS):
-            r = cells[cell].get(arm)
-            if r is None:
-                continue
-            axr.bar(i + (j - 0.5) * w, f(r, "mean_route_len"), w * 0.92,
-                    color=COL[arm], zorder=2)
+            bar(axr, i, j, tgt, arm, "mean_route_len")
     axr.set_xticks(range(len(names)))
-    axr.set_xticklabels(names, fontsize=8.5)
-    axr.set_ylabel("mean steps per molecule  (\u2193)")
+    axr.set_xticklabels(names, fontsize=9.5)
+    axr.set_ylabel("mean steps per molecule")
     axr.set_title("...which is mostly route length  (\u2193)", fontsize=10.5)
     axr.spines[["top", "right"]].set_visible(False)
 

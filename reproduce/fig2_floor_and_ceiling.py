@@ -67,6 +67,10 @@ def floor_table(rows, prebuild_k: int):
             "arm": r["arm"], "label": r["label"],
             "informed": r["flow_or_reward_informed"] == "True",
             "reactions": rxn, "compute_s": comp, "modes": modes,
+            # The primary readout: modes delivered on a fixed 100-reaction budget.
+            # On this axis reverse-flow is simply worse rather than a failure, because
+            # the budget binds long before the pool runs out.
+            "modes_at_budget": num(r.get("modes_at_100rxn")),
             # An arm that never reached the mode budget did not "cost more" -- it
             # failed. Those two outcomes must not be plotted as the same thing.
             "finished": modes is not None and modes >= 300,
@@ -76,10 +80,11 @@ def floor_table(rows, prebuild_k: int):
 
 
 def pareto(points):
-    """Arms not dominated on both axes (fewer reactions AND less compute)."""
+    """Arms not dominated: nothing delivers MORE modes for LESS compute."""
     front = []
     for p in points:
-        if not any(q["reactions"] < p["reactions"] and q["compute_s"] < p["compute_s"]
+        if not any(q["modes_at_budget"] > p["modes_at_budget"]
+                   and q["compute_s"] < p["compute_s"]
                    for q in points if q is not p):
             front.append(p)
     return front
@@ -124,36 +129,32 @@ def draw(floor, ceil, out_path: Path) -> str:
         return "matplotlib not installed - CSVs written, figure skipped"
 
     fig, (axl, axr) = plt.subplots(1, 2, figsize=(11, 4.4))
-    front = {id(p) for p in pareto([p for p in floor if p["finished"]])}
+    front = {id(p) for p in pareto(floor)}
+    BLUE = "#1f6f8b"
 
-    # ---- left: the floor, on the two cost axes ----
-    # No colour encoding. The earlier version coloured by "reads a signal", which was
-    # not true of the data: reverse-flow reads the flow and deliberately inverts it.
-    # What actually distinguishes the points is whether they finished the library and
-    # whether anything dominates them, and both are shown by shape and position.
+    # ---- left: the floor, on the primary readout ----
+    # One colour for every arm. An earlier version coloured by "reads a signal", which
+    # was not true of the data -- reverse-flow reads the flow and inverts it. Frontier
+    # membership is carried by marker size and edge instead, which is a property of the
+    # point rather than a claim about the arm.
     for idx, p in enumerate(floor):
-        done = p["finished"]
-        axl.scatter(p["reactions"], p["compute_s"],
-                    s=115 if id(p) in front else 62,
-                    marker="o" if done else "X",
-                    facecolor="#2c3f42" if done else "none",
-                    edgecolor="#2c3f42",
-                    linewidth=1.6 if id(p) in front else 1.1,
-                    alpha=1.0 if done else 0.85, zorder=3)
-        note = p["label"] if done else f"{p['label']}\n(never finished — {int(p['modes'])}/300 modes)"
-        axl.annotate(note, (p["reactions"], p["compute_s"]), fontsize=7.6,
-                     xytext=(9, 4 if idx % 2 == 0 else -14),
+        on_front = id(p) in front
+        axl.scatter(p["modes_at_budget"], p["compute_s"],
+                    s=125 if on_front else 66, marker="o",
+                    facecolor=BLUE, edgecolor="#123f50" if on_front else "none",
+                    linewidth=1.7, zorder=3)
+        axl.annotate(p["label"], (p["modes_at_budget"], p["compute_s"]), fontsize=7.8,
+                     xytext=(9, 5 if idx % 2 == 0 else -13),
                      textcoords="offset points", color="#2c3f42")
-    axl.set_xlabel("bench cost:  reactions to 300 modes  (\u2190)")
-    axl.set_ylabel("selection cost:  enumeration wall-clock, s  (\u2193)")
-    axl.set_title("Floor: does the walk order matter?  (\u2199)", fontsize=10.5)
-    axl.scatter([], [], s=115, facecolor="#2c3f42", edgecolor="#2c3f42",
+    axl.set_xlabel("number of modes")
+    axl.set_ylabel("compute cost: wall-clock, s")
+    axl.set_title("Floor: does the walk order matter?  (\u2198)", fontsize=10.5)
+    axl.scatter([], [], s=125, facecolor=BLUE, edgecolor="#123f50", linewidth=1.7,
                 label="on the frontier")
-    axl.scatter([], [], s=62, facecolor="none", edgecolor="#2c3f42", marker="X",
-                label="never finished the library")
-    axl.legend(frameon=False, fontsize=7.8, loc="upper left")
+    axl.scatter([], [], s=66, facecolor=BLUE, edgecolor="none", label="dominated")
+    axl.legend(frameon=False, fontsize=8, loc="lower left")
     axl.spines[["top", "right"]].set_visible(False)
-    axl.margins(0.16)
+    axl.margins(0.17)
 
     # ---- right: the ceiling, share of achievable gain per cell ----
     cells = [c["cell"] for c in ceil]
@@ -161,8 +162,9 @@ def draw(floor, ceil, out_path: Path) -> str:
     ypos = range(len(cells))
     axr.barh(list(ypos), shares, color="#1f6f8b", height=0.62, zorder=3)
     med = statistics.median(shares)
-    axr.axvline(med, color="#c0603a", lw=1.4, ls="--", zorder=4,
-                label=f"median {med:.3f}")
+    axr.axvline(med, color="#c0603a", lw=1.4, ls="--", zorder=4)
+    axr.annotate(f"median {med:.3f}", xy=(med, len(cells) - 0.15), fontsize=7.5,
+                 color="#c0603a", ha="center", va="top", annotation_clip=False)
     axr.axvline(1.0, color="#666666", lw=1.0, zorder=4)
     axr.annotate("re-deciding at every step", xy=(1.02, -0.8), fontsize=7.5,
                  color="#666666", ha="left", va="bottom", annotation_clip=False)
@@ -170,11 +172,9 @@ def draw(floor, ceil, out_path: Path) -> str:
     axr.set_yticklabels(cells, fontsize=7)
     axr.set_xlim(0, 1.24)
     axr.set_ylim(len(cells) - 0.4, -1.2)
-    axr.set_xlabel("share of the best-possible improvement that\n"
-                   "deciding once already captures  (\u2191)")
-    axr.set_title("Ceiling: how close is deciding once to\n"
-                  "re-deciding at every step?  (\u2191)", fontsize=10.5)
-    axr.legend(frameon=False, fontsize=8, loc="upper right")
+    axr.set_xlabel("share of improvement recovered")
+    axr.set_title("Reaction savings recovered, compared to optimal  (\u2192)",
+                  fontsize=10.5)
     axr.spines[["top", "right"]].set_visible(False)
 
     fig.tight_layout()
@@ -218,14 +218,17 @@ def main() -> int:
             w.writeheader()
             w.writerows(table)
 
-    front = pareto([p for p in floor if p["finished"]])
+    # On the fixed-budget axis every arm has a readout, so nothing is pre-filtered:
+    # an arm that could not reach 300 modes still delivers a number at 100 reactions.
+    front = pareto(floor)
     print(f"FLOOR — ordering ablation at prebuild_k={args.prebuild_k}\n")
-    print(f"  {'arm':<34}{'reactions':>10}{'compute_s':>11}{'modes':>7}  on frontier")
-    for p in floor:
+    print(f"  {'arm':<34}{'modes@100rxn':>13}{'compute_s':>11}"
+          f"{'rxn->300modes':>15}  on frontier")
+    for p in sorted(floor, key=lambda d: -d["modes_at_budget"]):
         mark = "  <-- frontier" if p in front else ""
-        finished = "" if p["finished"] else f"  FAILED ({int(p['modes'])}/300)"
-        print(f"  {p['label']:<34}{p['reactions']:>10.0f}{p['compute_s']:>11.0f}"
-              f"{p['modes']:>7.0f}{mark}{finished}")
+        r = "never" if not p["finished"] else f"{p['reactions']:.0f}"
+        print(f"  {p['label']:<34}{p['modes_at_budget']:>13.0f}{p['compute_s']:>11.0f}"
+              f"{r:>15}{mark}")
     # State what is actually true of the points rather than re-asserting the old
     # colour encoding: reverse-flow DOES read the flow, it just inverts it.
     dominated = [p["label"] for p in floor if p not in front]

@@ -78,6 +78,9 @@ def main() -> int:
                 "arm": arm, "label": label, "flow_or_reward_informed": signal,
                 "prebuild_k": k,
                 "reactions": hb.get("total_reactions"),
+                # The primary readout, already recorded by every arm's own campaign --
+                # no re-run needed to move the figure onto the fixed-budget axis.
+                "modes_at_100rxn": hb.get("case1_modes_at_100rxn"),
                 "modes": hb.get("total_modes"),
                 "reactions_per_mode": hb.get("reactions_per_mode"),
                 "hubs_used": hb.get("distinct_hubs_used"),

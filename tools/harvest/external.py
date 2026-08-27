@@ -154,7 +154,9 @@ def main() -> int:
         if modes is None:
             continue
         rows.append({
-            "arm": "hub-batching" + ("" if headline else f" \u2014 {tag}"),
+            # Name the generator: the competitor rows say which model produced their
+            # pool, and ours should too rather than looking model-agnostic.
+            "arm": "SCENT \u2192 hub-batching" + ("" if headline else f" \u2014 {tag}"),
             "side": "ours", "config": config,
             "modes_at_100rxn": modes, "modes_lower": modes, "modes_upper": modes,
             "used_rxns": 100, "n_selected": "", "solver": "greedy walk",

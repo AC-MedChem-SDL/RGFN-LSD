@@ -206,13 +206,19 @@ def draw(rows, out_path: Path, gates, budget: int) -> str:
             vals = [r[key] for r in pts]
             mean = sum(vals) / len(vals)
             ax.bar(x + sign * w / 2, mean, w * 0.94, color=color, zorder=2,
-                   hatch="//" if uncal else None,
-                   edgecolor="white" if uncal else "none", linewidth=0.0)
-            # Individual seeds on top of the mean: the bar is the summary, the dots are
-            # the evidence, and a reader can see the seed spread without a second panel.
-            for j, v in enumerate(vals):
-                ax.scatter(x + sign * w / 2 + (j - (len(vals) - 1) / 2) * 0.09, v,
-                           s=7, color="#20343a", zorder=4, linewidths=0)
+                   hatch="///" if uncal else None,
+                   edgecolor="black" if uncal else "none",
+                   linewidth=0.7 if uncal else 0.0)
+            # Full range, not a standard deviation: at 2-3 seeds a range is the only
+            # honest summary, and it makes the stability visible without claiming a
+            # distribution we cannot estimate.
+            if len(vals) > 1:
+                lo, hi = min(vals), max(vals)
+                ax.plot([x + sign * w / 2] * 2, [lo, hi], color="#20343a", lw=1.1,
+                        zorder=5, solid_capstyle="butt")
+                for y in (lo, hi):
+                    ax.plot([x + sign * w / 2 - 0.07, x + sign * w / 2 + 0.07], [y, y],
+                            color="#20343a", lw=1.1, zorder=5)
         ax.text(x, -3.0, TARGET_LABEL[target], ha="center", va="top", fontsize=8.5)
 
     # Model section labels and separators
@@ -229,14 +235,18 @@ def draw(rows, out_path: Path, gates, budget: int) -> str:
     ax.set_ylim(0, top)
     ax.set_xlim(-1.1, max(xs.values()) + 1.1)
     ax.set_xticks([])
-    ax.set_ylabel(f"distinct high-reward molecules\nat {budget} reactions  (\u2191)")
-    ax.set_title(f"Distinct molecules delivered on a fixed {budget}-reaction budget  (\u2191)",
-                 fontsize=11.5, pad=30)
+    # No arrow on the axis: direction lives in the title only, and the budget is
+    # stated in the caption rather than duplicated here.
+    ax.set_ylabel("distinct high-reward molecules")
+    ax.set_title("hub-batching produces significantly more modes "
+                 "on a fixed reaction budget", fontsize=11.5, pad=30)
     ax.bar(0, 0, color=HUB_C, label="hub-batching")
     ax.bar(0, 0, color=BC_C, label="best-candidate")
     if any(t not in cal for _, t, _, _ in slots):
-        ax.bar(0, 0, facecolor="#c9d4d6", hatch="//", edgecolor="white",
-               label="un-calibrated gate")
+        # White fill with a black edge and black hatch: on a light background a white
+        # stripe over light grey is invisible, so the swatch failed to explain itself.
+        ax.bar(0, 0, facecolor="white", hatch="///", edgecolor="black", linewidth=0.9,
+               label="uncalibrated reward generator")
     # Above the axes, not inside: several bars reach the top of the panel and any
     # in-plot corner collides with one of them.
     ax.legend(frameon=False, fontsize=9, ncol=3, handlelength=1.4, columnspacing=1.6,

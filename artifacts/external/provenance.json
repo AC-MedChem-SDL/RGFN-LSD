@@ -28,12 +28,5 @@
     "direction": "count-once charges what we actually spent; SPARROW charges only what hindsight needed, so our published cost is conservative",
     "source": "Logs/049 + its re-audit recorded in RESEARCH_CONTEXT",
     "caveat": "DRD2 at K=20 reads 12.69%, traced entirely to pre-select-K's 26 up-front reactions (~17 unused by a 100-mode selection); at K=0 it is exactly 0.00% (110/110)"
-  },
-  "needs_refresh": {
-    "what": "the S3-GFN checkpoints behind both competitor rows were trained at a much larger iteration budget than the generators they are compared against",
-    "why_still_used": "it is the only s3gfn_seh pool with retrosynthesis completed; the budget-matched checkpoints exist but are not routed",
-    "bias_direction": "a longer-trained competitor is a competitor at its best, so the current ratios are CONSERVATIVE",
-    "to_refresh": "route the budget-matched checkpoints, then re-run sparrow_select_frontier.py for --selection sparrow and greedy; the harvest and readout need no change",
-    "see": "docs/DEFERRED.md"
   }
 }

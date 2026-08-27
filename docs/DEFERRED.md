@@ -68,3 +68,29 @@ rather than discovered by a reviewer.
 re-running `sparrow_select_frontier.py` for both the `--selection sparrow` and
 `--selection greedy` arms. The harvest and both readouts pick the new numbers up with no
 code change.
+
+## Open: sEH is gated at two different thresholds across exhibits
+
+| exhibit | sEH gate | why |
+|---|---|---|
+| Figure 1 | **5.0** | the calibrated headline bar (decided 2026-08-18): Logs/034 measured only weak enrichment above ~6 and Logs/051 found diversity collapsing past ~7 |
+| Figure 3, Table 1 | **7.0** | what the competitor pipeline and the SPARROW runs were actually measured at; also the value the RGFN paper's own sEH numbers are quoted at, so it is the paper-comparable bar |
+
+Each is defensible on its own and neither is wrong. But a reader who notices sEH
+appearing at 5.0 in one figure and 7.0 in another will ask, and the answer needs to be
+in the paper rather than in a repository note.
+
+**Three ways to close it**, in increasing cost:
+
+1. **State it.** One sentence: Figure 1 uses the calibrated bar, the external comparison
+   uses the paper-comparable bar, and the advantage is threshold-robust (Logs/052 and
+   Logs/055: 380 of 380 comparable cells, no crossover on either knob). Cheapest, and
+   already supported by evidence we have.
+2. **Add a 7.0 column to Figure 1.** `threshold_variants` already includes 7.0 for sEH
+   and the gate sweep machinery exists, so this is a re-read rather than a re-run.
+3. **Re-measure the competitor at 5.0.** Correct but expensive: it means re-solving the
+   SPARROW selections against a 5.0-gated pool, and the pool changes size, so it is a
+   new measurement rather than a re-slice.
+
+Recommendation: (1) for the workshop, (2) if a reviewer pushes, (3) only for the journal
+version.
