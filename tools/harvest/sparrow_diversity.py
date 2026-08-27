@@ -91,6 +91,9 @@ def main() -> int:
     # deliberately NOT renamed with the package -- it names a path that exists.
     ap.add_argument("--subdir", default="rgfn_runs/lsdflow_sparrow/bc_sb",
                     help="path to the bc_sb run tree under the root")
+    ap.add_argument("--ours-dirs", type=Path, nargs="*", default=None,
+                    help="campaign run dirs for OUR arm (each holding summary.json). "
+                         "Given these, ours_r100.csv is harvested rather than transcribed.")
     ap.add_argument("--out", type=Path, default=None,
                     help="output dir (default: <repo>/artifacts/sparrow_diversity)")
     args = ap.parse_args()
@@ -185,6 +188,50 @@ def main() -> int:
                 "for which numbers in Logs/062 stand and which are withdrawn.",
     }
     (out / "provenance.json").write_text(json.dumps(prov, indent=2) + "\n")
+
+    # ---- our own arm, harvested from campaign run dirs when they are supplied ----
+    if args.ours_dirs:
+        ours, missing_ours = [], []
+        for d in args.ours_dirs:
+            f = Path(d) / "summary.json"
+            if not f.is_file():
+                missing_ours.append(str(d)); continue
+            meta = json.loads(f.read_text())
+            hb = meta.get("hub_batching") or (meta.get("arms") or {}).get("hub_batching") or {}
+            tag = meta.get("tag", Path(d).name)
+            seed = next((int(t[4:]) for t in tag.replace("-", "_").split("_")
+                         if t.startswith("seed") and t[4:].isdigit()), None)
+            # Same convention as the competitor tags: no seed marker means the original
+            # seed-42 run, the later replicates being the ones that got a suffix.
+            seed_inferred = seed is None
+            if seed_inferred:
+                seed = 42
+            n = hb.get("case1_modes_at_100rxn")
+            if n is None:
+                missing_ours.append(f"{d} (no modes@100rxn readout)"); continue
+            ours.append({
+                "arm": "hub-batching", "seed": seed, "lambda_div": "",
+                "n_selected": n, "n_modes_kept": n,
+                "used_rxns": meta.get("budget_reactions", 100),
+                "cost_kept_rxns": meta.get("budget_reactions", 100),
+                "milp_status": "greedy walk",
+                "gate": meta.get("reward_threshold"),
+                "tau": meta.get("similarity"),
+                "child_policy": meta.get("child_policy"),
+                "prebuild_k": meta.get("prebuild_k"),
+                "seed_inferred": seed_inferred,
+                "source": f"harvested: {Path(d).name}",
+            })
+            sources.append({"run_tag": tag, "file": "summary.json", "md5": md5(f),
+                            "arm": "ours"})
+        if ours:
+            ours.sort(key=lambda r: r["seed"])
+            with (out / "ours_r100.csv").open("w", newline="") as fh:
+                w = csv.DictWriter(fh, fieldnames=list(ours[0]))
+                w.writeheader(); w.writerows(ours)
+            print(f"  ours_r100.csv: {len(ours)} seed(s), harvested from run dirs")
+        if missing_ours:
+            print(f"  ours: skipped {len(missing_ours)} -> {', '.join(missing_ours[:3])}")
 
     print(f"harvested {len(rows)} rows from {len(sources)} runs")
     print(f"  {full.name}: all budgets")

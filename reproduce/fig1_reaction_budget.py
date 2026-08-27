@@ -206,9 +206,8 @@ def draw(rows, out_path: Path, gates, budget: int) -> str:
             vals = [r[key] for r in pts]
             mean = sum(vals) / len(vals)
             ax.bar(x + sign * w / 2, mean, w * 0.94, color=color, zorder=2,
-                   hatch="///" if uncal else None,
-                   edgecolor="black" if uncal else "none",
-                   linewidth=0.7 if uncal else 0.0)
+                   hatch="//" if uncal else None,
+                   edgecolor="white" if uncal else "none", linewidth=0.0)
             # Full range, not a standard deviation: at 2-3 seeds a range is the only
             # honest summary, and it makes the stability visible without claiming a
             # distribution we cannot estimate.
@@ -238,14 +237,19 @@ def draw(rows, out_path: Path, gates, budget: int) -> str:
     # No arrow on the axis: direction lives in the title only, and the budget is
     # stated in the caption rather than duplicated here.
     ax.set_ylabel("distinct high-reward molecules")
-    ax.set_title("hub-batching produces significantly more modes "
-                 "on a fixed reaction budget", fontsize=11.5, pad=30)
+    # Direction arrows go in the title, never on an axis label: the title is always
+    # upright, while a rotated y-label makes the reader re-orient the glyph.
+    ax.set_title("hub-batching produces substantially more modes "
+                 "on a fixed reaction budget  (\u2191)", fontsize=11.5, pad=30)
     ax.bar(0, 0, color=HUB_C, label="hub-batching")
     ax.bar(0, 0, color=BC_C, label="best-candidate")
     if any(t not in cal for _, t, _, _ in slots):
         # White fill with a black edge and black hatch: on a light background a white
         # stripe over light grey is invisible, so the swatch failed to explain itself.
-        ax.bar(0, 0, facecolor="white", hatch="///", edgecolor="black", linewidth=0.9,
+        # Drawn differently from the bars ON PURPOSE: a white stripe reads on a
+        # coloured bar but vanishes on the page ground, so the key uses black-on-white
+        # to explain the same encoding legibly.
+        ax.bar(0, 0, facecolor="white", hatch="//", edgecolor="black", linewidth=0.9,
                label="uncalibrated reward generator")
     # Above the axes, not inside: several bars reach the top of the panel and any
     # in-plot corner collides with one of them.

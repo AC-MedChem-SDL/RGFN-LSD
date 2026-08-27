@@ -57,21 +57,39 @@ That is why `provenance.json` exists, and why a comparison claiming "the same
 candidates" must read from a frozen snapshot rather than a shared scratch tree that
 other jobs are still writing.
 
-## `ours_r100.csv` — our own arm, and how it got here
+## `ours_r100.csv` — our own arm
 
-The competitor rows are harvested from run artifacts. Our three seed values are
-**transcribed from Logs/062 Result 12**, not re-derived, because the seed-43/44
-campaign summaries behind them are not in a location this harvest can read. That entry
-is affirmed standing by the log's own 2026-08-23 update, and the seed-42 value (82)
-independently matches `artifacts/external/head_to_head_r100.csv`, which *is* harvested
-from a run directory — so the one value that can be cross-checked, checks.
+**Harvested from run directories, verified against the log.** Every value here comes
+from a campaign `summary.json`, and every one reproduces Logs/062 Result 12 exactly:
+seed 42 -> 82, seed 43 -> 81, seed 44 -> 82.
 
-**To make this fully self-sourcing**, re-run the seed-43/44 gate-7.0 campaigns and
-harvest their `summary.json` the way `tools/harvest/external.py` does. Until then this
-file is the one place in `artifacts/` whose numbers come from a document rather than
-from a run, and it is labelled as such in its own `source` column.
+Seeds 43 and 44 were re-derived on 2026-08-27 because their original campaign outputs
+were not where any harvest could read them. Nothing was re-trained and nothing was
+re-sampled: training, sampling and enumeration for those cells were already complete
+(`RETRAIN_RUNBOOK` marks them "do not re-train"), so only the final selection stage was
+re-run, against the surviving artifacts at `t45_seh_seed43/` and `t45_seh_seed44/`.
+Minutes of CPU. That the re-run reproduced the log's numbers to the unit is the check
+that it used the right inputs.
+
+Configuration, which had to be matched rather than guessed: gate 7.0, tau 0.5,
+`free_frag` child policy, `prebuild_k=0`, and the promoted-fragment snapshot
+`fragments_4000.json` — chosen because its 1,600 `chosen_smiles` match the
+`n_promoted_fragments: 1600` the sampling stage recorded. A different snapshot would
+price the same library differently.
+
+**A near-miss worth recording.** Other campaign outputs for these seeds *do* survive
+at gate 7.0 (`seed_curves/m16_seed4{3,4}_scentseh_thr7_k0`, giving 79 and 83) and are
+NOT substitutes: they were run against the `matrix16` enumeration, whereas both arms of
+this comparison were computed on the `t45` enumeration. Substituting them would leave
+the two arms selecting from different candidate pools — the exact confound that got
+Results 13-15 withdrawn, where both runs reported `Optimal` and the only tell was an
+mtime nothing checked.
 
 Every pick in our arm is a distinct molecule by construction — the greedy accepts a
 child only if it clears the gate *and* is Tanimoto-far from everything already taken —
 so `n_selected` and `n_modes_kept` are necessarily equal. That is not a coincidence to
 be explained away; it is the difference the figure is about.
+
+**One caveat on seed 44:** its full run reaches 270 modes rather than 300 (pool-limited
+at gate 7.0). This does not touch the readout used here, because the 100-reaction budget
+binds long before the pool is exhausted.

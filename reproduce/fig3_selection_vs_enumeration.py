@@ -68,7 +68,7 @@ def collect(root: Path):
         keep.append(r)
 
     arms = []
-    arms.append({
+    ours_entry = {
         "label": "hub-batching\n(ours)",
         "selected": [num(r["n_selected"]) for r in ours],
         "distinct": [num(r["n_modes_kept"]) for r in ours],
@@ -81,7 +81,7 @@ def collect(root: Path):
         # honest numerator.
         "rxn_per_mode": [num(r["used_rxns"]) / num(r["n_modes_kept"]) for r in ours],
         "n": len(ours),
-    })
+    }
     for lam in sorted({num(r["lambda_div"]) for r in keep}):
         rows = [r for r in keep if abs(num(r["lambda_div"]) - lam) < 1e-9]
         arms.append({
@@ -92,17 +92,25 @@ def collect(root: Path):
             "rxn_per_mode": [num(r["used_rxns"]) / num(r["n_modes_kept"]) for r in rows],
             "n": len(rows),
         })
+    # Ours last: the competitors set the expectation and our bar reads as the answer.
+    arms.append(ours_entry)
     return arms, dropped
 
 
-def whisk(ax, x, vals, color="#20343a"):
-    """Full range, not a standard deviation: at n=2-3 a range is the honest summary."""
-    if len(vals) < 2:
+def whisk(ax, x, vals, color="#20343a", spread=0.10):
+    """Plot the individual seeds, not a summary of them.
+
+    At n=2-3, a bar with an error bar implies a distribution that cannot be estimated
+    from that many points, and it hides the shape that matters here: lambda=0's seeds
+    are 2, 24 and 26, which is not a spread around a mean, it is one seed collapsing.
+    Dots show that; a whisker averages it away.
+    """
+    if not vals:
         return
-    lo, hi = min(vals), max(vals)
-    ax.plot([x, x], [lo, hi], color=color, lw=1.2, zorder=5)
-    for y in (lo, hi):
-        ax.plot([x - 0.06, x + 0.06], [y, y], color=color, lw=1.2, zorder=5)
+    n = len(vals)
+    for j, v in enumerate(sorted(vals)):
+        dx = 0.0 if n == 1 else (j - (n - 1) / 2) * spread
+        ax.scatter(x + dx, v, s=13, color=color, zorder=6, linewidths=0)
 
 
 def draw(arms, out_path: Path) -> str:
@@ -128,15 +136,16 @@ def draw(arms, out_path: Path) -> str:
     # so an additional compound costs at least one reaction -- measured at ~1.01-1.23
     # reactions per compound across these arms -- and 100 reactions therefore cannot
     # buy more than 100 molecules. The cap is the budget, not the chemistry.
-    axl.axhline(100, color="#2c3f42", lw=1.1, ls=(0, (5, 3)), zorder=4)
+    axl.axhline(100, color="#c0603a", lw=1.2, ls=(0, (5, 3)), zorder=4)
     # Below the line, not above: the axis stops at 100, so anything above is clipped.
     # Sits over the gap between our bar and the cap, which is otherwise empty.
-    axl.annotate("theoretical maximum", xy=(0, 100), fontsize=7.5, color="#2c3f42",
+    axl.annotate("theoretical maximum", xy=(0, 100), fontsize=7.5, color="#c0603a",
                  ha="center", va="top", xytext=(0, -4), textcoords="offset points")
     axl.set_xticks(list(xs))
     axl.set_xticklabels([a["label"] for a in arms], fontsize=8.5)
     axl.set_ylabel("number of molecules")
-    axl.set_title("Modes depending on selection algorithm", fontsize=10.5)
+    axl.set_title("Modes found with selection algorithms "
+                  "under 100 reaction budget  (\u2191)", fontsize=10.5)
     axl.legend(frameon=False, fontsize=8, loc="upper center",
                bbox_to_anchor=(0.5, -0.13), ncol=1)
     axl.spines[["top", "right"]].set_visible(False)
@@ -146,9 +155,12 @@ def draw(arms, out_path: Path) -> str:
     w = 0.36
     for i, a in enumerate(arms):
         for j, (key, color, lab) in enumerate(
-                ((("rxn_per_cand"), GREY, f"reactions per candidate (reward > {GATE:g})"),
-                 (("rxn_per_mode"), BLUE,
-                  f"reactions per mode (reward > {GATE:g}, T < {TAU:g})"))):
+                # Blue listed first in BOTH panels: the two legends describe the same
+                # pairing, so the colour order has to agree or the reader re-learns it.
+                ((("rxn_per_mode"), BLUE,
+                  f"reactions per mode (reward > {GATE:g}, T < {TAU:g})"),
+                 (("rxn_per_cand"), GREY,
+                  f"reactions per candidate (reward > {GATE:g})"))):
             m = statistics.mean(a[key])
             axr.bar(i + (j - 0.5) * w, m, w * 0.92, color=color, zorder=3,
                     label=lab if i == 0 else None)

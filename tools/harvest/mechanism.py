@@ -36,7 +36,7 @@ ORDER_ARMS = [
     ("cand_order",           "best-molecule order",            True),
     ("cand_order_fixedset",  "best-molecule order (fixed set)", True),
     ("random",               "random order",                   False),
-    ("flow_bottom",          "lowest flow first (reverse)",    False),
+    ("flow_bottom",          "lowest flow first",              False),
     ("flow_bottom_600",      "lowest flow first (600 hubs)",    False),
 ]
 

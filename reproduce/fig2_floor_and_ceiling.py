@@ -129,7 +129,6 @@ def draw(floor, ceil, out_path: Path) -> str:
         return "matplotlib not installed - CSVs written, figure skipped"
 
     fig, (axl, axr) = plt.subplots(1, 2, figsize=(11, 4.4))
-    front = {id(p) for p in pareto(floor)}
     BLUE = "#1f6f8b"
 
     # ---- left: the floor, on the primary readout ----
@@ -137,40 +136,54 @@ def draw(floor, ceil, out_path: Path) -> str:
     # was not true of the data -- reverse-flow reads the flow and inverts it. Frontier
     # membership is carried by marker size and edge instead, which is a property of the
     # point rather than a claim about the arm.
+    # Every point drawn identically. Marking a Pareto frontier implied a ranking the
+    # figure does not need to make: these are configurations to compare, and a reader
+    # can see which sit down-and-right without being told which "won".
     for idx, p in enumerate(floor):
-        on_front = id(p) in front
-        axl.scatter(p["modes_at_budget"], p["compute_s"],
-                    s=125 if on_front else 66, marker="o",
-                    facecolor=BLUE, edgecolor="#123f50" if on_front else "none",
-                    linewidth=1.7, zorder=3)
-        axl.annotate(p["label"], (p["modes_at_budget"], p["compute_s"]), fontsize=7.8,
-                     xytext=(9, 5 if idx % 2 == 0 else -13),
+        axl.scatter(p["modes_at_budget"], p["compute_s"], s=100, marker="o",
+                    facecolor=BLUE, edgecolor="none", zorder=3)
+        axl.annotate(p["label"], (p["modes_at_budget"], p["compute_s"]), fontsize=8.2,
+                     xytext=(10, 5 if idx % 2 == 0 else -13),
                      textcoords="offset points", color="#2c3f42")
     axl.set_xlabel("number of modes")
     axl.set_ylabel("compute cost: wall-clock, s")
     axl.set_title("Floor: does the walk order matter?  (\u2198)", fontsize=10.5)
-    axl.scatter([], [], s=125, facecolor=BLUE, edgecolor="#123f50", linewidth=1.7,
-                label="on the frontier")
-    axl.scatter([], [], s=66, facecolor=BLUE, edgecolor="none", label="dominated")
-    axl.legend(frameon=False, fontsize=8, loc="lower left")
     axl.spines[["top", "right"]].set_visible(False)
     axl.margins(0.17)
 
     # ---- right: the ceiling, share of achievable gain per cell ----
+    # Grouped by model, then a fixed reward-generator order inside each group -- the
+    # same structure as Figure 1, so a reader carries one mental layout between them.
+    # Sorting by value instead would make the two figures disagree about where a cell is.
+    MODELS = ["rgfn", "scent", "rxnflow", "fraggfn"]
+    TARGETS = ["seh", "drd2", "clpp", "6td3"]
+    def cell_key(c):
+        m, _, t = c.rpartition("_")
+        return (MODELS.index(m) if m in MODELS else 99,
+                TARGETS.index(t) if t in TARGETS else 99)
+    ceil = sorted(ceil, key=lambda r: cell_key(r["cell"]))
     cells = [c["cell"] for c in ceil]
     shares = [c["share_of_achievable_gain"] for c in ceil]
     ypos = range(len(cells))
     axr.barh(list(ypos), shares, color="#1f6f8b", height=0.62, zorder=3)
     med = statistics.median(shares)
     axr.axvline(med, color="#c0603a", lw=1.4, ls="--", zorder=4)
-    axr.annotate(f"median {med:.3f}", xy=(med, len(cells) - 0.15), fontsize=7.5,
-                 color="#c0603a", ha="center", va="top", annotation_clip=False)
+    axr.annotate(f"median {med:.3f}", xy=(med, -0.9), fontsize=7.5,
+                 color="#c0603a", ha="right", va="bottom", xytext=(-4, 0),
+                 textcoords="offset points", annotation_clip=False)
     axr.axvline(1.0, color="#666666", lw=1.0, zorder=4)
-    axr.annotate("re-deciding at every step", xy=(1.02, -0.8), fontsize=7.5,
-                 color="#666666", ha="left", va="bottom", annotation_clip=False)
+    axr.annotate("re-deciding at every step", xy=(1.0, len(cells) - 0.35),
+                 fontsize=7.5, color="#666666", ha="right", va="top", xytext=(-4, 0),
+                 textcoords="offset points", annotation_clip=False)
+    prev = None
+    for i, c in enumerate(cells):
+        m = c.rpartition("_")[0]
+        if prev is not None and m != prev:
+            axr.axhline(i - 0.5, color="#d8e2e2", lw=0.9, zorder=1)
+        prev = m
     axr.set_yticks(list(ypos))
     axr.set_yticklabels(cells, fontsize=7)
-    axr.set_xlim(0, 1.24)
+    axr.set_xlim(0, 1.10)
     axr.set_ylim(len(cells) - 0.4, -1.2)
     axr.set_xlabel("share of improvement recovered")
     axr.set_title("Reaction savings recovered, compared to optimal  (\u2192)",
