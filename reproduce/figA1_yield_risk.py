@@ -7,10 +7,13 @@ route and you get the route yield -- the share of theoretical material that reac
 the final compound. SCENT's library ships a per-reaction yield (0.65-0.95) and this
 is what the delivered libraries look like through it.
 
-The result is not the one we expected. Hub-batching's routes are SHORTER (fewer steps
-to compound away), so on DRD2 its libraries carry a *higher* mean route yield than
-picking the best candidates one at a time, and on sEH a slightly lower one. A reaction
-count cannot see either.
+The result is not the one we expected, and the mechanism is unambiguous. Mean *step*
+yield is essentially identical between the two arms (0.73-0.77 for both, on every
+cell) -- so hub-batching is not choosing better chemistry. What differs is route
+LENGTH: its routes are shorter, so less yield compounds away. On DRD2 that makes its
+libraries carry a substantially *higher* route yield than picking the best candidates
+one at a time (0.54 vs 0.36, at 2.0 vs 3.4 steps); on sEH, where its routes are
+slightly longer, a slightly lower one. A reaction count cannot see either.
 
 **On what this figure deliberately does not show.** An earlier version drew error bars
 from a batch-failure model that treats each route yield as a coin-flip probability of
@@ -121,8 +124,8 @@ def main() -> int:
 
     table = []
     print("Appendix figure — yield and risk concentration\n")
-    print(f"  {'cell':<14}{'arm':<16}{'modes':>6}{'E[mol]':>8}{'sd ind':>8}"
-          f"{'sd shared':>10}{'inflation':>10}{'worst p':>9}")
+    print(f"  {'cell':<14}{'arm':<16}{'modes':>6}{'route yield':>12}"
+          f"{'steps':>7}{'step yield':>11}")
     for cell in sorted(cells):
         for arm in ARMS:
             r = cells[cell].get(arm)
@@ -131,9 +134,13 @@ def main() -> int:
             ind, shr = f(r, "sd_if_independent"), f(r, "sd_with_shared_prefixes")
             infl = shr / ind if ind else float("nan")
             print(f"  {cell:<14}{LABEL[arm]:<16}{int(f(r,'modes')):>6}"
-                  f"{f(r,'expected_molecules'):>8.1f}{ind:>8.2f}{shr:>10.2f}"
-                  f"{infl:>10.2f}{f(r,'worst_batch_loss_prob'):>9.2f}")
+                  f"{f(r,'mean_route_yield'):>12.3f}{f(r,'mean_route_len'):>7.2f}"
+                  f"{f(r,'mean_step_yield'):>11.3f}")
             table.append({"cell": cell, "arm": arm, "modes": int(f(r, "modes")),
+                          # what the figure now plots, first
+                          "mean_route_yield": f(r, "mean_route_yield"),
+                          "mean_route_len": f(r, "mean_route_len"),
+                          "mean_step_yield": f(r, "mean_step_yield"),
                           "expected_molecules": f(r, "expected_molecules"),
                           "sd_if_independent": ind, "sd_with_shared_prefixes": shr,
                           "spread_inflation": round(infl, 3),
@@ -152,7 +159,14 @@ def main() -> int:
     for cell, hv, bv in sorted(ylds):
         arrow = "higher" if hv > bv else "lower"
         print(f"    {cell:<14} {hv:.3f} vs {bv:.3f}   ({arrow} for hub-batching)")
-    print("  mean steps per molecule:")
+    steps = [(c, f(a["hub_batching"], "mean_step_yield"),
+              f(a["best_candidate"], "mean_step_yield"))
+             for c, a in cells.items()
+             if {"hub_batching", "best_candidate"} <= set(a)]
+    lo = min(min(h, b) for _, h, b in steps)
+    hi = max(max(h, b) for _, h, b in steps)
+    print(f"  mean STEP yield is {lo:.3f}-{hi:.3f} for BOTH arms on every cell, so the")
+    print("  route-yield difference is length, not chemistry:")
     for cell, hv, bv in sorted(lens):
         print(f"    {cell:<14} {hv:.2f} vs {bv:.2f}")
     print("\n  NOTE: the batch-failure columns (sd_*, worst_batch_loss_prob) are carried in")

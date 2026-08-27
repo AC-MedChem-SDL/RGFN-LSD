@@ -42,3 +42,29 @@ compute; both need space.
   if the journal version is the target.
 - **Chemistry gallery** (closest still-distinct pair at each τ, with route trees).
   Makes τ interpretable to a chemist. Appendix asset.
+
+---
+
+# Needs refreshing before publication (not deferred — dated)
+
+## Table 1's competitor was trained at a much larger budget
+
+`OLDBUDGET_` on the S3-GFN pool directories means what it says: those checkpoints were
+trained with a **much larger iteration budget** than the generators we compare them
+against. Training has since been standardised to comparable budgets across models.
+
+**Why it is still what Table 1 uses.** It is the only S3-GFN sEH pool that exists with
+retrosynthesis completed. Newer, budget-matched S3-GFN checkpoints exist but have not
+been routed, and without routes there is nothing for SPARROW to select over.
+
+**Direction of the bias, which is the part that matters.** A competitor trained *longer*
+than us is a competitor at its best. So the current numbers — 3.42× against
+SPARROW-selects, 2.16× against greedy selection — are measured against a stronger
+opponent than a budget-matched comparison would give, and are therefore **conservative**.
+That is the right direction for a bias to run, and it should be stated in the caption
+rather than discovered by a reviewer.
+
+**What refreshing needs:** retrosynthesis on the budget-matched S3-GFN checkpoints, then
+re-running `sparrow_select_frontier.py` for both the `--selection sparrow` and
+`--selection greedy` arms. The harvest and both readouts pick the new numbers up with no
+code change.
