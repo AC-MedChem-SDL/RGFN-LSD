@@ -268,6 +268,45 @@ def draw(rows, out_path: Path, gates, budget: int) -> str:
     return f"wrote {out_path.stem}.png and .pdf"
 
 
+def gate_variant_readout(root: Path, budget: int) -> list[dict]:
+    """sEH at each swept bar, from the threshold-variant cells.
+
+    The workshop reports BOTH bars rather than unifying: 5.0 is the calibrated one
+    (Logs/034 measured only weak proxy enrichment above ~6; Logs/051 found diversity
+    collapsing past ~7), while 7.0 is the value the RGFN paper's own sEH numbers are
+    quoted at, and the value the external comparison happens to be measured at. Neither
+    stands in for the other, and the advantage holds at both -- which is a stronger
+    statement than picking one.
+    """
+    vdir = root / "gate_variants"
+    if not vdir.is_dir():
+        return []
+    out = []
+    for seed_dir in sorted(vdir.glob("seed*")):
+        seed = int(seed_dir.name.removeprefix("seed"))
+        for cdir in sorted(p for p in seed_dir.iterdir() if p.is_dir()):
+            meta = json.loads((cdir / "summary.json").read_text())
+            gate = meta.get("reward_threshold")
+            cap = int(meta.get("budget_modes") or 300)
+            curves = {a: read_curve(cdir / f"curve_{a}.csv") for a in ARMS
+                      if (cdir / f"curve_{a}.csv").is_file()}
+            if len(curves) < 2:
+                continue
+            hb = read_at_budget(curves["hub_batching"], budget, cap)
+            bc = read_at_budget(curves["best_candidate"], budget, cap)
+            if hb is None or bc is None:
+                continue
+            out.append(dict(
+                cell=cdir.name, seed=seed, gate=gate,
+                generator=cdir.name.split("_")[0],
+                hub_modes=hb["modes"], bc_modes=bc["modes"],
+                hub_status=hb["status"], bc_status=bc["status"],
+                comparable=hb["status"] == "budget-binding" == bc["status"],
+                ratio=round(hb["modes"] / bc["modes"], 3) if bc["modes"] else "",
+            ))
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -295,6 +334,13 @@ def main() -> int:
         w.writeheader()
         w.writerows(rows)
 
+    # ---- secondary readout: sEH at every swept bar ----
+    variants = gate_variant_readout(root, args.headline_budget)
+    if variants:
+        with (out / "fig1_seh_gate_variants.csv").open("w", newline="") as fh:
+            w = csv.DictWriter(fh, fieldnames=list(variants[0]))
+            w.writeheader(); w.writerows(variants)
+
     table, lines = summarise(rows, budgets, gates, args.include_uncalibrated)
     with (out / "fig1_summary.csv").open("w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=list(table[0]))
@@ -305,6 +351,27 @@ def main() -> int:
     print(f"Figure 1 — {len(cells)} cell-seeds, {len(rows)} rows\n")
     print("\n".join(lines))
     print()
+    if variants:
+        print(f"\nsEH AT EVERY SWEPT BAR (secondary readout, R={args.headline_budget})\n")
+        print(f"  {'bar':>5}{'seeds':>7}{'comparable':>12}{'median':>9}{'range':>14}"
+              f"   cells dropped")
+        for g in sorted({v["gate"] for v in variants}):
+            at_g = [v for v in variants if v["gate"] == g]
+            comp = [v for v in at_g if v["comparable"] and v["ratio"] != ""]
+            if not comp:
+                continue
+            vals = sorted(float(v["ratio"]) for v in comp)
+            dropped = [v["generator"] for v in at_g if not v["comparable"]]
+            n_seeds = len({v["seed"] for v in at_g})
+            comp_s = f"{len(comp)}/{len(at_g)}"
+            rng = f"{min(vals):.2f}-{max(vals):.2f}"
+            print(f"  {g:>5.1f}{n_seeds:>7}{comp_s:>12}"
+                  f"{statistics.median(vals):>8.2f}x{rng:>14}"
+                  f"   {', '.join(dropped) if dropped else '-'}")
+        print("\n  Both bars are reported rather than unified. A cell drops out where an arm\n"
+              "  is pool-exhausted rather than budget-binding: it did not spend the budget,\n"
+              "  so quoting it as modes-at-a-budget would imply it chose not to.")
+
     print(draw(rows, out / "fig1_reaction_budget", gates, args.headline_budget))
     print(f"tables: {out/'fig1_reaction_budget.csv'}, {out/'fig1_summary.csv'}")
     return 0

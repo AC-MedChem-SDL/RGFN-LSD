@@ -113,6 +113,38 @@ def main() -> int:
     if not cells:
         sys.exit(f"no matrix cells found under {root}")
 
+    # ---- sEH threshold variants, for the "report both bars" secondary readout ----
+    # These cells are excluded from the matrix proper (VARIANT_MARKERS) because they are
+    # sensitivity sweeps, not matrix cells. They are harvested separately so the paper can
+    # show the advantage at BOTH the calibrated bar (5.0) and the paper-comparable one (7.0)
+    # without either standing in for the other.
+    variants = 0
+    for sd, seed in SEED_DIRS.items():
+        sdir = root / sd
+        if not sdir.is_dir():
+            continue
+        for summary in sorted(sdir.glob("*_seh_thr*/summary.json")):
+            tag = json.loads(summary.read_text()).get("tag", summary.parent.name)
+            if "cap9" in tag:          # the mis-set FragGFN cap, superseded (Logs/046)
+                continue
+            cdir = summary.parent
+            present = [a for a in ARMS if (cdir / f"curve_{a}.csv").is_file()]
+            if not present:
+                continue
+            dest = out / "gate_variants" / f"seed{seed}" / tag
+            dest.mkdir(parents=True, exist_ok=True)
+            for name in [f"curve_{a}.csv" for a in present] + ["summary.json"]:
+                src = cdir / name
+                if name == "summary.json":
+                    (dest / name).write_text(
+                        json.dumps(redact_paths(json.loads(src.read_text())), indent=2) + "\n")
+                else:
+                    shutil.copy2(src, dest / name)
+                sources.append({"seed": seed, "cell": tag, "file": name,
+                                "src": f"{sd}/{cdir.name}/{name}", "md5": md5(src),
+                                "redacted": name == "summary.json", "variant": True})
+            variants += 1
+
     with (out / "gates.csv").open("w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=list(GATES[0]))
         w.writeheader()
@@ -127,6 +159,8 @@ def main() -> int:
     }, indent=2) + "\n")
 
     print(f"harvested {cells} cells / {len(sources)} files")
+    if variants:
+        print(f"  + {variants} sEH threshold-variant cell(s) under gate_variants/")
     for seed in SEED_DIRS.values():
         n = len(list((out / f"seed{seed}").glob("*"))) if (out / f"seed{seed}").is_dir() else 0
         print(f"  seed{seed}: {n} cells")

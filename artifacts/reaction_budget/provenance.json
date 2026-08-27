@@ -1,7 +1,7 @@
 {
   "harvested_from_subdir": "experiments/lsd_hubs/matrix16",
   "n_cells": 40,
-  "n_files": 120,
+  "n_files": 156,
   "skipped": [
     "results/fraggfn_drd2 (no curves)",
     "results/fraggfn_seh (no curves)",
@@ -538,7 +538,7 @@
       "cell": "rgfn_clpp",
       "file": "curve_hub_batching.csv",
       "src": "results_seed43/rgfn_clpp/curve_hub_batching.csv",
-      "md5": "9f58c434b85ea2b38b1f500b8d383874",
+      "md5": "8018462447faf4298d3acc0a06491c71",
       "redacted": false
     },
     {
@@ -554,7 +554,7 @@
       "cell": "rgfn_clpp",
       "file": "summary.json",
       "src": "results_seed43/rgfn_clpp/summary.json",
-      "md5": "3c54d2ed021593c113bc2be8e836c960",
+      "md5": "029f8a558e5d1384e6d2593bec248b52",
       "redacted": true
     },
     {
@@ -988,6 +988,330 @@
       "src": "results_seed44/scent_seh/summary.json",
       "md5": "f1323f1fb7a26939e75b5117377a01e8",
       "redacted": true
+    },
+    {
+      "seed": 42,
+      "cell": "fraggfn_seh_thr5",
+      "file": "curve_hub_batching.csv",
+      "src": "results/fraggfn_seh_thr5/curve_hub_batching.csv",
+      "md5": "bdcb12f3a5472b99b5365d2fe650bd55",
+      "redacted": false,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "fraggfn_seh_thr5",
+      "file": "curve_best_candidate.csv",
+      "src": "results/fraggfn_seh_thr5/curve_best_candidate.csv",
+      "md5": "86f36aa1232c7c81a17a5d4c75074afb",
+      "redacted": false,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "fraggfn_seh_thr5",
+      "file": "summary.json",
+      "src": "results/fraggfn_seh_thr5/summary.json",
+      "md5": "648c0028383c590b64fe12211b94b42b",
+      "redacted": true,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "fraggfn_seh_thr6",
+      "file": "curve_hub_batching.csv",
+      "src": "results/fraggfn_seh_thr6/curve_hub_batching.csv",
+      "md5": "056e496e81ec6b4ea593e3a720ef818b",
+      "redacted": false,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "fraggfn_seh_thr6",
+      "file": "curve_best_candidate.csv",
+      "src": "results/fraggfn_seh_thr6/curve_best_candidate.csv",
+      "md5": "86f36aa1232c7c81a17a5d4c75074afb",
+      "redacted": false,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "fraggfn_seh_thr6",
+      "file": "summary.json",
+      "src": "results/fraggfn_seh_thr6/summary.json",
+      "md5": "c9a9f18c987cca1177ba1d3937b4068d",
+      "redacted": true,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "fraggfn_seh_thr7",
+      "file": "curve_hub_batching.csv",
+      "src": "results/fraggfn_seh_thr7/curve_hub_batching.csv",
+      "md5": "f160dede319f306dce03266e305d386c",
+      "redacted": false,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "fraggfn_seh_thr7",
+      "file": "curve_best_candidate.csv",
+      "src": "results/fraggfn_seh_thr7/curve_best_candidate.csv",
+      "md5": "86f36aa1232c7c81a17a5d4c75074afb",
+      "redacted": false,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "fraggfn_seh_thr7",
+      "file": "summary.json",
+      "src": "results/fraggfn_seh_thr7/summary.json",
+      "md5": "eebe652e3f3888a4ada2c4c91fd72fab",
+      "redacted": true,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "rgfn_seh_thr5",
+      "file": "curve_hub_batching.csv",
+      "src": "results/rgfn_seh_thr5/curve_hub_batching.csv",
+      "md5": "4df284959ed9c768f3036cdcb3408f06",
+      "redacted": false,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "rgfn_seh_thr5",
+      "file": "curve_best_candidate.csv",
+      "src": "results/rgfn_seh_thr5/curve_best_candidate.csv",
+      "md5": "f379e3cf910efd4ac0673bccf3c4bbe2",
+      "redacted": false,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "rgfn_seh_thr5",
+      "file": "summary.json",
+      "src": "results/rgfn_seh_thr5/summary.json",
+      "md5": "f04c500eed39e7ab93a97082d5e47a26",
+      "redacted": true,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "rgfn_seh_thr6",
+      "file": "curve_hub_batching.csv",
+      "src": "results/rgfn_seh_thr6/curve_hub_batching.csv",
+      "md5": "1242751b5132f5a85e14118bc2c9f7fb",
+      "redacted": false,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "rgfn_seh_thr6",
+      "file": "curve_best_candidate.csv",
+      "src": "results/rgfn_seh_thr6/curve_best_candidate.csv",
+      "md5": "f379e3cf910efd4ac0673bccf3c4bbe2",
+      "redacted": false,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "rgfn_seh_thr6",
+      "file": "summary.json",
+      "src": "results/rgfn_seh_thr6/summary.json",
+      "md5": "066733a95f37b172415c1d26cce4aada",
+      "redacted": true,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "rgfn_seh_thr7",
+      "file": "curve_hub_batching.csv",
+      "src": "results/rgfn_seh_thr7/curve_hub_batching.csv",
+      "md5": "ba84491c62c7941d751b3b469ca23439",
+      "redacted": false,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "rgfn_seh_thr7",
+      "file": "curve_best_candidate.csv",
+      "src": "results/rgfn_seh_thr7/curve_best_candidate.csv",
+      "md5": "79d66f25a9214185c2b55c14c7cda30b",
+      "redacted": false,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "rgfn_seh_thr7",
+      "file": "summary.json",
+      "src": "results/rgfn_seh_thr7/summary.json",
+      "md5": "c17de2e482278bd942a2fb71ddb7e13f",
+      "redacted": true,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "rxnflow_seh_thr5",
+      "file": "curve_hub_batching.csv",
+      "src": "results/rxnflow_seh_thr5/curve_hub_batching.csv",
+      "md5": "630f8daf6c3ce464ea9abda9fdf94fb2",
+      "redacted": false,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "rxnflow_seh_thr5",
+      "file": "curve_best_candidate.csv",
+      "src": "results/rxnflow_seh_thr5/curve_best_candidate.csv",
+      "md5": "a6f61f0386ce903f8fe5ae45137444db",
+      "redacted": false,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "rxnflow_seh_thr5",
+      "file": "summary.json",
+      "src": "results/rxnflow_seh_thr5/summary.json",
+      "md5": "6997f2b1961acbdd6de0c1ab6edfcfdf",
+      "redacted": true,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "rxnflow_seh_thr6",
+      "file": "curve_hub_batching.csv",
+      "src": "results/rxnflow_seh_thr6/curve_hub_batching.csv",
+      "md5": "a67a1603d03b8f666da32f504e702208",
+      "redacted": false,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "rxnflow_seh_thr6",
+      "file": "curve_best_candidate.csv",
+      "src": "results/rxnflow_seh_thr6/curve_best_candidate.csv",
+      "md5": "a6f61f0386ce903f8fe5ae45137444db",
+      "redacted": false,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "rxnflow_seh_thr6",
+      "file": "summary.json",
+      "src": "results/rxnflow_seh_thr6/summary.json",
+      "md5": "f8c41eaac11248862e835d5b67849d88",
+      "redacted": true,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "rxnflow_seh_thr7",
+      "file": "curve_hub_batching.csv",
+      "src": "results/rxnflow_seh_thr7/curve_hub_batching.csv",
+      "md5": "f5c6872fc48edd2adc6ac2183490ae24",
+      "redacted": false,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "rxnflow_seh_thr7",
+      "file": "curve_best_candidate.csv",
+      "src": "results/rxnflow_seh_thr7/curve_best_candidate.csv",
+      "md5": "1a27dacc7b51875d3e05b7464e080e01",
+      "redacted": false,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "rxnflow_seh_thr7",
+      "file": "summary.json",
+      "src": "results/rxnflow_seh_thr7/summary.json",
+      "md5": "766627dde81ee62176df4c503a3663fb",
+      "redacted": true,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "scent_seh_thr5",
+      "file": "curve_hub_batching.csv",
+      "src": "results/scent_seh_thr5/curve_hub_batching.csv",
+      "md5": "01acf2c0420511eda6cc9e19a8174772",
+      "redacted": false,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "scent_seh_thr5",
+      "file": "curve_best_candidate.csv",
+      "src": "results/scent_seh_thr5/curve_best_candidate.csv",
+      "md5": "ca2c3b429a312a1fde80fd8177f74a6c",
+      "redacted": false,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "scent_seh_thr5",
+      "file": "summary.json",
+      "src": "results/scent_seh_thr5/summary.json",
+      "md5": "60f54fcdbd96b8eb973172ef422b0784",
+      "redacted": true,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "scent_seh_thr6",
+      "file": "curve_hub_batching.csv",
+      "src": "results/scent_seh_thr6/curve_hub_batching.csv",
+      "md5": "919095a91df69b806796bdb104d22657",
+      "redacted": false,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "scent_seh_thr6",
+      "file": "curve_best_candidate.csv",
+      "src": "results/scent_seh_thr6/curve_best_candidate.csv",
+      "md5": "ca2c3b429a312a1fde80fd8177f74a6c",
+      "redacted": false,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "scent_seh_thr6",
+      "file": "summary.json",
+      "src": "results/scent_seh_thr6/summary.json",
+      "md5": "be80ab0c4ac7496a97139f9ff6765483",
+      "redacted": true,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "scent_seh_thr7",
+      "file": "curve_hub_batching.csv",
+      "src": "results/scent_seh_thr7/curve_hub_batching.csv",
+      "md5": "ec8b539b0782adb725c710e135683ead",
+      "redacted": false,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "scent_seh_thr7",
+      "file": "curve_best_candidate.csv",
+      "src": "results/scent_seh_thr7/curve_best_candidate.csv",
+      "md5": "ca2c3b429a312a1fde80fd8177f74a6c",
+      "redacted": false,
+      "variant": true
+    },
+    {
+      "seed": 42,
+      "cell": "scent_seh_thr7",
+      "file": "summary.json",
+      "src": "results/scent_seh_thr7/summary.json",
+      "md5": "1cb340bfc103435a8e196e63c4171c51",
+      "redacted": true,
+      "variant": true
     }
   ]
 }
