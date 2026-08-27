@@ -2,10 +2,10 @@
 
 ``docs/LSD_FLOW_PROPOSAL.md`` §3b/§4a: the active-learning acquisition builds a *lightweight*
 HubDAG from the trajectories the loop already sampled (no adapter, single env). This is that
-object. It is a pure aggregation over :class:`~lsdflow.records.FlowRecord`s —
+object. It is a pure aggregation over :class:`~hubbatching.records.FlowRecord`s —
 no ``networkx``, no persistence, no RDKit — so it is cheap to build every AL round.
 
-The heavier cross-env / persisted / analysis DAG lives in ``validation/lsdflow/dag`` and
+The heavier cross-env / persisted / analysis DAG lives in ``validation/hubbatching/dag`` and
 exposes the same protocol (§6), so the selection strategies work on either unchanged.
 
 Aggregation choices (documented because they affect ``U(h)`` — §2):
@@ -23,9 +23,9 @@ from __future__ import annotations
 
 from typing import Dict, Iterable, List, Optional, Sequence
 
-from lsdflow import flow as lsdflow_flow
-from lsdflow import uncertainty
-from lsdflow.records import FlowRecord
+from hubbatching import flow
+from hubbatching import uncertainty
+from hubbatching.records import FlowRecord
 
 
 class ChildEstimate:
@@ -51,7 +51,7 @@ class ChildEstimate:
         self.log_pf_move = record.log_pf_move
         self.log_pb_move = record.log_pb_move
         self.log_pf_stop = record.log_pf_stop
-        self.log_flow = lsdflow_flow.log_flow_estimate(
+        self.log_flow = flow.log_flow_estimate(
             log_reward=record.log_reward,
             log_pb_move=record.log_pb_move,
             log_pf_move=record.log_pf_move,
@@ -99,12 +99,12 @@ class Hub:
     def child_rewards(self) -> List[float]:
         return [c.reward for c in self._children.values()]
 
-    # -- aggregate flow / uncertainty (delegate to lsdflow.flow — the §2 math) -------
+    # -- aggregate flow / uncertainty (delegate to hubbatching.flow — the §2 math) -------
     def log_flow_consensus(self) -> float:
-        return lsdflow_flow.consensus_log_flow(self.child_log_flows())
+        return flow.consensus_log_flow(self.child_log_flows())
 
     def log_flow_terminating(self) -> float:
-        return lsdflow_flow.total_terminating_log_flow(self.child_log_flows())
+        return flow.total_terminating_log_flow(self.child_log_flows())
 
     def uncertainty(self) -> float:
         return uncertainty.flow_matching_uncertainty(self.child_log_flows())
@@ -160,7 +160,7 @@ class LiteHubDAG:
         return len(self._hubs)
 
     def log_visitation(self, hub: Hub) -> float:
-        return lsdflow_flow.log_visitation_estimate(
+        return flow.log_visitation_estimate(
             hub.visit_count, self.total_trajectories, self.log_z
         )
 

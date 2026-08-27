@@ -9,8 +9,8 @@ from __future__ import annotations
 
 import gin
 
-from lsdflow import flow as lsdflow_flow
-from lsdflow.hubs.base import HubSelectionStrategy
+from hubbatching import flow
+from hubbatching.hubs.base import HubSelectionStrategy
 
 
 @gin.configurable()
@@ -18,4 +18,4 @@ class HighestFlowStrategy(HubSelectionStrategy):
     name = "highest_flow"
 
     def score(self, hub, dag) -> float:
-        return lsdflow_flow.consensus_log_flow(hub.child_log_flows())
+        return flow.consensus_log_flow(hub.child_log_flows())

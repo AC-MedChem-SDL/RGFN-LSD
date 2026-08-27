@@ -50,7 +50,11 @@ def main() -> int:
     ours = int(headline["modes_lower"])
 
     print(f"Table 1 — modes delivered at 100 reactions (sEH, gate {headline['gate']})\n")
-    print(f"| {'pipeline':<50} | {'modes @ 100 rxn (\u2191)':>19} | {'vs ours':>10} |")
+    # The glyph lives in a variable, not inside the f-string expression: Python 3.11
+    # rejects a backslash escape there (PEP 701 only relaxed it in 3.12), and this
+    # project supports 3.10+.
+    head = "modes @ 100 rxn (\u2191)"
+    print(f"| {'pipeline':<50} | {head:>19} | {'vs ours':>10} |")
     print(f"|{'-'*52}|{'-'*21}|{'-'*12}|")
     table = []
     for r in rows:

@@ -3,8 +3,8 @@
 This is the one place the ``docs/LSD_FLOW_PROPOSAL.md`` §2 log-terms are read out of the
 real RGFN objects, and it is shared by both project axes: the production AL path calls it on the
 trajectories the loop already sampled, and the validation RGFN adapter
-(``validation/lsdflow/adapters/rgfn_adapter.py``) calls it to emit canonical records for the
-cross-model DAG. It lives in ``lsdflow.adapters`` because it imports ``rgfn`` and must be
+(``validation/hubbatching/adapters/rgfn_adapter.py``) calls it to emit canonical records for the
+cross-model DAG. It lives in ``hubbatching.adapters`` because it imports ``rgfn`` and must be
 callable from the single-env loop without any ``validation/`` dependency.
 
 The mapping (from the RGFN micro-step state machine — see
@@ -38,7 +38,7 @@ from typing import Dict, List, Optional, Tuple
 
 import torch
 
-from lsdflow.records import FlowRecord
+from hubbatching.records import FlowRecord
 from rgfn.gfns.reaction_gfn.api.reaction_api import (
     ReactionStateA,
     ReactionStateTerminal,
@@ -94,7 +94,7 @@ def extract_flow_records(
             a never-negative column against a negative bar and qualify NOTHING -- an empty result
             rather than a crash. ``log_reward`` is untouched either way, so the flow terms keep
             matching what the policy trained on. See
-            ``validation/lsdflow/adapters/workers/_docking`` for the full two-column contract.
+            ``validation/hubbatching/adapters/workers/_docking`` for the full two-column contract.
 
     Returns:
         ``(records, visit_counts, n_trajectories)`` where ``visit_counts`` maps each

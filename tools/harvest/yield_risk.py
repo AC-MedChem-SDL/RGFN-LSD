@@ -39,9 +39,9 @@ def main() -> int:
 
     root = args.campaign_root
     if root is None:
-        env = os.environ.get("LSDFLOW_CAMPAIGN_ROOT")
+        env = os.environ.get("HUBBATCH_CAMPAIGN_ROOT")
         if not env:
-            sys.exit("pass --campaign-root or set $LSDFLOW_CAMPAIGN_ROOT")
+            sys.exit("pass --campaign-root or set $HUBBATCH_CAMPAIGN_ROOT")
         root = Path(env)
     src = (root / "results" / "yield_preference").resolve()
     if not src.is_dir():

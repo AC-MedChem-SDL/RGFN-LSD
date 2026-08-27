@@ -3,14 +3,14 @@
 The active-learning loop's scarce budget is **oracle (docking) calls**. This is the batch-selection
 strategy that spends them well: instead of docking whatever the policy happened to sample, it reads
 the trained flow field, ranks pre-terminal **hubs** by an explore/exploit score
-(``score(h) = z(reward(h)) + λ·U(h)`` — :class:`~lsdflow.hubs.ucb.UcbHubStrategy`),
+(``score(h) = z(reward(h)) + λ·U(h)`` — :class:`~hubbatching.hubs.ucb.UcbHubStrategy`),
 then diversifies the best hubs into a batch of distinct high-reward **modes** to dock. It is a drop-in
 sampler: the loop hands it the trained sampler + objective and gets a flat molecule batch back — the
 loop's fit → train → sample → dock → grow structure is unchanged (proposal §4a v1).
 
 Three arms (the loop's ``acquisition`` knob), all returning a flat batch so the loop is arm-agnostic:
 
-- **``hub_batching``** — the LSD-Flow arm. Sample → ``LiteHubDAG`` → UCB hub rank → walk hubs
+- **``hub_batching``** — the hub-batching arm. Sample → ``LiteHubDAG`` → UCB hub rank → walk hubs
   best-first, **enumerate** each hub's one-reaction children (scored by the reward-generator ``M`` —
   the "reward-gen calls" axis, unlimited), pre-select-K high-value dynamic-library fragments (inert
   until the generator has a dynamic library, e.g. SCENT — RGFN has none), keep ``free_frag`` children,
@@ -25,9 +25,9 @@ Three arms (the loop's ``acquisition`` knob), all returning a flat batch so the 
 enumerating children (unlimited; the compute axis pre-select-K attacks). Plus **avg molecules/hub**.
 
 **Modularity (explicit requirement).** The hub-selection strategy, its ``U(h)`` and ``reward(h)``
-terms (via :mod:`lsdflow.hubs.ucb`), the within-hub child policy
-(:mod:`lsdflow.child_select`), and the mode selector
-(:mod:`lsdflow.mode_select`) are all swappable behind stable interfaces. Adding a new
+terms (via :mod:`hubbatching.hubs.ucb`), the within-hub child policy
+(:mod:`hubbatching.child_select`), and the mode selector
+(:mod:`hubbatching.mode_select`) are all swappable behind stable interfaces. Adding a new
 molecule-selection rule (e.g. "pick the most flow-divergent children") is a new ``ChildSelectionPolicy``;
 a new acquisition score is a new hub strategy — nothing else changes.
 
@@ -45,16 +45,16 @@ from typing import Dict, List, Optional
 import gin
 import torch
 
-from lsdflow.adapters.route import extract_route
-from lsdflow.child_select import ChildSelectionPolicy, make_child_policy
-from lsdflow.dag import LiteHubDAG
-from lsdflow.hubs.ucb import UcbHubStrategy
-from lsdflow.mode_select import DiverseThresholdModeSelector
-from lsdflow.adapters.rgfn_enumerate import (
+from hubbatching.adapters.route import extract_route
+from hubbatching.child_select import ChildSelectionPolicy, make_child_policy
+from hubbatching.dag import LiteHubDAG
+from hubbatching.hubs.ucb import UcbHubStrategy
+from hubbatching.mode_select import DiverseThresholdModeSelector
+from hubbatching.adapters.rgfn_enumerate import (
     enumerate_terminal_children,
     hub_state_from_smiles,
 )
-from lsdflow.adapters.rgfn_extract import extract_flow_records
+from hubbatching.adapters.rgfn_extract import extract_flow_records
 from rgfn.gfns.reaction_gfn.api.reaction_api import ReactionStateTerminal
 
 try:  # RDKit present in-env; degrade to the raw SMILES key if a round-trip fails.
@@ -128,7 +128,7 @@ class LSDFlowAcquisition:
     ):
         """
         Args:
-            arm: ``"hub_batching"`` (LSD-Flow) or ``"best_candidate"`` (control).
+            arm: ``"hub_batching"`` (hub-batching) or ``"best_candidate"`` (control).
             n_sample_trajectories/sample_batch_size: how many trajectories to sample to build the
                 hub DAG + candidate pool each round.
             higher_is_better: oracle/reward orientation. MUST match the proxy ``M``. 6TD3 ``dvina``

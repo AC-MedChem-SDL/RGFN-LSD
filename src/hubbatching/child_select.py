@@ -17,7 +17,7 @@ The lean, current set (Logs/037) — two swappable within-hub policies:
   exactly **one** marginal reaction (the coupling). On its own it is the low-reaction extreme; with a
   **pre-built fragment stock** (``HubBatchingStrategy(prebuilt_fragments=...)``) it becomes the
   **pre-select-K** strategy — pre-synthesize K high-value fragments (ranked by build-score, see
-  :func:`~lsdflow.campaign.rank_fragments`), charge them once up front, then free-fill.
+  :func:`~hubbatching.campaign.rank_fragments`), charge them once up front, then free-fill.
   K trades a few upfront fragment builds for fewer hubs walked (fewer reward-gen/oracle calls).
 
 Both operate on the same duck-typed child (``.smiles``, ``.reward``, ``.added_promoted`` = the

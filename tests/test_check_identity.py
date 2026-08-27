@@ -45,7 +45,7 @@ def tree(tmp_path: Path) -> Path:
     (rules / "allow.txt").write_text("NOTICE\n")
     repo = tmp_path / "repo"
     (repo / "src").mkdir(parents=True)
-    (repo / "src" / "clean.py").write_text("from lsdflow.paths import artifacts\n")
+    (repo / "src" / "clean.py").write_text("from hubbatching.paths import artifacts\n")
     return repo
 
 
@@ -186,3 +186,24 @@ def test_suppression_is_line_scoped_not_file_scoped(tree: Path) -> None:
         "example: Ada Placeholder  <!-- identity-check: ignore -->\n"
         "real leak: Ada Placeholder\n")
     assert run(tree).returncode == 1
+
+
+def test_every_shipped_module_parses_on_the_minimum_python() -> None:
+    """Guard against syntax that only newer Pythons accept.
+
+    Caught a real one: an escape inside an f-string *expression* parses on 3.12+
+    (PEP 701) but is a SyntaxError on 3.11, and pyproject declares >=3.10. It ran
+    fine locally under a newer interpreter and broke under the project's own env.
+    Running this under CI's pinned Python is what makes the declared floor mean
+    something.
+    """
+    import ast
+    root = Path(__file__).resolve().parents[1]
+    failures = []
+    for sub in ("src", "reproduce", "tools", "tests"):
+        for path in (root / sub).rglob("*.py"):
+            try:
+                ast.parse(path.read_text(encoding="utf-8"))
+            except SyntaxError as exc:
+                failures.append(f"{path.relative_to(root)}:{exc.lineno}: {exc.msg}")
+    assert not failures, "modules failed to parse:\n  " + "\n  ".join(failures)

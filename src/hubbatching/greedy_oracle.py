@@ -2,7 +2,7 @@
 
 Why this exists
 ---------------
-:class:`~lsdflow.campaign.HubBatchingStrategy` walks a **static** hub ranking: hubs are
+:class:`~hubbatching.campaign.HubBatchingStrategy` walks a **static** hub ranking: hubs are
 scored once by the recovered flow ``F_hat(h)``, sorted, and walked in that order (``self.hubs =
 list(enumerated_hubs)  # already in rank order``). The order is never revisited, so a hub whose every
 child duplicates something an earlier hub already contributed still gets its scaffold built and its
@@ -28,7 +28,7 @@ What it is NOT
    cost-benefit greedy alone, and ``(1 - 1/e)`` only with Khuller-Moss-Naor's partial enumeration of
    starting triples, which we do not run.
 2. **The objective is not exactly submodular.** A "mode" is decided by a *greedy sphere-exclusion*
-   filter (:class:`~lsdflow.mode_select.DiverseThresholdModeSelector`), so which
+   filter (:class:`~hubbatching.mode_select.DiverseThresholdModeSelector`), so which
    molecules count as distinct depends on the order they were offered in. Coverage over an
    order-dependent set system is not a matroid/coverage structure, so the textbook guarantee does not
    transfer. We therefore make **no formal claim** and use the greedy purely as a measured reference.
@@ -41,7 +41,7 @@ than hidden — it is the point of the comparison, not a caveat to it.
 Bit-comparability
 -----------------
 Every cost decision is delegated to the *same* module-level helpers the shipped strategy uses
-(:func:`~lsdflow.campaign.shallow_couplings`, ``_charge_promoted``, ``_budget_hit``,
+(:func:`~hubbatching.campaign.shallow_couplings`, ``_charge_promoted``, ``_budget_hit``,
 ``_finalize``), and acceptance is delegated to a **clone of the live selector object**, so the two
 arms cannot drift on accounting or on the mode definition. ``order="static"`` runs this module's own
 walk machinery over the ranking as given, which must reproduce ``HubBatchingStrategy`` exactly — that
@@ -55,7 +55,7 @@ import copy
 from dataclasses import dataclass, field
 from typing import Callable, Dict, List, Optional, Sequence, Set, Tuple
 
-from lsdflow.campaign import (
+from hubbatching.campaign import (
     Budget,
     CampaignPoint,
     CampaignResult,
@@ -65,8 +65,8 @@ from lsdflow.campaign import (
     _finalize,
     shallow_couplings,
 )
-from lsdflow.child_select import ChildSelectionPolicy, RewardChildPolicy
-from lsdflow.mode_select import (
+from hubbatching.child_select import ChildSelectionPolicy, RewardChildPolicy
+from hubbatching.mode_select import (
     DiverseThresholdModeSelector,
     ModeSelector,
     RewardOnlyModeSelector,
@@ -153,7 +153,7 @@ class _Probe:
 class AdaptiveGreedyHubStrategy:
     """Cost-benefit greedy hub selection over an already-enumerated pool.
 
-    Parameters mirror :class:`~lsdflow.campaign.HubBatchingStrategy` exactly, plus:
+    Parameters mirror :class:`~hubbatching.campaign.HubBatchingStrategy` exactly, plus:
 
     ``order``
         ``"greedy"`` (default) re-scores every remaining hub at every step and takes the argmax

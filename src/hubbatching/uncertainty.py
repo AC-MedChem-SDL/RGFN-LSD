@@ -1,7 +1,7 @@
-"""LSD-Flow uncertainty signal ``U(h)`` — the ``docs/LSD_FLOW_PROPOSAL.md`` §2 residual.
+"""hub-batching uncertainty signal ``U(h)`` — the ``docs/LSD_FLOW_PROPOSAL.md`` §2 residual.
 
 Each terminal child ``x_i`` of a hub ``h`` independently estimates the same ``F(h)`` via
-:func:`lsdflow.flow.log_flow_estimate`. Under a converged GFN they agree, so
+:func:`hubbatching.flow.log_flow_estimate`. Under a converged GFN they agree, so
 their spread is the **local flow-matching residual** — an epistemic-uncertainty signal
 obtained with no ensemble, no dropout, and no extra model:
 

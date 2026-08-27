@@ -2,7 +2,7 @@
 
 The purest diversity criterion: a hub's score is the number of **distinct** terminal children
 observed from it. By default "distinct" means distinct canonical keys; pass a ``mode_counter``
-(keys -> cluster count, e.g. Butina/ECFP from ``validation/lsdflow/metrics/diversity``) to
+(keys -> cluster count, e.g. Butina/ECFP from ``validation/hubbatching/metrics/diversity``) to
 score by chemical *modes* rather than raw structural distinctness — kept injectable so this
 production strategy stays free of the RDKit clustering that lives on the validation axis.
 """
@@ -13,7 +13,7 @@ from typing import Callable, Optional, Sequence
 
 import gin
 
-from lsdflow.hubs.base import HubSelectionStrategy
+from hubbatching.hubs.base import HubSelectionStrategy
 
 
 @gin.configurable()

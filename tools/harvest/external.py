@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Harvest the external head-to-head: LSD-Flow vs S3-GFN + MultiAiZ + SPARROW.
+"""Harvest the external head-to-head: hub-batching vs S3-GFN + MultiAiZ + SPARROW.
 
 Table 1's job is to show this is not an internal-comparison paper. Three rows do
 that, but only if each row names the configuration it was measured at -- because our
@@ -63,9 +63,9 @@ def main() -> int:
 
     root = args.campaign_root
     if root is None:
-        env = os.environ.get("LSDFLOW_CAMPAIGN_ROOT")
+        env = os.environ.get("HUBBATCH_CAMPAIGN_ROOT")
         if not env:
-            sys.exit("pass --campaign-root or set $LSDFLOW_CAMPAIGN_ROOT")
+            sys.exit("pass --campaign-root or set $HUBBATCH_CAMPAIGN_ROOT")
         root = Path(env)
     res = (root / "results").resolve()
     out = args.out or (Path(__file__).resolve().parents[2] / "artifacts" / "external")

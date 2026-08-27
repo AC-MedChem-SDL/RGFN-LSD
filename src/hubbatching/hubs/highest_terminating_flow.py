@@ -12,8 +12,8 @@ from __future__ import annotations
 
 import gin
 
-from lsdflow import flow as lsdflow_flow
-from lsdflow.hubs.base import HubSelectionStrategy
+from hubbatching import flow
+from hubbatching.hubs.base import HubSelectionStrategy
 
 
 @gin.configurable()
@@ -21,4 +21,4 @@ class HighestTerminatingFlowStrategy(HubSelectionStrategy):
     name = "highest_terminating_flow"
 
     def score(self, hub, dag) -> float:
-        return lsdflow_flow.total_terminating_log_flow(hub.child_log_flows())
+        return flow.total_terminating_log_flow(hub.child_log_flows())

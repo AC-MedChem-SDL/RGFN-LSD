@@ -1,4 +1,4 @@
-# LSD-Flow
+# hub-batching
 
 **Library cost, not per-molecule synthesizability.** A trained reaction-grounded
 GFlowNet's flow field already identifies which intermediates a screening library
@@ -42,7 +42,7 @@ lets this repo stay small enough to be read.
 ## Planned layout
 
 ```
-src/lsdflow/       the method: flow estimation, hub selection, child/mode
+src/hubbatching/       the method: flow estimation, hub selection, child/mode
                    policies, the count-once cost model
 third_party/rgfn/  vendored upstream RGFN, unmodified (see docs/PATCHES.md)
 benchmarks/        baseline generators and competing planners, as thin adapters

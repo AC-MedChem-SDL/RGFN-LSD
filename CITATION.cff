@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-title: "LSD-Flow: reaction budgets, not per-molecule synthesizability"
+title: "hub-batching: reaction budgets, not per-molecule synthesizability"
 message: "If you use this software, please cite it using these metadata."
 type: software
 license: Apache-2.0

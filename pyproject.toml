@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "lsdflow"
+name = "hubbatching"
 version = "0.1.0"
 description = "Post-hoc hub selection over a trained reaction GFlowNet: library cost, not per-molecule synthesizability"
 readme = "README.md"
@@ -20,7 +20,7 @@ classifiers = [
 
 # The core -- flow recovery, hub ranking, child/mode selection, the cost model --
 # needs no deep-learning stack. That is deliberate: the numbers a reader wants to
-# audit should not require installing torch to check. `lsdflow.cost` goes further
+# audit should not require installing torch to check. `hubbatching.cost` goes further
 # and imports nothing but the standard library.
 dependencies = [
   "gin-config>=0.5",
@@ -28,7 +28,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# Only lsdflow.adapters needs these: reading a trained checkpoint and enumerating
+# Only hubbatching.adapters needs these: reading a trained checkpoint and enumerating
 # a hub's children means running the generator.
 generators = ["torch>=2.0"]
 # reproduce/ writes its tables with the standard library alone and skips the plot if

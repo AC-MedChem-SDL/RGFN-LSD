@@ -46,15 +46,15 @@ def main() -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--research-root", type=Path, default=None,
                     help="the research tree's experiments/lsd_hubs dir "
-                         "(default: $LSDFLOW_RESEARCH_ROOT)")
+                         "(default: $HUBBATCH_RESEARCH_ROOT)")
     ap.add_argument("--out", type=Path, default=None)
     args = ap.parse_args()
 
     root = args.research_root
     if root is None:
-        env = os.environ.get("LSDFLOW_RESEARCH_ROOT")
+        env = os.environ.get("HUBBATCH_RESEARCH_ROOT")
         if not env:
-            sys.exit("pass --research-root or set $LSDFLOW_RESEARCH_ROOT")
+            sys.exit("pass --research-root or set $HUBBATCH_RESEARCH_ROOT")
         root = Path(env)
     root = root.resolve()
     out = args.out or (Path(__file__).resolve().parents[2] / "artifacts" / "mechanism")

@@ -62,15 +62,15 @@ def main() -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--matrix-root", type=Path, default=None,
                     help="the research tree's matrix16 dir "
-                         "(default: $LSDFLOW_MATRIX_ROOT)")
+                         "(default: $HUBBATCH_MATRIX_ROOT)")
     ap.add_argument("--out", type=Path, default=None)
     args = ap.parse_args()
 
     root = args.matrix_root
     if root is None:
-        env = os.environ.get("LSDFLOW_MATRIX_ROOT")
+        env = os.environ.get("HUBBATCH_MATRIX_ROOT")
         if not env:
-            sys.exit("pass --matrix-root or set $LSDFLOW_MATRIX_ROOT")
+            sys.exit("pass --matrix-root or set $HUBBATCH_MATRIX_ROOT")
         root = Path(env)
     root = root.resolve()
     if not root.is_dir():

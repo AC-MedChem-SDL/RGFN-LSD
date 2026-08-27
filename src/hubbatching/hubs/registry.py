@@ -4,23 +4,23 @@ trivial").
 The harness and configs refer to strategies by their short ``name``; calling code and gin
 configs can also reference the classes directly (each is ``@gin.configurable``). To add a
 strategy: implement it under this package, decorate with ``@gin.configurable``, and add it to
-``_STRATEGIES`` below (and make sure it is imported from ``lsdflow.hubs``).
+``_STRATEGIES`` below (and make sure it is imported from ``hubbatching.hubs``).
 """
 
 from __future__ import annotations
 
 from typing import Dict, List, Type
 
-from lsdflow.hubs.base import HubSelectionStrategy
-from lsdflow.hubs.highest_flow import HighestFlowStrategy
-from lsdflow.hubs.highest_terminating_flow import (
+from hubbatching.hubs.base import HubSelectionStrategy
+from hubbatching.hubs.highest_flow import HighestFlowStrategy
+from hubbatching.hubs.highest_terminating_flow import (
     HighestTerminatingFlowStrategy,
 )
-from lsdflow.hubs.highest_visitation import HighestVisitationStrategy
-from lsdflow.hubs.lowest_uncertainty import LowestUncertaintyStrategy
-from lsdflow.hubs.most_modes import MostModesStrategy
-from lsdflow.hubs.parent_of_topk import ParentOfTopKStrategy
-from lsdflow.hubs.ucb import UcbHubStrategy
+from hubbatching.hubs.highest_visitation import HighestVisitationStrategy
+from hubbatching.hubs.lowest_uncertainty import LowestUncertaintyStrategy
+from hubbatching.hubs.most_modes import MostModesStrategy
+from hubbatching.hubs.parent_of_topk import ParentOfTopKStrategy
+from hubbatching.hubs.ucb import UcbHubStrategy
 
 _STRATEGIES: Dict[str, Type[HubSelectionStrategy]] = {
     cls.name: cls

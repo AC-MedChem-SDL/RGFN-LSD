@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import gin
 
-from lsdflow.hubs.base import HubSelectionStrategy
+from hubbatching.hubs.base import HubSelectionStrategy
 
 
 @gin.configurable()

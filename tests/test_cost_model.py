@@ -18,7 +18,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from lsdflow.cost import FragmentCostTable  # noqa: E402
+from hubbatching.cost import FragmentCostTable  # noqa: E402
 
 
 def recipe(num_reactions: int, reactants=(), seed=None) -> dict:

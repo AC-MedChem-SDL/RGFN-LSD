@@ -1,7 +1,7 @@
 """Generator-specific code -- the only place the method touches a backbone.
 
 Everything above this package is generator-agnostic: it operates on
-:class:`~lsdflow.records.FlowRecord` and :class:`~lsdflow.dag.LiteHubDAG`, which any
+:class:`~hubbatching.records.FlowRecord` and :class:`~hubbatching.dag.LiteHubDAG`, which any
 generator can be made to emit. These modules are what produce them for a particular
 model, and they are the only modules that import ``torch`` or ``rgfn``.
 

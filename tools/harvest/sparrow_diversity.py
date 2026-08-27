@@ -12,7 +12,7 @@ It is release tooling, not part of the artifact -- a reviewer cannot run it and 
 not need to, because its *output* is committed.
 
 Usage:
-    python3 tools/harvest/sparrow_diversity.py                 # $LSDFLOW_SCRATCH or $SCRATCH
+    python3 tools/harvest/sparrow_diversity.py                 # $HUBBATCH_SCRATCH or $SCRATCH
     python3 tools/harvest/sparrow_diversity.py --scratch-root /path/to/runs
 """
 
@@ -86,7 +86,9 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--scratch-root", type=Path, default=None,
-                    help="run tree root (default: $LSDFLOW_SCRATCH, else $SCRATCH)")
+                    help="run tree root (default: $HUBBATCH_SCRATCH, else $SCRATCH)")
+    # NOTE: "lsdflow_sparrow" is the literal directory name on the cluster and is
+    # deliberately NOT renamed with the package -- it names a path that exists.
     ap.add_argument("--subdir", default="rgfn_runs/lsdflow_sparrow/bc_sb",
                     help="path to the bc_sb run tree under the root")
     ap.add_argument("--out", type=Path, default=None,
@@ -95,9 +97,9 @@ def main() -> int:
 
     root = args.scratch_root
     if root is None:
-        env = os.environ.get("LSDFLOW_SCRATCH") or os.environ.get("SCRATCH")
+        env = os.environ.get("HUBBATCH_SCRATCH") or os.environ.get("SCRATCH")
         if not env:
-            sys.exit("no --scratch-root and neither $LSDFLOW_SCRATCH nor $SCRATCH is set")
+            sys.exit("no --scratch-root and neither $HUBBATCH_SCRATCH nor $SCRATCH is set")
         root = Path(env)
     base = (root / args.subdir).resolve()
     if not base.is_dir():

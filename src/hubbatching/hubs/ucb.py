@@ -10,7 +10,7 @@ acquisition score is the classic explore/exploit blend
 - **reward(h)** — the *exploitation* term (default: the hub's best-child reward, oriented so higher =
   better regardless of the oracle's sign convention).
 - **U(h)** — the *exploration* term: the §2 flow-matching residual
-  :func:`lsdflow.uncertainty.flow_matching_uncertainty` (variance of the per-child ``log F_hat``).
+  :func:`hubbatching.uncertainty.flow_matching_uncertainty` (variance of the per-child ``log F_hat``).
 - **z(·)** — the two terms live on different scales (proxy reward ~ single digits; ``U(h)`` = variance
   of log-flow), so each is **z-scored across the round's eligible hubs** before blending. That makes
   ``λ`` a clean, scale-free relative weight (``λ = 1`` ⇒ equal pull) rather than a target-specific fudge
@@ -32,8 +32,8 @@ from typing import Callable, Dict, List
 
 import gin
 
-from lsdflow import uncertainty
-from lsdflow.hubs.base import HubSelectionStrategy
+from hubbatching import uncertainty
+from hubbatching.hubs.base import HubSelectionStrategy
 
 _NEG_INF = float("-inf")
 

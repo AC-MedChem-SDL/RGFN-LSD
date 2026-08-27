@@ -21,7 +21,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from lsdflow.mode_select import passes_reward_gate  # noqa: E402
+from hubbatching.mode_select import passes_reward_gate  # noqa: E402
 
 # Two genuinely different scaffolds, and a near-duplicate of the first.
 BENZ = "c1ccccc1C(=O)NC1CCCCC1"
@@ -66,7 +66,7 @@ class TestDiversityFilter:
         pytest.importorskip("rdkit", reason="RDKit required for fingerprints")
 
     def selector(self, **kw):
-        from lsdflow.mode_select import DiverseThresholdModeSelector
+        from hubbatching.mode_select import DiverseThresholdModeSelector
         kw.setdefault("reward_threshold", 7.0)
         kw.setdefault("similarity", 0.5)
         return DiverseThresholdModeSelector(**kw)

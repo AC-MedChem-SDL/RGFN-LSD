@@ -10,7 +10,7 @@ surrogate rewards (sEH/DRD2); budget-capped for docking (§6 — hence ``max_chi
 It reuses the sampled-path machinery exactly: per enumerated child it rebuilds the micro-step
 trajectory ``h -[A:template -> B:reactant* -> C:commit]-> A(x,k+1) -[stop]-> Terminal(x)`` using
 the env's **own** forward/backward action spaces (the same objects the sampler records), then
-hands the batch to :func:`lsdflow.rgfn_extract.extract_flow_records`. So the
+hands the batch to :func:`hubbatching.rgfn_extract.extract_flow_records`. So the
 enumerated flow terms (``P_F``, ``P_F(stop)``, ``P_B``, ``R``) are computed by identical code to
 the sampled ones and the enumerated ``FlowRecord``s merge with / are directly comparable to the
 sampled DAG.
@@ -23,8 +23,8 @@ from typing import List, Optional, Tuple
 
 import torch
 
-from lsdflow.records import FlowRecord
-from lsdflow.adapters.rgfn_extract import extract_flow_records
+from hubbatching.records import FlowRecord
+from hubbatching.adapters.rgfn_extract import extract_flow_records
 from rgfn.api.trajectories import Trajectories
 from rgfn.gfns.reaction_gfn.api.data_structures import Molecule
 from rgfn.gfns.reaction_gfn.api.reaction_api import (

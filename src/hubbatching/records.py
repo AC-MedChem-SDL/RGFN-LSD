@@ -1,17 +1,17 @@
-"""Model-agnostic data records + duck-type protocols for LSD-Flow hub analysis.
+"""Model-agnostic data records + duck-type protocols for hub-batching hub analysis.
 
 ``docs/LSD_FLOW_PROPOSAL.md`` §3b: the selection strategies are written against a
 lightweight **HubDAG-shaped protocol** so they never import a concrete DAG. In the
-in-process path they operate on :class:`~lsdflow.dag.LiteHubDAG`
+in-process path they operate on :class:`~hubbatching.dag.LiteHubDAG`
 built from the trajectories the loop already sampled (single env, no adapter); in the
-validation world they operate on the cross-env rich DAG in ``validation/lsdflow/dag``. Both
+validation world they operate on the cross-env rich DAG in ``validation/hubbatching/dag``. Both
 expose the fields declared here, so one set of strategies serves both.
 
 :class:`FlowRecord` is the single shared unit both DAG builders consume: one observed
 ``h --[one reaction]--> x --[stop]--> Terminal`` transition, carrying the four §2 log-terms
 plus the canonical node keys (§6). It is produced per model — for RGFN by
-``lsdflow.rgfn_extract`` (rgfn-native, in-env), for the cross-env baselines by
-each ``validation/lsdflow/adapters`` worker.
+``hubbatching.rgfn_extract`` (rgfn-native, in-env), for the cross-env baselines by
+each ``validation/hubbatching/adapters`` worker.
 """
 
 from __future__ import annotations

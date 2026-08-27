@@ -11,10 +11,10 @@ Roots, in resolution order:
 ==================  ====================================  ==========================
 function            environment variable                  default
 ==================  ====================================  ==========================
-:func:`repo_root`   ``LSDFLOW_REPO``                      inferred from this file
-:func:`data_dir`    ``LSDFLOW_DATA``                      ``<repo>/data``
-:func:`artifacts`   ``LSDFLOW_ARTIFACTS``                 ``<repo>/artifacts``
-:func:`scratch`     ``LSDFLOW_SCRATCH`` / ``SCRATCH``     ``<repo>/runs``
+:func:`repo_root`   ``HUBBATCH_REPO``                      inferred from this file
+:func:`data_dir`    ``HUBBATCH_DATA``                      ``<repo>/data``
+:func:`artifacts`   ``HUBBATCH_ARTIFACTS``                 ``<repo>/artifacts``
+:func:`scratch`     ``HUBBATCH_SCRATCH`` / ``SCRATCH``     ``<repo>/runs``
 ==================  ====================================  ==========================
 
 ``artifacts()`` is the one that matters for reproduction: it holds the committed
@@ -40,8 +40,8 @@ def _from_env(*names: str) -> Path | None:
 
 
 def repo_root() -> Path:
-    """The checkout root: ``src/lsdflow/paths.py`` -> three parents up."""
-    override = _from_env("LSDFLOW_REPO")
+    """The checkout root: ``src/hubbatching/paths.py`` -> three parents up."""
+    override = _from_env("HUBBATCH_REPO")
     if override is not None:
         return override.resolve()
     return Path(__file__).resolve().parents[2]
@@ -49,12 +49,12 @@ def repo_root() -> Path:
 
 def data_dir() -> Path:
     """Inputs: building-block libraries, receptors, curated molecule sets."""
-    return (_from_env("LSDFLOW_DATA") or repo_root() / "data").resolve()
+    return (_from_env("HUBBATCH_DATA") or repo_root() / "data").resolve()
 
 
 def artifacts() -> Path:
     """Committed intermediates that ``reproduce/`` reads. Small, CSV/JSON only."""
-    return (_from_env("LSDFLOW_ARTIFACTS") or repo_root() / "artifacts").resolve()
+    return (_from_env("HUBBATCH_ARTIFACTS") or repo_root() / "artifacts").resolve()
 
 
 def scratch() -> Path:
@@ -63,7 +63,7 @@ def scratch() -> Path:
     Falls back to ``$SCRATCH`` because cluster environments already set it, so a
     job script needs no extra configuration to write somewhere sensible.
     """
-    return (_from_env("LSDFLOW_SCRATCH", "SCRATCH") or repo_root() / "runs").resolve()
+    return (_from_env("HUBBATCH_SCRATCH", "SCRATCH") or repo_root() / "runs").resolve()
 
 
 def describe() -> str:
@@ -74,11 +74,11 @@ def describe() -> str:
     """
     rows = []
     for name, fn, envs in (
-        ("repo", repo_root, ("LSDFLOW_REPO",)),
-        ("data", data_dir, ("LSDFLOW_DATA",)),
-        ("artifacts", artifacts, ("LSDFLOW_ARTIFACTS",)),
-        ("scratch", scratch, ("LSDFLOW_SCRATCH", "SCRATCH")),
+        ("repo", repo_root, ("HUBBATCH_REPO",)),
+        ("data", data_dir, ("HUBBATCH_DATA",)),
+        ("artifacts", artifacts, ("HUBBATCH_ARTIFACTS",)),
+        ("scratch", scratch, ("HUBBATCH_SCRATCH", "SCRATCH")),
     ):
         source = next((f"${e}" for e in envs if os.environ.get(e)), "default")
         rows.append(f"  {name:<10} {fn()}  ({source})")
-    return "lsdflow paths:\n" + "\n".join(rows)
+    return "hubbatching paths:\n" + "\n".join(rows)

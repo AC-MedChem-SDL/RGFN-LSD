@@ -1,4 +1,4 @@
-"""Incremental mode-acceptance strategies for the LSD-Flow campaign (Logs/028).
+"""Incremental mode-acceptance strategies for the hub-batching campaign (Logs/028).
 
 A "mode" (RGFN / SCENT / ``[bengio2021gflownet]`` definition) is a molecule that is both (a) above
 a reward/binding threshold and (b) Tanimoto-dissimilar from every mode already accepted. The

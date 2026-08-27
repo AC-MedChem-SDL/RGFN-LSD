@@ -43,8 +43,8 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from typing import Callable, Dict, List, Optional, Sequence, Set, Tuple
 
-from lsdflow.child_select import ChildSelectionPolicy, RewardChildPolicy
-from lsdflow.mode_select import DiverseThresholdModeSelector, ModeSelector
+from hubbatching.child_select import ChildSelectionPolicy, RewardChildPolicy
+from hubbatching.mode_select import DiverseThresholdModeSelector, ModeSelector
 
 Budget = Optional[Tuple[str, float]]  # ("reactions", N) | ("modes", N) | None (full curve)
 

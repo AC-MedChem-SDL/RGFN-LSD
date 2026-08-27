@@ -1,4 +1,4 @@
-"""LSD-Flow: post-hoc hub selection over a trained reaction GFlowNet.
+"""hub-batching: post-hoc hub selection over a trained reaction GFlowNet.
 
 The method reads a *trained, frozen* generator -- no retraining, no reward change --
 recovers the state flow at pre-terminal intermediates ("hubs") by rearranging
@@ -24,9 +24,9 @@ routes, and keeping it that way means the number a paper quotes can be audited
 without installing a deep-learning stack.
 """
 
-from lsdflow import hubs  # noqa: F401
-from lsdflow import paths  # noqa: F401
-from lsdflow.campaign import (  # noqa: F401
+from hubbatching import hubs  # noqa: F401
+from hubbatching import paths  # noqa: F401
+from hubbatching.campaign import (  # noqa: F401
     BestCandidateStrategy,
     CampaignPoint,
     CampaignResult,
@@ -38,12 +38,12 @@ from lsdflow.campaign import (  # noqa: F401
     fragment_fanout,
     rank_fragments,
 )
-from lsdflow.child_select import (  # noqa: F401
+from hubbatching.child_select import (  # noqa: F401
     ChildSelectionPolicy,
     FreeFragChildPolicy,
     RewardChildPolicy,
     available_child_policies,
     make_child_policy,
 )
-from lsdflow.dag import ChildEstimate, Hub, LiteHubDAG  # noqa: F401
-from lsdflow.records import FlowRecord  # noqa: F401
+from hubbatching.dag import ChildEstimate, Hub, LiteHubDAG  # noqa: F401
+from hubbatching.records import FlowRecord  # noqa: F401

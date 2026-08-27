@@ -3,9 +3,9 @@
 A hub-selection strategy answers "which pre-terminal states are the best batchable
 neighborhoods?" It is a batch-selection strategy in the usual sense,
 which is why it lives here. Strategies are **protocol-pure**: they read only the duck-typed
-fields declared in :mod:`lsdflow.records` (so they work identically on the
+fields declared in :mod:`hubbatching.records` (so they work identically on the
 lightweight AL-path DAG and the validation rich DAG) and defer all flow/uncertainty math to
-:mod:`lsdflow.flow`. A concrete strategy implements :meth:`score` (higher = better); the base
+:mod:`hubbatching.flow`. A concrete strategy implements :meth:`score` (higher = better); the base
 handles gating + sorting.
 """
 
