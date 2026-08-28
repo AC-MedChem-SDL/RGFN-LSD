@@ -49,7 +49,10 @@ def main() -> int:
         sys.exit("no row marked as the headline config")
     ours = int(headline["modes_lower"])
 
-    print(f"Table 1 — modes delivered at 100 reactions (sEH, gate {headline['gate']})\n")
+    seeds = {r.get("seed") for r in rows if r.get("seed")}
+    seed_s = f"seed {seeds.pop()}" if len(seeds) == 1 else f"seeds {sorted(seeds)}"
+    print(f"Table 1 — modes delivered at 100 reactions "
+          f"(sEH, gate {headline['gate']}, {seed_s})\n")
     # The glyph lives in a variable, not inside the f-string expression: Python 3.11
     # rejects a backslash escape there (PEP 701 only relaxed it in 3.12), and this
     # project supports 3.10+.
@@ -89,6 +92,9 @@ def main() -> int:
     # The verification sentence: SPARROW pricing OUR selection, not competing with it.
     prov = json.loads((src.parent / "provenance.json").read_text())
     v = prov.get("verification")
+    for i, note in enumerate(prov.get("footnotes") or [], start=1):
+        # These go UNDER the table in the manuscript, not in it.
+        print(f"\n  [{i}] {note}")
     if v:
         print(f"\n  Verification (a sentence, not a row): we independently priced "
               f"hub-batching's own\n  selection with SPARROW and the two agree to "

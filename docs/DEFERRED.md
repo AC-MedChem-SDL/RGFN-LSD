@@ -47,6 +47,55 @@ compute; both need space.
 
 # Needs refreshing before publication (not deferred — dated)
 
+## ~~Table 1's competitor was trained at a much larger budget~~ RESOLVED 2026-08-28
+
+The `OLDBUDGET_` pools held S3-GFN checkpoints trained far longer than the generators
+they were compared against, and sampled too thinly to route 500 molecules. Both are now
+fixed: budget-matched checkpoints with sampling raised until the routed pool reaches 500.
+
+**The headline moved, substantially, and in the competitor's favour.** On seed 43 at
+gate 7.0, both solves optimal:
+
+| arm | OLDBUDGET pool | budget-matched pool |
+|---|---|---|
+| SPARROW selects | 24 modes (3.42x) | **46 modes (1.76x)** |
+| greedy selection | 38 modes (2.16x) | **55 modes (1.47x)** |
+
+A properly-sampled, budget-matched S3-GFN is a far stronger opponent, and 1.47x against
+its best configuration is the number to quote. The old figures are superseded, not merely
+older, and must not be cited.
+
+**Still open on this arm:**
+
+- **Seeds 42 and 44** have budget-matched pools (`_big_N500`) but no select/greedy solves
+  yet, so Table 1 is n=1. That matters more now than it did at 3.42x, because a 1.47x
+  margin is small enough that seed variance could move it materially.
+- **The diversity-enforced pool.** A "pruned" variant -- 500 mutually different molecules
+  rather than the 500 highest-scoring -- exists for seed 43 and gives a different picture.
+  It is under review rather than quoted, and the table carries a line saying so. Deciding
+  which pool is the fair comparison is a real methodological question, not a formatting
+  one: pruning changes what the competitor is optimising over, and Logs/067 exists
+  precisely because the answer is not obvious.
+
+## Others held back for the workshop
+
+- **Two-knob threshold surfaces** (reward bar × diversity cutoff, 380/380 comparable
+  cells with no crossover). Logs/052, Logs/055. Strong generality evidence, needs a
+  full figure.
+- **Filter ablation** (both halves of the mode definition are load-bearing; dropping
+  either looks ~12–13% cheaper while the library collapses). Logs/054. One sentence
+  plus an appendix pointer in the workshop version.
+- **Construct-validity ladder** (walking the metric's low end recovers fragment
+  screening, then parallel synthesis, then late-stage diversification). Reads better to
+  a chemistry audience than an ML one, so it is a candidate to *promote* rather than cut
+  if the journal version is the target.
+- **Chemistry gallery** (closest still-distinct pair at each τ, with route trees).
+  Makes τ interpretable to a chemist. Appendix asset.
+
+---
+
+# Needs refreshing before publication (not deferred — dated)
+
 ## Table 1's competitor was trained at a much larger budget
 
 `OLDBUDGET_` on the S3-GFN pool directories means what it says: those checkpoints were

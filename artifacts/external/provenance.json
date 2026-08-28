@@ -1,25 +1,19 @@
 {
   "harvested_from_subdir": "experiments/lsd_hubs/campaign/results",
   "n_rows": 3,
-  "notes": [
-    "The diversity-aware greedy arm is EXACT at R=100: 38 modes for 98 reactions, with the next mode taking it to 101. Read off a 1-mode grid, every point Optimal."
-  ],
+  "notes": [],
   "sources": [
     {
-      "file": "s3gfn_seh_select_N500/select_frontier.csv",
-      "md5": "177bf3fc081104707377599f1e72930d"
+      "file": "s3gfn_seh_seed43_big_select_N500/select_frontier.csv",
+      "md5": "a660d6d11af83a9d6e6613ba1102810f"
     },
     {
-      "file": "s3gfn_seh_greedy_N500/greedy_frontier.csv",
-      "md5": "a9562d157cdf85791808b03cd1d4800b"
+      "file": "s3gfn_seh_seed43_big_greedy_FINE/greedy_frontier.csv",
+      "md5": "e4a5ab9d9e5691424536a19f40fc24f9"
     },
     {
-      "file": "scent_seh_freefrag/summary.json",
-      "md5": "ee6564663a18d8bc415946c25b9f6d42"
-    },
-    {
-      "file": "scent_seh_freefrag/pareto.csv",
-      "md5": "e8ee66d440debd9845cb005985fa1e90"
+      "file": "artifacts/sparrow_diversity/ours_r100.csv",
+      "md5": "f20fa89fadccec65057f4a48035ce4eb"
     }
   ],
   "verification": {
@@ -28,5 +22,9 @@
     "direction": "count-once charges what we actually spent; SPARROW charges only what hindsight needed, so our published cost is conservative",
     "source": "Logs/049 + its re-audit recorded in RESEARCH_CONTEXT",
     "caveat": "DRD2 at K=20 reads 12.69%, traced entirely to pre-select-K's 26 up-front reactions (~17 unused by a 100-mode selection); at K=0 it is exactly 0.00% (110/110)"
-  }
+  },
+  "footnotes": [
+    "We are also exploring giving the retrosynthesis pipeline a diversity-enforced candidate pool rather than the highest-scoring one; those results are not yet included.",
+    "A selection-only control on DRD2 isolates the chooser from the candidates: handing SPARROW our own enumerated children -- a byte-identical pool, verified by digest -- it recovers 28 and 15 distinct molecules across two seeds against our 78, both solves optimal. Our arm sees only already-stocked fragments while SPARROW sees the whole enumeration, so that margin is a lower bound."
+  ]
 }

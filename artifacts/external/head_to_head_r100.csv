@@ -1,4 +1,4 @@
-arm,config,modes_at_100rxn,side,exact,gate,is_headline_config,modes_lower,modes_upper,n_selected,solver,used_rxns
-S3-GFN → retrosynthesis → SPARROW selects,SPARROW chooses under a 100-reaction budget,24,competitor,True,7.0,,24,24,89,Optimal,100
-S3-GFN → retrosynthesis → greedy selection,their strongest pipeline; frontier sampled every 25 modes,38,competitor,True,7.0,,38,38,38,greedy,98
-SCENT → hub-batching,"free-frag child policy, no pre-selected fragments",82,ours,True,7.0,True,82,82,,greedy walk,100
+arm,config,modes_at_100rxn,side,exact,gate,is_headline_config,modes_lower,modes_upper,n_selected,seed,solver,used_rxns
+S3-GFN → retrosynthesis → SPARROW selects,SPARROW chooses under a 100-reaction budget; no diversity term,46,competitor,True,7.0,,46,46,100,43,Optimal,100
+S3-GFN → retrosynthesis → greedy selection,their strongest pipeline; frontier priced every 1 modes,55,competitor,True,7.0,,55,55,55,43,greedy,99
+SCENT → hub-batching,"free_frag child policy, K=0",81,ours,True,7.0,True,81,81,81,43,greedy walk,100

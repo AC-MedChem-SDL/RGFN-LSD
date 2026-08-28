@@ -35,6 +35,18 @@ from _common import md5, redact_paths  # noqa: E402
 #       selection and uses SPARROW only to PRICE it; SPARROW never chooses anything.
 #       It is verification, and it belongs in a sentence (see VERIFICATION below),
 #       not in a row where a reader would read it as a rival pipeline.
+# Lines that belong UNDER the table, not in it.
+FOOTNOTES = [
+    "We are also exploring giving the retrosynthesis pipeline a diversity-enforced "
+    "candidate pool rather than the highest-scoring one; those results are not yet "
+    "included.",
+    "A selection-only control on DRD2 isolates the chooser from the candidates: handing "
+    "SPARROW our own enumerated children -- a byte-identical pool, verified by digest -- "
+    "it recovers 28 and 15 distinct molecules across two seeds against our 78, both "
+    "solves optimal. Our arm sees only already-stocked fragments while SPARROW sees the "
+    "whole enumeration, so that margin is a lower bound.",
+]
+
 OURS = [
     ("scent_seh_freefrag", "free-frag child policy, no pre-selected fragments", True),
 ]
@@ -73,98 +85,85 @@ def main() -> int:
 
     rows, sources, notes = [], [], []
 
-    # ---- competitor arm 1: SPARROW chooses, at an exact R=100 solve ----
-    sel = res / "s3gfn_seh_select_N500" / "select_frontier.csv"
+    # ---- the competitor, on the budget-matched pool ----
+    # PAIRED ON SEED 43, because that is the seed whose budget-matched pool has both
+    # solves. The earlier seed-42 numbers (24 and 38) came from the OLDBUDGET pool --
+    # an S3-GFN trained far longer than the generators it is compared against, and
+    # sampled too thinly to route 500 molecules -- and are superseded, not merely older.
+    #
+    # NAIVE POOL ONLY. A diversity-enforced ("pruned") variant exists and produces a
+    # different picture; it is being checked before it is quoted, and the table says so
+    # rather than silently reporting whichever is kinder.
+    SEED = 43
+    sel = res / f"s3gfn_seh_seed{SEED}_big_select_N500" / "select_frontier.csv"
     if sel.is_file():
         with sel.open() as fh:
             for r in csv.DictReader(fh):
-                if r["budget_rxns"] != "100":
+                if str(r.get("budget_rxns")) != "100":
                     continue
+                n = r.get("n_modes") or r.get("n_modes_kept")
                 rows.append({
-                    "arm": "S3-GFN \u2192 retrosynthesis \u2192 SPARROW selects", "side": "competitor",
-                    "config": "SPARROW chooses under a 100-reaction budget",
-                    "modes_at_100rxn": r["n_modes"], "modes_lower": r["n_modes"],
-                    "modes_upper": r["n_modes"], "used_rxns": r["used_rxns"],
-                    "n_selected": r["n_selected"], "solver": r["milp_status"],
-                    "exact": True, "gate": 7.0,
+                    "arm": "S3-GFN \u2192 retrosynthesis \u2192 SPARROW selects",
+                    "side": "competitor", "seed": SEED,
+                    "config": "SPARROW chooses under a 100-reaction budget; no diversity term",
+                    "modes_at_100rxn": n, "modes_lower": n, "modes_upper": n,
+                    "used_rxns": r.get("used_rxns"), "n_selected": r.get("n_selected"),
+                    "solver": r.get("milp_status"), "exact": True, "gate": 7.0,
                 })
-        sources.append({"file": "s3gfn_seh_select_N500/select_frontier.csv", "md5": md5(sel)})
+        sources.append({"file": sel.parent.name + "/select_frontier.csv", "md5": md5(sel)})
 
-    # ---- competitor arm 2: their strongest -- diversity-aware greedy ----
-    # Sampled every 25 modes, so R=100 falls between two rows. Greedy mode selection
-    # is prefix-stable, so trimming is exact -- but only to the sampled grid, which
-    # means this arm can be BOUNDED at R=100, not pointed. Reporting the upper bound
-    # as if measured would overstate the competitor; reporting the lower bound as if
-    # measured would flatter us. So carry the interval.
-    # Prefer the 1-mode-granularity re-run when it exists: the original frontier was
-    # sampled every 25 modes, which can only BOUND the readout at 100 reactions.
-    gre = res / "s3gfn_seh_greedy_N500_fine" / "greedy_frontier.csv"
+    # Prefer the 1-mode re-price when present: the 5-mode grid could only bound R=100.
+    gre = res / f"s3gfn_seh_seed{SEED}_big_greedy_FINE" / "greedy_frontier.csv"
     if not gre.is_file():
-        gre = res / "s3gfn_seh_greedy_N500" / "greedy_frontier.csv"
+        gre = res / f"s3gfn_seh_seed{SEED}_big_greedy_N500" / "greedy_frontier.csv"
     if gre.is_file():
         with gre.open() as fh:
-            grid = [(int(r["n_modes"]), int(r["used_rxns"])) for r in csv.DictReader(fh)]
-        below = [m for m, u in grid if u <= 100]
-        above = [m for m, u in grid if u > 100]
-        lo = max(below) if below else 0
-        hi = (min(above) - 1) if above else lo
-        rows.append({
-            "arm": "S3-GFN \u2192 retrosynthesis \u2192 greedy selection", "side": "competitor",
-            "config": "their strongest pipeline; frontier sampled every 25 modes",
-            "modes_at_100rxn": str(lo) if lo == hi else f"{lo}-{hi}",
-            "modes_lower": lo, "modes_upper": hi,
-            "used_rxns": max((u for m, u in grid if u <= 100), default=0),
-            "n_selected": lo, "solver": "greedy",
-            "exact": lo == hi, "gate": 7.0,
-        })
+            grid = [(int(r["n_modes"]), int(r["used_rxns"]), r.get("milp_status"))
+                    for r in csv.DictReader(fh)]
         step = (grid[1][0] - grid[0][0]) if len(grid) > 1 else 0
-        if lo == hi:
-            notes.append(f"The diversity-aware greedy arm is EXACT at R=100: {lo} modes for "
-                         f"{max(u for m, u in grid if u <= 100)} reactions, with the next mode "
-                         f"taking it to {min(u for m, u in grid if u > 100)}. Read off a "
-                         f"{step}-mode grid, every point Optimal.")
-        else:
-            notes.append(f"The diversity-aware greedy arm is an INTERVAL [{lo}, {hi}] at R=100: "
-                         f"its frontier is sampled every {step} modes, so no grid point lands at "
-                         f"100 reactions. Re-run it at 1-mode granularity to make this exact -- "
-                         f"greedy mode selection is prefix-stable, so it costs seconds.")
-        sources.append({"file": "s3gfn_seh_greedy_N500/greedy_frontier.csv", "md5": md5(gre)})
-
-    # ---- our arms, every config, so the spread is visible ----
-    for tag, config, headline in OURS:
-        summary = res / tag / "summary.json"
-        # Sweep-style runs write sweep_summary.json instead; without this fallback the
-        # gate reads as None and the row cannot be checked against the others.
-        if not summary.is_file() and (res / tag / "sweep_summary.json").is_file():
-            summary = res / tag / "sweep_summary.json"
-        pareto = res / tag / "pareto.csv"
-        modes = gate = None
-        if summary.is_file():
-            meta = json.loads(summary.read_text())
-            hb = meta.get("hub_batching") or (meta.get("arms") or {}).get("hub_batching") or {}
-            modes = hb.get("case1_modes_at_100rxn")
-            gate = meta.get("reward_threshold")
-        if modes is None and pareto.is_file():
-            with pareto.open() as fh:
-                for r in csv.DictReader(fh):
-                    if r.get("strategy") == "hub_batching" and r.get("cutoff") == "0.5":
-                        modes = r.get("modes_at_100rxn")
-            if summary.is_file() and gate is None:
-                gate = json.loads(summary.read_text()).get("reward_threshold")
-        if modes is None:
-            continue
+        below = [(m, u) for m, u, _ in grid if u <= 100]
+        above = [(m, u) for m, u, _ in grid if u > 100]
+        lo = max(m for m, _ in below) if below else 0
+        hi = (min(m for m, _ in above) - 1) if above else lo
         rows.append({
-            # Name the generator: the competitor rows say which model produced their
-            # pool, and ours should too rather than looking model-agnostic.
-            "arm": "SCENT \u2192 hub-batching" + ("" if headline else f" \u2014 {tag}"),
-            "side": "ours", "config": config,
-            "modes_at_100rxn": modes, "modes_lower": modes, "modes_upper": modes,
-            "used_rxns": 100, "n_selected": "", "solver": "greedy walk",
-            "exact": True, "gate": gate, "is_headline_config": headline,
+            "arm": "S3-GFN \u2192 retrosynthesis \u2192 greedy selection",
+            "side": "competitor", "seed": SEED,
+            "config": f"their strongest pipeline; frontier priced every {step} modes",
+            "modes_at_100rxn": str(lo), "modes_lower": lo, "modes_upper": hi,
+            "used_rxns": max((u for _, u in below), default=0),
+            "n_selected": lo, "solver": "greedy", "exact": lo == hi, "gate": 7.0,
         })
-        for f in (summary, pareto):
-            if f.is_file():
-                sources.append({"file": f"{tag}/{f.name}", "md5": md5(f)})
+        if lo != hi:
+            notes.append(
+                f"The greedy-selection arm is priced every {step} modes, so R=100 falls "
+                f"between grid points: {lo} modes fit in "
+                f"{max(u for _, u in below)} reactions and the next point needs "
+                f"{min(u for _, u in above)}. The readout is therefore [{lo}, {hi}] and "
+                f"{lo} is quoted, which is the conservative end for us. A 1-mode "
+                f"re-price makes it exact and costs seconds, since greedy mode selection "
+                f"is prefix-stable.")
+        sources.append({"file": gre.parent.name + "/greedy_frontier.csv", "md5": md5(gre)})
+
+    # ---- our arm, on the SAME seed, from the harvested per-seed values ----
+    ours_csv = (Path(__file__).resolve().parents[2] / "artifacts" / "sparrow_diversity"
+                / "ours_r100.csv")
+    if ours_csv.is_file():
+        with ours_csv.open() as fh:
+            for r in csv.DictReader(fh):
+                if int(r["seed"]) != SEED:
+                    continue
+                n = int(r["n_modes_kept"])
+                rows.append({
+                    "arm": "SCENT \u2192 hub-batching", "side": "ours", "seed": SEED,
+                    "config": f"{r.get('child_policy')} child policy, "
+                              f"K={r.get('prebuild_k')}",
+                    "modes_at_100rxn": n, "modes_lower": n, "modes_upper": n,
+                    "used_rxns": r.get("used_rxns"), "n_selected": n,
+                    "solver": "greedy walk", "exact": True, "gate": r.get("gate"),
+                    "is_headline_config": True,
+                })
+        sources.append({"file": "artifacts/sparrow_diversity/ours_r100.csv",
+                        "md5": md5(ours_csv)})
 
     if not rows:
         sys.exit(f"nothing harvested from {res}")
@@ -179,6 +178,7 @@ def main() -> int:
         "harvested_from_subdir": "experiments/lsd_hubs/campaign/results",
         "n_rows": len(rows), "notes": notes, "sources": sources,
         "verification": VERIFICATION,
+        "footnotes": FOOTNOTES,
     }, indent=2) + "\n")
 
     print(f"harvested {len(rows)} arms")
