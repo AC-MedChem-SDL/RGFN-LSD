@@ -1,0 +1,231 @@
+<div class="wrap">
+<header class="top">
+  <p class="eyebrow">Evidence review &middot; workshop submission</p>
+  <h1>Five exhibits for a five-page paper</h1>
+  <p class="lede">Every number regenerates from committed data in this repository &mdash;
+  no cluster, no GPU, no generator. Rebuilt after a verification pass against the
+  experiment logs, which corrected three things.</p>
+  <div class="meta">
+    <span><b>GEM</b> NeurIPS 2026 &middot; deadline Aug 30</span>
+    <span><b>5 pages</b> &middot; appendix is free</span>
+    <span>artifact <b>__ZIPMB__ MB</b> / 40 MB</span>
+    <span><b>__NTESTS__</b> tests green</span>
+  </div>
+</header>
+
+<section class="exhibit">
+  <p class="eyebrow">Corrections from the verification pass</p>
+  <h2>Three things the logs said and I had not</h2>
+  <div class="corr">
+    <div class="c-item"><span class="c-tag">Yield</span>
+      <p>Logs/071 defines yield as <em>the fraction of material that survives a step</em>
+      &mdash; a mass fraction, not a probability of success. And the analysis code
+      reinterprets it as a coin flip (<span class="m">X_b ~ Bern(q)</span>), which is what
+      the old error bars were drawing. The appendix figure now shows mean route yield,
+      which needs no such assumption.</p></div>
+    <div class="c-item"><span class="c-tag">&ldquo;One plate&rdquo;</span>
+      <p>Removed. A plate runs one reaction across many reagents; the children of a hub
+      are generally made by different reactions. Logs/073 does measure genuine parallel
+      arrays &mdash; but calls itself a curiosity, not a publication claim, and is
+      unreplicated across generators, so it is not substituted in.</p></div>
+    <div class="c-item"><span class="c-tag">A stale number</span>
+      <p>Our cost model was quoted as &ldquo;0.0&ndash;3.1% off optimal&rdquo;. That was
+      measured on the <em>naive</em> child policy. Re-audited against the headline
+      configuration it is <strong>__GAP__%</strong>, and it now appears as Table 1's
+      verification line rather than as a row.</p></div>
+  </div>
+</section>
+
+<section class="exhibit">
+  <p class="eyebrow">Figure 1 &middot; the headline</p>
+  <h2>Distinct molecules on a fixed 100-reaction budget</h2>
+  <div class="prose"><p>Four model sections; within each, the reward generators; within
+  each of those, the two selection strategies adjacent, because that is the comparison the
+  eye should make first. Bars are the mean over seeds, whiskers the full range. 6TD3 is
+  hatched: its gate was never calibrated against property-matched decoys, and Logs/072
+  then measured the generator exploiting it.</p></div>
+  <figure><div class="plate"><img src="__FIG1__" alt="Grouped bar chart: four model sections, each with four reward generators, each with a blue hub-batching bar beside a grey best-candidate bar. 6TD3 bars are hatched."></div></figure>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Budget</th><th>Scope</th><th class="num">Median (&uarr;)</th>
+      <th class="num">Comparable</th><th class="num">Range</th>
+      <th class="num">BC wins</th></tr></thead>
+    <tbody>__F1__</tbody></table></div>
+  <div class="note"><span class="tag">Both bars, not one</span>
+    sEH is reported at the calibrated bar <em>and</em> the paper-comparable one rather
+    than unified, because the advantage holds at both and saying so is stronger than
+    picking one:
+    <table style="min-width:0;margin-top:8px;font-size:13.5px">
+      <tbody>__GATEROWS__</tbody></table>
+    <span class="m">rgfn</span> drops out at 7.0 because its best-candidate arm becomes
+    pool-exhausted &mdash; it spends 36 of 100 reactions, since only 9 mutually-distinct
+    qualifying molecules exist. It did not decline to spend the budget; there was nothing
+    left to buy. Long-run direction is 5.0 everywhere.</div>
+</section>
+
+<section class="exhibit">
+  <p class="eyebrow">Figure 2 &middot; the mechanism</p>
+  <h2>Floor and ceiling of the walk order</h2>
+  <div class="prose"><p><strong>Left.</strong> Hold the scaffolds, gate, cost model and
+  child policy fixed; change only the order they are walked in. <strong>Right.</strong> An
+  oracle greedy re-decides at every step with full knowledge of what it has already built
+  &mdash; the best any ordering could do, at a cost nobody would pay, since ranking a
+  scaffold means scoring everything under it first. The bars ask how much of that
+  best-possible improvement deciding <em>once</em> already captures.</p></div>
+  <figure><div class="plate"><img src="__FIG2__" alt="Left: four ordering arms plotted on modes delivered versus compute cost. Right: per-cell share of the best-possible improvement, grouped by model."></div></figure>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Ordering</th><th class="num">Modes @ 100 rxn (&uarr;)</th>
+      <th class="num">Compute, s (&darr;)</th>
+      <th class="num">Rxns &rarr; 300 modes</th></tr></thead>
+    <tbody>__F2FLOOR__</tbody></table></div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Scope</th><th class="num">Cells</th>
+      <th class="num">Median share (&uarr;)</th><th class="num">Range</th>
+      <th class="num">Scorings</th><th class="num">Wall-clock</th></tr></thead>
+    <tbody>__F2CEIL__</tbody></table></div>
+  <div class="note"><span class="tag">Two honesty fixes</span>
+    The colour encoding is gone: it coloured by &ldquo;reads a signal&rdquo;, but
+    reverse-flow <em>does</em> read the flow &mdash; it inverts it. And __NPL__ cells are
+    pool-limited, where the comparison degenerates and the greedy can even come out
+    faster. Excluding them is both more honest and stronger: the wall-clock floor rises
+    from 0.6&times; to 5.6&times;. Say <em>&ldquo;up to 80&times;&rdquo;</em>, not
+    &ldquo;1/80th&rdquo;.</div>
+  <div class="note"><span class="tag">Training time is excluded, deliberately</span>
+    Training is ~50&ndash;100 GPU-h per cell against 2,481&ndash;7,631 s of enumeration,
+    and all four arms read <em>one shared checkpoint</em>. Adding it applies a constant
+    24&ndash;145&times; larger than the whole between-arm spread, flattening the panel.
+    Training cancels from every comparison in the paper &mdash; a point in the method's
+    favour, and a sentence rather than an axis.</div>
+</section>
+
+<section class="exhibit">
+  <p class="eyebrow">Table 1 &middot; the external comparison</p>
+  <h2>Against someone else&rsquo;s pipeline</h2>
+  <div class="prose"><p>S3-GFN generates, a retrosynthesis planner routes its molecules
+  over its own catalogue, and SPARROW &mdash; another group&rsquo;s optimizer &mdash;
+  chooses what to make. Three rows, one seed, one gate.</p></div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Pipeline</th><th class="num">Modes @ 100 rxn (&uarr;)</th>
+      <th class="num">vs ours</th></tr></thead>
+    <tbody>__T1__</tbody></table></div>
+  <div class="note flag"><span class="tag">The margin moved &mdash; lead with __LEAD__&times;</span>
+    The competitor is now budget-matched and properly sampled (438 of 500 molecules
+    routed, 181 distinct modes available), and it is a far stronger opponent than the one
+    we were quoting. On seed 43 at gate 7.0, both solves optimal, SPARROW-selects went
+    <strong>24 &rarr; 46</strong> modes (3.42&times; &rarr; 1.76&times;) and greedy
+    selection <strong>38 &rarr; 55</strong> (2.16&times; &rarr;
+    <strong>1.47&times;</strong>). The old numbers came from a checkpoint trained far
+    longer than the generators it was compared against: <em>superseded, not merely
+    older</em>. Both sides are now the same seed, which the previous version could not
+    manage.</div>
+  <div class="note"><span class="tag">Exact, not bounded</span>
+    The greedy arm's 5-mode grid could only place R=100 between 55 and 59, so it was
+    re-priced at 1-mode spacing: 55 modes fit in 99 reactions, 56 need 102. Nine solves,
+    all optimal, minutes of CPU &mdash; and it removes an interval from the headline
+    denominator.</div>
+  <div class="note caution"><span class="tag">Naive pool only</span>
+    A diversity-enforced (&ldquo;pruned&rdquo;) pool &mdash; 500 mutually different
+    molecules rather than the 500 highest-scoring &mdash; exists for this seed and gives a
+    different picture. It is under review rather than quoted, and the table carries a line
+    saying so. Which pool is the fair comparison is methodological, not cosmetic: pruning
+    changes what the competitor optimises over.</div>
+  <div class="note"><span class="tag">Selection-only control, on DRD2</span>
+    Handing SPARROW <em>our own</em> enumerated children isolates the chooser from the
+    candidates. Pool verified <strong>byte-identical by digest on both seeds</strong> &mdash;
+    the check Logs/062 lacked: it recovers <strong>28 and 15</strong> distinct molecules
+    against our 78, both solves optimal. A lower bound, because our arm sees only stocked
+    fragments while SPARROW sees the whole enumeration.</div>
+  <div class="note"><span class="tag">Verification, a sentence not a row</span>
+    We independently priced hub-batching&rsquo;s own selection with SPARROW and the two
+    agree to <strong>__GAP__%</strong> on __CFG__. Count-once charges what we actually
+    spent; SPARROW charges only what hindsight needed, so our published cost is
+    conservative.</div>
+</section>
+
+<section class="exhibit">
+  <p class="eyebrow">Figure 3 &middot; selection vs enumeration</p>
+  <h2>Buying compounds is not buying distinct molecules</h2>
+  <div class="prose"><p>The sharpest objection to this work is <em>your generator made
+  the molecules, so why do we need your selection?</em> Here SPARROW &mdash; given a
+  diversity term its authors say it does not ship &mdash; chooses from an enumerated pool
+  under the same budget we spend, at reward &gt; 7.0 and Tanimoto &lt; 0.5. It buys nearly
+  a hundred compounds either way. The grey is what those compounds amount to once
+  near-duplicates collapse; our bar has none, because the greedy cannot accept a
+  duplicate.</p></div>
+  <figure><div class="plate"><img src="__FIG3__" alt="Left: stacked bars. Hub-batching is entirely distinct molecules; the SPARROW arms are mostly compounds that collapse to duplicates. Right: reactions per candidate versus per distinct molecule, log scale."></div></figure>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Arm</th><th class="num">Seeds</th><th class="num">Selected</th>
+      <th class="num">Distinct (&uarr;)</th><th class="num">Range</th>
+      <th class="num">Rxn/compound</th><th class="num">Rxn/distinct (&darr;)</th></tr></thead>
+    <tbody>__F3__</tbody></table></div>
+  <div class="note"><span class="tag">Why 99 candidates, and why the seeds cluster</span>
+    Both are real. The pool holds <strong>31,399&ndash;41,817</strong> molecules above the
+    gate, so finding 99 high-reward compounds is trivial &mdash; reward is not the scarce
+    thing, distinctness is. At &lambda;=0 the 98 it picks have mean pairwise Tanimoto
+    <strong>0.59</strong>, so almost all collapse; at &lambda;=1 they sit at 0.28 and far
+    more survive. Our seeds give 82/81/82, a CV of <strong>0.7%</strong>. The dots show
+    what an error bar hid: &lambda;=0's seeds are 2, 24 and 26 &mdash; one seed collapsing,
+    not a spread.</div>
+  <div class="note"><span class="tag">Our three seed values are harvested now</span>
+    They reproduce Logs/062 Result 12 to the unit (82 / 81 / 82). Seeds 43 and 44 were
+    re-derived by re-running only the final selection stage against surviving artifacts
+    &mdash; nothing re-trained, nothing re-sampled. Matching the log exactly is the
+    evidence it used the right inputs.</div>
+</section>
+
+<section class="exhibit">
+  <p class="eyebrow">Appendix A1 &middot; promoted from limitations</p>
+  <h2>How much material survives a route</h2>
+  <div class="prose"><p>A reaction count treats every reaction as equal. Each has a yield
+  &mdash; the fraction of material surviving the step &mdash; and compounding those along
+  a route gives the share reaching the final compound.</p>
+  <p>The mechanism is unambiguous. Mean <em>step</em> yield is
+  <strong>__STEPLO__&ndash;__STEPHI__ for both arms on every cell</strong>, so hub-batching
+  is not choosing better chemistry. What differs is route <em>length</em>: its routes are
+  shorter, so less yield compounds away.</p></div>
+  <figure><div class="plate"><img src="__FIGA1__" alt="Left: mean route yield per target, hub-batching versus best-candidate, seeds merged. Right: mean steps per molecule."></div></figure>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Cell (seeds merged in the figure)</th><th>Arm</th>
+      <th class="num">Route yield (&uarr;)</th><th class="num">Steps (&darr;)</th>
+      <th class="num">Step yield</th><th class="num">Modes</th></tr></thead>
+    <tbody>__YA__</tbody></table></div>
+  <div class="note caution"><span class="tag">What this deliberately no longer shows</span>
+    An earlier version drew error bars from a batch-failure model that treats each route
+    yield as a coin-flip success probability. That is an assumption, not a measurement, and
+    an error bar lends it precision it has not earned. The structural point behind it is
+    real and belongs in prose: molecules built off one shared intermediate share its route
+    prefix, so their outcomes are correlated in a way independent molecules&rsquo; are not.
+    The numbers stay in the CSV, unplotted, with the assumption named.</div>
+</section>
+
+<section class="exhibit">
+  <p class="eyebrow">Open</p>
+  <h2>What still needs a decision</h2>
+  <ul class="tight">
+    <li><strong>Seeds 42 and 44 for Table 1.</strong> Both have budget-matched pools but
+      no select/greedy solves, so the table is n=1. This matters more at 1.47&times; than
+      it did at 3.42&times;: seed variance could now move the margin materially.</li>
+    <li><strong>Which competitor pool is the fair one</strong> &mdash; highest-scoring, or
+      diversity-enforced? The pruned variant exists for seed 43 and answers differently.
+      Logs/067 exists because this is genuinely not obvious.</li>
+    <li><strong>The sEH selection-only control does not converge, and has stopped.</strong>
+      Two attempts: the full 50k pool stalled, and a further pass ran ~12 h per seed and
+      still returned <span class="m">TimeLimit</span>. The withdrawn 2.27&times; cannot be
+      recovered as a ratio on sEH &mdash; which is why the DRD2 control is the form the
+      claim now takes.</li>
+    <li><strong>sEH is gated at 5.0 in Figure 1 and 7.0 in Figure 3 / Table 1.</strong>
+      Reported both ways for the workshop; 5.0 throughout for the journal version.</li>
+    <li><strong>Deferred to the conference version:</strong> compute-time accounting.
+      Recorded in <span class="m">docs/DEFERRED.md</span> with the evidence pointers.</li>
+  </ul>
+</section>
+
+<footer>
+  Figures: <span class="m">reproduce/fig1_reaction_budget.py</span>,
+  <span class="m">fig2_floor_and_ceiling.py</span>,
+  <span class="m">fig3_selection_vs_enumeration.py</span>,
+  <span class="m">figA1_yield_risk.py</span>; tables
+  <span class="m">table1_external.py</span>. Which numbers are withdrawn and why:
+  <span class="m">artifacts/sparrow_diversity/PROVENANCE.md</span>. This page:
+  <span class="m">tools/review/build.py</span>.
+</footer>
+</div>
