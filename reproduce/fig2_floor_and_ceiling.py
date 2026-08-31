@@ -76,6 +76,10 @@ def floor_table(rows, prebuild_k: int):
             # failed. Those two outcomes must not be plotted as the same thing.
             "finished": modes is not None and modes >= 300,
             "rxn_per_mode": num(r["reactions_per_mode"]),
+            # config rides along so the readout can state what it measured
+            "gate": r.get("gate"), "tau": r.get("tau"),
+            "child_policy": r.get("child_policy"),
+            "prebuild_k_val": r.get("prebuild_k"), "rank_by": r.get("rank_by"),
         })
     return sorted(out, key=lambda d: d["reactions"])
 
@@ -251,7 +255,13 @@ def main() -> int:
     # On the fixed-budget axis every arm has a readout, so nothing is pre-filtered:
     # an arm that could not reach 300 modes still delivers a number at 100 reactions.
     front = pareto(floor)
-    print(f"FLOOR — ordering ablation at prebuild_k={args.prebuild_k}\n")
+    cfg = floor[0] if floor else {}
+    print("FLOOR — SCENT / sEH surrogate proxy, one checkpoint, one seed")
+    print(f"        gate {cfg.get('gate')}, tau {cfg.get('tau')}, "
+          f"{cfg.get('child_policy')} child policy, "
+          f"prebuild_k={cfg.get('prebuild_k_val')}, rank_by={cfg.get('rank_by')}")
+    print("        NOTE: a different SCENT sEH checkpoint from Figure 1's cells --")
+    print("        see artifacts/mechanism/hub_ordering/PROVENANCE.md\n")
     print(f"  {'arm':<34}{'modes@100rxn':>13}{'compute_s':>11}"
           f"{'rxn->300modes':>15}  on frontier")
     for p in sorted(floor, key=lambda d: -d["modes_at_budget"]):

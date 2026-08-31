@@ -78,6 +78,14 @@ def main() -> int:
             meta = json.loads(summary.read_text())
             hb = meta.get("hub_batching") or {}
             ct = (meta.get("compute_time") or {}).get("head_to_head") or {}
+            # Which model and oracle this ablation ran on. The tags do not say, and the
+            # answer is not the same checkpoint the matrix cells use -- so record it here
+            # rather than leaving it to be re-derived from a scratch path later.
+            cfg = {"gate": meta.get("reward_threshold"),
+                   "tau": meta.get("similarity"),
+                   "child_policy": meta.get("child_policy"),
+                   "prebuild_k": meta.get("prebuild_k"),
+                   "rank_by": meta.get("rank_by")}
             rows.append({
                 "arm": arm, "label": label, "flow_or_reward_informed": signal,
                 "prebuild_k": k,
@@ -97,6 +105,7 @@ def main() -> int:
                 "compute_s": ct.get("hub_total_s"),
                 "best_candidate_reactions": (meta.get("best_candidate") or {}).get("total_reactions"),
                 "stop_reason": hb.get("stop_reason"),
+                **cfg,
             })
             dest = out / "hub_ordering" / d.name
             dest.mkdir(parents=True, exist_ok=True)
@@ -106,6 +115,26 @@ def main() -> int:
                             "md5": md5(summary), "redacted": True})
 
     if rows:
+        # Traced from the enumeration's own meta.json, which the run tags omit.
+        (out / "hub_ordering" / "PROVENANCE.md").write_text(
+            "# Floor panel — what it was measured on\n\n"
+            "| | |\n|---|---|\n"
+            "| model | SCENT |\n"
+            "| oracle | sEH surrogate proxy (not docking) |\n"
+            "| checkpoint | one frozen training run, 1,600 promoted fragments |\n"
+            "| enumeration | 200 hubs, `campaign_enum_seh_70363` |\n"
+            "| gate / tau | reward > 7.0 / Tanimoto < 0.5 |\n"
+            "| selection | free_frag child policy, prebuild_k=20, rank_by=build_score |\n"
+            "| replicates | **one cell, one seed** |\n\n"
+            "**This is NOT the checkpoint the matrix cells use.** Figure 1's `scent_seh`\n"
+            "comes from the `scent_seh_5k/seed42` series; this ablation predates it and\n"
+            "uses a separate SCENT sEH training run. The two happen to land on similar\n"
+            "numbers at gate 7.0, which is a coincidence of two checkpoints and not a\n"
+            "cross-validation -- do not present it as one.\n\n"
+            "What makes the ablation valid is narrower and sufficient: all arms share\n"
+            "ONE checkpoint and ONE enumeration, so the only thing that varies is the\n"
+            "walk order. Scope differs from the ceiling panel, which spans 14 cells\n"
+            "across four generators and four oracles.\n")
         with (out / "hub_ordering" / "arms.csv").open("w", newline="") as fh:
             w = csv.DictWriter(fh, fieldnames=list(rows[0]))
             w.writeheader()

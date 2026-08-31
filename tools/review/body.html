@@ -85,6 +85,17 @@
       <th class="num">Median share (&uarr;)</th><th class="num">Range</th>
       <th class="num">Scorings</th><th class="num">Wall-clock</th></tr></thead>
     <tbody>__F2CEIL__</tbody></table></div>
+  <div class="note"><span class="tag">The two panels differ in scope &mdash; say so in the caption</span>
+    The floor is a <em>deep single-cell ablation</em>: SCENT on the sEH surrogate proxy,
+    one frozen checkpoint, one seed, 200 hubs, gate 7.0 / &tau; 0.5, free-frag child
+    policy at K=20. What licenses it is narrow and sufficient &mdash; all four arms share
+    one checkpoint and one enumeration, so the only thing varying is the walk order.
+    The ceiling is a <em>breadth</em> result: 14 cells across four generators and four
+    reward generators, one seed each.
+    <br><br>Note the floor panel is <strong>not</strong> the same SCENT sEH checkpoint the
+    matrix cells use &mdash; Figure 1 draws on the <span class="m">scent_seh_5k</span>
+    series, this ablation predates it. The two land on similar numbers at gate 7.0, which
+    is a coincidence of two checkpoints and not a cross-validation.</div>
   <div class="note caution"><span class="tag">A naming collision, now fixed</span>
     &ldquo;best-molecule order&rdquo; used to sit at 70 modes here while Figure 1's
     &ldquo;best-candidate&rdquo; sits at ~29, and the two names invited exactly the wrong
