@@ -66,7 +66,10 @@
   <p class="eyebrow">Figure 2 &middot; the mechanism</p>
   <h2>Floor and ceiling of the walk order</h2>
   <div class="prose"><p><strong>Left.</strong> Hold the scaffolds, gate, cost model and
-  child policy fixed; change only the order they are walked in. <strong>Right.</strong> An
+  child policy fixed; change only the order they are walked in. <em>Every point here is
+  hub-batching</em> &mdash; the dashed line is the best-candidate baseline those runs
+  compare against, and it sits at 29 because it never walks hubs at all, so no ordering
+  can move it. <strong>Right.</strong> An
   oracle greedy re-decides at every step with full knowledge of what it has already built
   &mdash; the best any ordering could do, at a cost nobody would pay, since ranking a
   scaffold means scoring everything under it first. The bars ask how much of that
@@ -82,6 +85,15 @@
       <th class="num">Median share (&uarr;)</th><th class="num">Range</th>
       <th class="num">Scorings</th><th class="num">Wall-clock</th></tr></thead>
     <tbody>__F2CEIL__</tbody></table></div>
+  <div class="note caution"><span class="tag">A naming collision, now fixed</span>
+    &ldquo;best-molecule order&rdquo; used to sit at 70 modes here while Figure 1's
+    &ldquo;best-candidate&rdquo; sits at ~29, and the two names invited exactly the wrong
+    read. They are different things: <span class="m">hub order: best child score</span> is
+    <em>hub-batching</em> with hubs ranked by their best child's score, while
+    best-candidate is the baseline <em>strategy</em> that never enumerates hub children.
+    Every arm is now prefixed <span class="m">hub order:</span>, and the baseline is drawn
+    as its own line so the comparison is visible rather than inferred. All four orderings
+    beat the baseline &mdash; even the deliberately reversed one, 42 against 29.</div>
   <div class="note"><span class="tag">Two honesty fixes</span>
     The colour encoding is gone: it coloured by &ldquo;reads a signal&rdquo;, but
     reverse-flow <em>does</em> read the flow &mdash; it inverts it. And __NPL__ cells are

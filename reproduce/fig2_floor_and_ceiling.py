@@ -71,6 +71,7 @@ def floor_table(rows, prebuild_k: int):
             # On this axis reverse-flow is simply worse rather than a failure, because
             # the budget binds long before the pool runs out.
             "modes_at_budget": num(r.get("modes_at_100rxn")),
+            "baseline": num(r.get("baseline_modes_at_100rxn")),
             # An arm that never reached the mode budget did not "cost more" -- it
             # failed. Those two outcomes must not be plotted as the same thing.
             "finished": modes is not None and modes >= 300,
@@ -145,11 +146,24 @@ def draw(floor, ceil, out_path: Path) -> str:
         axl.annotate(p["label"], (p["modes_at_budget"], p["compute_s"]), fontsize=8.2,
                      xytext=(10, 5 if idx % 2 == 0 else -13),
                      textcoords="offset points", color="#2c3f42")
+    # The baseline these orderings are all being compared against. Identical in every
+    # run, because best-candidate does not walk hubs at all -- so it is a line, not a
+    # point, and it answers "more than what?" without distorting the compute axis.
+    base = [p["baseline"] for p in floor if p["baseline"]]
+    if base:
+        b = base[0]
+        axl.axvline(b, color="#9aa5a7", lw=1.3, ls=(0, (5, 3)), zorder=1)
+        axl.annotate(f"best-candidate baseline ({b:.0f})", xy=(b, 0.03),
+                     xycoords=("data", "axes fraction"), fontsize=7.5,
+                     color="#6b7a7c", ha="left", va="bottom", rotation=90,
+                     xytext=(4, 0), textcoords="offset points")
     axl.set_xlabel("number of modes")
     axl.set_ylabel("compute cost: wall-clock, s")
-    axl.set_title("Floor: does the walk order matter?  (\u2198)", fontsize=10.5)
+    axl.set_title("Floor: hub-batching under different walk orders  (\u2198)",
+                  fontsize=10.5)
     axl.spines[["top", "right"]].set_visible(False)
     axl.margins(0.17)
+    axl.set_xlim(left=min(base + [p["modes_at_budget"] for p in floor]) - 6)
 
     # ---- right: the ceiling, share of achievable gain per cell ----
     # Grouped by model, then a fixed reward-generator order inside each group -- the
@@ -172,9 +186,10 @@ def draw(floor, ceil, out_path: Path) -> str:
                  color="#c0603a", ha="right", va="bottom", xytext=(-4, 0),
                  textcoords="offset points", annotation_clip=False)
     axr.axvline(1.0, color="#666666", lw=1.0, zorder=4)
-    axr.annotate("re-deciding at every step", xy=(1.0, len(cells) - 0.35),
-                 fontsize=7.5, color="#666666", ha="right", va="top", xytext=(-4, 0),
-                 textcoords="offset points", annotation_clip=False)
+    axr.annotate("re-deciding at every step", xy=(1.0, 0.03),
+                 xycoords=("data", "axes fraction"), fontsize=7.5, color="#666666",
+                 ha="left", va="bottom", rotation=90, xytext=(4, 0),
+                 textcoords="offset points")
     prev = None
     for i, c in enumerate(cells):
         m = c.rpartition("_")[0]

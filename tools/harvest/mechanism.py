@@ -30,14 +30,18 @@ from _common import md5, redact_paths  # noqa: E402
 
 # Arm labels and draw order, copied from the research tree's compare_hub_order.py so
 # the figure names arms the way the log that measured them does.
+# Arm labels. Every one of these is HUB-BATCHING -- they differ only in the order hubs
+# are walked. The earlier labels ("best-molecule order") were read as the best-candidate
+# BASELINE, which is a different strategy entirely and scores 29 rather than 70. The
+# shared "hub order:" prefix is what stops that misreading.
 ORDER_ARMS = [
-    ("incumbent",            "flow over reward-filtered pool", True),
-    ("flow_top",             "highest flow first",             True),
-    ("cand_order",           "best-molecule order",            True),
-    ("cand_order_fixedset",  "best-molecule order (fixed set)", True),
-    ("random",               "random order",                   False),
-    ("flow_bottom",          "lowest flow first",              False),
-    ("flow_bottom_600",      "lowest flow first (600 hubs)",    False),
+    ("incumbent",            "hub order: flow, reward-filtered pool", True),
+    ("flow_top",             "hub order: highest flow",              True),
+    ("cand_order",           "hub order: best child score",          True),
+    ("cand_order_fixedset",  "hub order: best child score (fixed set)", True),
+    ("random",               "hub order: random",                    False),
+    ("flow_bottom",          "hub order: lowest flow",               False),
+    ("flow_bottom_600",      "hub order: lowest flow, 600 hubs",     False),
 ]
 
 
@@ -81,6 +85,11 @@ def main() -> int:
                 # The primary readout, already recorded by every arm's own campaign --
                 # no re-run needed to move the figure onto the fixed-budget axis.
                 "modes_at_100rxn": hb.get("case1_modes_at_100rxn"),
+                # The SAME run's best-candidate baseline. It never walks hubs, so this is
+                # identical across every ordering -- which is exactly why it belongs on
+                # the figure as a reference rather than as another point.
+                "baseline_modes_at_100rxn":
+                    ((meta.get("best_candidate") or {}).get("case1_modes_at_100rxn")),
                 "modes": hb.get("total_modes"),
                 "reactions_per_mode": hb.get("reactions_per_mode"),
                 "hubs_used": hb.get("distinct_hubs_used"),

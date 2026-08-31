@@ -1,12 +1,12 @@
-arm,label,flow_or_reward_informed,prebuild_k,reactions,modes_at_100rxn,modes,reactions_per_mode,hubs_used,reward_gen_calls,compute_s,best_candidate_reactions,stop_reason
-incumbent,flow over reward-filtered pool,True,20,365,72,300,1.217,43,241158,5684.5778,929,modes
-flow_top,highest flow first,True,20,357,73,300,1.19,41,244685,5647.8005,929,modes
-flow_top,highest flow first,True,0,368,82,300,1.227,63,419626,9807.4442,929,modes
-cand_order,best-molecule order,True,20,389,70,300,1.297,41,109897,2481.2929,929,modes
-cand_order_fixedset,best-molecule order (fixed set),True,20,379,71,300,1.263,41,145490,3364.9658,929,modes
-random,random order,False,20,546,50,300,1.82,94,184159,4331.7058,929,modes
-random,random order,False,0,563,44,300,1.877,105,204120,4800.3167,929,modes
-flow_bottom,lowest flow first,False,20,572,42,279,2.05,108,283363,6580.1926,929,pool_exhausted
-flow_bottom,lowest flow first,False,0,480,42,211,2.275,102,283363,6580.0363,929,pool_exhausted
-flow_bottom_600,lowest flow first (600 hubs),False,20,630,42,300,2.1,124,330226,7630.5663,929,modes
-flow_bottom_600,lowest flow first (600 hubs),False,0,670,42,300,2.233,141,430509,10057.7338,929,modes
+arm,label,flow_or_reward_informed,prebuild_k,reactions,modes_at_100rxn,baseline_modes_at_100rxn,modes,reactions_per_mode,hubs_used,reward_gen_calls,compute_s,best_candidate_reactions,stop_reason
+incumbent,"hub order: flow, reward-filtered pool",True,20,365,72,29,300,1.217,43,241158,5684.5778,929,modes
+flow_top,hub order: highest flow,True,20,357,73,29,300,1.19,41,244685,5647.8005,929,modes
+flow_top,hub order: highest flow,True,0,368,82,29,300,1.227,63,419626,9807.4442,929,modes
+cand_order,hub order: best child score,True,20,389,70,29,300,1.297,41,109897,2481.2929,929,modes
+cand_order_fixedset,hub order: best child score (fixed set),True,20,379,71,29,300,1.263,41,145490,3364.9658,929,modes
+random,hub order: random,False,20,546,50,29,300,1.82,94,184159,4331.7058,929,modes
+random,hub order: random,False,0,563,44,29,300,1.877,105,204120,4800.3167,929,modes
+flow_bottom,hub order: lowest flow,False,20,572,42,29,279,2.05,108,283363,6580.1926,929,pool_exhausted
+flow_bottom,hub order: lowest flow,False,0,480,42,29,211,2.275,102,283363,6580.0363,929,pool_exhausted
+flow_bottom_600,"hub order: lowest flow, 600 hubs",False,20,630,42,29,300,2.1,124,330226,7630.5663,929,modes
+flow_bottom_600,"hub order: lowest flow, 600 hubs",False,0,670,42,29,300,2.233,141,430509,10057.7338,929,modes
