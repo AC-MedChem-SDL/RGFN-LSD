@@ -173,8 +173,13 @@
   under the same budget we spend, at reward &gt; 7.0 and Tanimoto &lt; 0.5. It buys nearly
   a hundred compounds either way. The grey is what those compounds amount to once
   near-duplicates collapse; our bar has none, because the greedy cannot accept a
-  duplicate.</p></div>
-  <figure><div class="plate"><img src="__FIG3__" alt="Left: stacked bars. Hub-batching is entirely distinct molecules; the SPARROW arms are mostly compounds that collapse to duplicates. Right: reactions per candidate versus per distinct molecule, log scale."></div></figure>
+  duplicate.</p>
+  <p>The third panel shows why, without appealing to the collapse rule at all. It is the
+  distribution of pairwise Tanimoto <em>within each arm&rsquo;s own selection</em> &mdash;
+  how alike the compounds an arm bought are to each other. Ours sits low and tight; both
+  SPARROW arms sit more than twice as high. The duplicate counting in the left panel is a
+  consequence of that distribution, not an artefact of where we put the threshold.</p></div>
+  <figure><div class="plate"><img src="__FIG3__" alt="Left: stacked bars. Hub-batching is entirely distinct molecules; the SPARROW arms are mostly compounds that collapse to duplicates. Middle: reactions per candidate versus per distinct molecule, log scale. Right: three narrow violins of within-selection pairwise Tanimoto; hub-batching is low and tight, both SPARROW arms sit far higher."></div></figure>
   <div class="tablewrap"><table>
     <thead><tr><th>Arm</th><th class="num">Seeds</th><th class="num">Selected</th>
       <th class="num">Distinct (&uarr;)</th><th class="num">Range</th>
@@ -193,6 +198,15 @@
     re-derived by re-running only the final selection stage against surviving artifacts
     &mdash; nothing re-trained, nothing re-sampled. Matching the log exactly is the
     evidence it used the right inputs.</div>
+  <div class="note"><span class="tag">The violin is the mechanism, measured</span>
+    Within-selection pairwise Tanimoto (Morgan r=3/2048), all three arms seed 43 on the
+    <em>same</em> enumeration: hub-batching <strong>median 0.137</strong> (IQR 0.108&ndash;0.193,
+    81 compounds, 3,240 pairs), SPARROW &lambda;=0 <strong>0.366</strong> (0.324&ndash;0.427),
+    SPARROW &lambda;=1 <strong>0.351</strong> (0.318&ndash;0.400) &mdash; the latter two both
+    99 compounds, 4,851 pairs. Those distributions land at 81 / 24 / 33 distinct molecules.
+    Note &lambda;=1 barely moves the median off &lambda;=0 yet nearly doubles the distinct
+    count: the diversity term is trimming the top of the distribution, not relocating it.
+    <span class="m">artifacts/similarity/selections.json</span>.</div>
 </section>
 
 <section class="exhibit">
@@ -221,12 +235,60 @@
 </section>
 
 <section class="exhibit">
+  <p class="eyebrow">Landed since these figures were built</p>
+  <h2>Assessed, not yet used</h2>
+  <div class="prose"><p>Four things finished after the exhibits above were harvested. None
+  are in a figure yet; two of them change what a figure can honestly say.</p></div>
+  <ul class="tight">
+    <li><strong>S3-GFN now has both selection arms on one retrosynthesis, nine cells.</strong>
+      Greedy and SPARROW read off the <em>identical</em> planned routes, and every cell
+      reports pool size, makeable, delivered and reactions used, so a small pool cannot
+      masquerade as a large one (Logs/075,
+      <span class="m">s3gfn_selection_R100.csv</span>). This is the open Table&nbsp;1 seed
+      question, answered &mdash; but on enlarged pools costing
+      <strong>10,271 / 41,346 / 10,342</strong> extra scoring calls, up to four times the
+      model&rsquo;s own training budget. That number has to travel with any row taken from
+      them, and the seeds differ fourfold in how hard they were to enlarge, so per-seed,
+      not averaged.</li>
+    <li class="bad"><strong>On the enlarged sEH pool the standard pipeline beats us,
+      100 distinct to 82 &mdash; and the reason is the interesting part.</strong> 98 of its
+      100 selected molecules are <em>one reaction</em> from purchasable material; all 144
+      starting materials are genuinely in the catalogue. One step per molecule is the
+      cheapest anything can be, so the solver was handed a shopping list rather than
+      out-planning anyone. This is a property of the generator: one-step rates are
+      <strong>S3-GFN 39&ndash;80%, REINVENT 9&ndash;34%, Saturn 0&ndash;16%</strong>. The
+      defensible claim is not &ldquo;we beat the standard pipeline&rdquo; but &ldquo;we beat
+      it where synthesis is non-trivial&rdquo; &mdash; and Saturn is already routed on seven
+      cells, so that test needs no new generation. Reporting the loss with its cause is a
+      stronger position than a table where it never appears.</li>
+    <li><strong>FragGFN was training on 32&times; the competitor budget; all nine cells are
+      retrained.</strong> The two halves of the benchmark normalize on different quantities
+      &mdash; the competitor block on scoring calls (~10,000, each program&rsquo;s own
+      default), the matrix on training steps (5,000) &mdash; and a training step scores a
+      whole batch. FragGFN belongs with S3-GFN, not RGFN, since it has no reaction model
+      (Logs/076). Six of nine cells are ready; the three DRD2 cells hold 376&ndash;435
+      diverse molecules against a target of 500. <em>The other three matrix generators are
+      still on the training-step convention, and whether that is a real unfairness has not
+      been measured.</em></li>
+    <li><strong>Every gate is now the 5%-FPR point on its own actives-vs-decoys set:</strong>
+      sEH <span class="m">5.68</span>, DRD2 <span class="m">0.345</span>, ClpP
+      <span class="m">&minus;9.1</span>, 6TD3-B <span class="m">6.718</span>. The figures
+      above still gate sEH at 5.0 (Fig 1) and 7.0 (Fig 3 / Table 1). One loose end worth
+      closing before anything is quoted: <span class="m">targets.py</span> carries 6.718 for
+      6TD3-B while a docstring in <span class="m">calibrate_gates.py</span> still names
+      7.97.</li>
+  </ul>
+</section>
+
+<section class="exhibit">
   <p class="eyebrow">Open</p>
   <h2>What still needs a decision</h2>
   <ul class="tight">
-    <li><strong>Seeds 42 and 44 for Table 1.</strong> Both have budget-matched pools but
-      no select/greedy solves, so the table is n=1. This matters more at 1.47&times; than
-      it did at 3.42&times;: seed variance could now move the margin materially.</li>
+    <li><strong>Seeds 42 and 44 for Table 1 &mdash; now solved, but on enlarged pools.</strong>
+      The table above is still n=1 because the harvest predates them. The solves exist
+      (see the section before this), and they carry a sampling asymmetry that has to be
+      disclosed in the same sentence as the numbers. This matters more at 1.47&times; than
+      it did at 3.42&times;: seed variance could move the margin materially.</li>
     <li><strong>Which competitor pool is the fair one</strong> &mdash; highest-scoring, or
       diversity-enforced? The pruned variant exists for seed 43 and answers differently.
       Logs/067 exists because this is genuinely not obvious.</li>
