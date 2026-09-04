@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import statistics
 import sys
 from pathlib import Path
@@ -44,6 +45,47 @@ def num(v, default=float("nan")):
         return float(v)
     except (TypeError, ValueError):
         return default
+
+
+def pairwise_similarities(root: Path):
+    """Every within-pool pairwise Tanimoto, per arm, over the CANDIDATE pools.
+
+    Morgan r=3 / 2048 bits -- the same fingerprint the mode definition uses, so the
+    distribution shown here is the one the diversity filter actually acts on rather
+    than a second opinion computed differently.
+
+    Candidates, not modes: for the SPARROW arms these differ sharply (~99 compounds
+    collapsing to 24-33 distinct), and it is the candidate pool that explains the
+    collapse. For hub-batching they are the same set, because the greedy cannot accept
+    a duplicate.
+    """
+    f = root / "similarity" / "selections.json"
+    if not f.is_file():
+        return []
+    try:
+        from rdkit import Chem, DataStructs
+        from rdkit.Chem import AllChem
+        from rdkit import RDLogger
+        RDLogger.DisableLog("rdApp.*")
+    except ImportError:
+        return []
+    out = []
+    for a in json.loads(f.read_text())["arms"]:
+        fps = []
+        for smi in a["smiles"]:
+            m = Chem.MolFromSmiles(smi)
+            if m is not None:
+                fps.append(AllChem.GetMorganFingerprintAsBitVect(m, 3, nBits=2048))
+        sims = []
+        for i in range(len(fps)):
+            # BulkTanimoto against the tail only: each unordered pair counted once.
+            if i + 1 < len(fps):
+                sims.extend(DataStructs.BulkTanimotoSimilarity(fps[i], fps[i + 1:]))
+        if sims:
+            out.append({"label": a["label"], "sims": sims, "n": len(fps),
+                        "n_distinct": a.get("n_distinct"),
+                        "ours": a["arm"] == "hub-batching"})
+    return out
 
 
 def collect(root: Path):
@@ -113,7 +155,7 @@ def whisk(ax, x, vals, color="#20343a", spread=0.10):
         ax.scatter(x + dx, v, s=13, color=color, zorder=6, linewidths=0)
 
 
-def draw(arms, out_path: Path) -> str:
+def draw(arms, sims, out_path: Path) -> str:
     try:
         import matplotlib
         matplotlib.use("Agg")
@@ -121,7 +163,12 @@ def draw(arms, out_path: Path) -> str:
     except ImportError:
         return "matplotlib not installed - table written, figure skipped"
 
-    fig, (axl, axr) = plt.subplots(1, 2, figsize=(10.5, 4.3))
+    n_panels = 3 if sims else 2
+    widths = [1, 1, 0.52] if sims else [1, 1]
+    fig, axes = plt.subplots(1, n_panels, figsize=(13.2 if sims else 10.5, 4.3),
+                             gridspec_kw={"width_ratios": widths})
+    axl, axr = axes[0], axes[1]
+    axv = axes[2] if sims else None
     xs = range(len(arms))
 
     # ---- left: stacked. distinct on the bottom, the near-duplicate remainder above.
@@ -181,6 +228,29 @@ def draw(arms, out_path: Path) -> str:
                bbox_to_anchor=(0.5, -0.13), ncol=1)
     axr.spines[["top", "right"]].set_visible(False)
 
+    # ---- third: how alike the chosen compounds are, within each pool ----
+    if axv is not None:
+        data = [d["sims"] for d in sims]
+        parts = axv.violinplot(data, positions=range(len(sims)), widths=0.82,
+                               showextrema=False, showmedians=False)
+        for body, d in zip(parts["bodies"], sims):
+            body.set_facecolor(BLUE if d["ours"] else GREY)
+            body.set_alpha(0.95)
+            body.set_edgecolor("none")
+        for i, d in enumerate(sims):
+            q1, med, q3 = (statistics.quantiles(d["sims"], n=4)[0],
+                           statistics.median(d["sims"]),
+                           statistics.quantiles(d["sims"], n=4)[2])
+            axv.vlines(i, q1, q3, color="#20343a", lw=3.2, zorder=4)
+            axv.scatter(i, med, s=16, color="white", zorder=5, linewidths=0)
+        axv.set_xticks(range(len(sims)))
+        axv.set_xticklabels([d["label"].replace(" ", "\n", 1) for d in sims],
+                            fontsize=8.5)
+        axv.set_ylabel("pairwise Tanimoto similarity")
+        axv.set_title("How alike the chosen\ncompounds are  (\u2193)", fontsize=10.5)
+        axv.set_ylim(0, 1)
+        axv.spines[["top", "right"]].set_visible(False)
+
     fig.tight_layout()
     for ext in ("png", "pdf"):
         fig.savefig(out_path.parent / f"{out_path.stem}.{ext}", dpi=200,
@@ -200,6 +270,7 @@ def main() -> int:
     if not root.is_dir():
         sys.exit(f"missing artifacts: {root}")
     arms, dropped = collect(root)
+    sims = pairwise_similarities(root.parent)
     out = args.out or (Path(__file__).resolve().parents[1] / "build" / "figures")
     out.mkdir(parents=True, exist_ok=True)
 
@@ -226,13 +297,20 @@ def main() -> int:
               f"more distinct molecules for the same budget")
     if dropped:
         print(f"\n  excluded ({len(dropped)}): " + "; ".join(dropped))
+    if sims:
+        print(f"\n  within-pool pairwise Tanimoto (candidate pools, Morgan r=3/2048):")
+        for d in sims:
+            q = statistics.quantiles(d["sims"], n=4)
+            print(f"    {d['label']:<18} n={d['n']:>3} compounds, "
+                  f"{len(d['sims']):>5} pairs   median {statistics.median(d['sims']):.3f}"
+                  f"   IQR {q[0]:.3f}-{q[2]:.3f}   -> {d['n_distinct']} distinct")
 
     with (out / "fig3_selection_vs_enumeration.csv").open("w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=list(table[0]))
         w.writeheader()
         w.writerows(table)
     print()
-    print(draw(arms, out / "fig3_selection_vs_enumeration"))
+    print(draw(arms, sims, out / "fig3_selection_vs_enumeration"))
     return 0
 
 

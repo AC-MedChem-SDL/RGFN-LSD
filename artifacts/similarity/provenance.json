@@ -1,0 +1,21 @@
+{
+  "harvested_from_subdir": "rgfn_runs/lsdflow_sparrow",
+  "note": "All arms read the SAME enumeration (t45_seh_seed43), verified by the routes_artifact each run records. Same candidate pool, different choosers.",
+  "sources": [
+    {
+      "arm": "hub-batching",
+      "file": "selection_hub_batching.json",
+      "md5": "3b80b7c6ffa777189bae0290a0701c5b"
+    },
+    {
+      "arm": "lambda=0",
+      "file": "enumR100_seed43_L0_N50000/milp_L0_R100.json",
+      "md5": "4759ac1b6e3c4024206a7e4cc6f157bc"
+    },
+    {
+      "arm": "lambda=1",
+      "file": "enumR100_seed43_L1_N50000/milp_L1_R100.json",
+      "md5": "321b48899bc93f62d41b6cc46b6ba1db"
+    }
+  ]
+}
