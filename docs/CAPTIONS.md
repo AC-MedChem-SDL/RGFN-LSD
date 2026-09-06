@@ -100,13 +100,15 @@ See `artifacts/mechanism/hub_ordering/PROVENANCE.md`.
 Draft caption:
 
 > **The advantage does not depend on where the two thresholds are set.** Every headline
-> number is quoted at one reward bar and one Tanimoto cutoff. Sweeping both — 9 bars ×
+> number is quoted at one reward bar and one Tanimoto cutoff. Sweeping both — 10 bars ×
 > 13 cutoffs, all four generators on sEH, at the paper's own 100-reaction budget — leaves
-> hub-batching cheaper per distinct molecule in **397 of 400 comparable cells**, with 3
+> hub-batching cheaper per distinct molecule in **449 of 452 comparable cells**, with 3
 > exact ties and no losses. Colour is the ratio of the two arms' reactions-per-mode, so
 > 1.0 is parity. Hatched cells are pool-limited (one arm exhausted its library before
 > spending the budget, so its cost is measured over a shorter run); grey cells hold no
-> modes at all for either arm. Circles mark the two gates the paper quotes, 5.0 and 7.0.
+> modes at all for either arm. The filled marker is the operating point (bar 5.68, the
+> 5%-FPR gate on sEH's own actives-vs-decoys set); hollow markers are the two other bars
+> existing numbers sit at, 5.0 and 7.0.
 
 ### Three things the caption must not overstate
 
@@ -115,10 +117,12 @@ cutoffs 0.3 and 0.35, RxnFlow at bar 6.5 / cutoff 0.3. Both arms land on the sam
 and price it identically. Counting them as wins would have been free and wrong; the harvest
 classifies anything within 5e-4 of parity as a tie for that reason.
 
-**RGFN's 7.0 cell is hatched, and that is a fact about Figure 3's gate.** At bar 7.0 /
-cutoff 0.5 the best-candidate arm on RGFN is pool-exhausted (9 modes for 36 reactions), so
-that cell is not comparable. The Fig-1 gate of 5.0 is comparable on all four generators.
-Anyone quoting an RGFN number at 7.0 has to say which of the two it is.
+**RGFN's 7.0 cell is hatched, and that is an argument against 7.0.** At bar 7.0 / cutoff
+0.5 the best-candidate arm on RGFN is pool-exhausted (9 modes for 36 of its 100 reactions),
+and RGFN's whole 7.0 row is hatched. `targets.py` already records the same starvation for
+both RxnFlow cells on all three seeds. At the 5.68 operating point all four generators are
+comparable, at 2.26 / 2.71 / 2.19 / 4.00×. The ratio at 7.0 is taken over a starved
+baseline, so it *understates* hub-batching — dropping 7.0 costs us nothing.
 
 **This is one target and one seed.** sEH only, and the surface re-scores a single cached
 enumeration per generator — it sweeps thresholds, not seeds. It answers "is the result an
@@ -126,8 +130,8 @@ artifact of the thresholds", and nothing else. Seed variance is Figure 3's quest
 
 ### Why it is measured at 100 and not 300
 
-An earlier surface exists at a 300-reaction budget (`results/surface/`, 4 generators, same
-grid) and agrees: 381/381 comparable cells, median advantage 2.60–4.47×. It was not reused,
+An earlier surface exists at a 300-reaction budget (`results/surface/`, 4 generators, a
+9-bar grid) and agrees: 381/381 comparable cells, median advantage 2.60–4.47×. It was not reused,
 because defending the thresholds at a budget the paper never quotes invites the obvious
 question. Re-measuring is pure CPU re-scoring of an existing enumeration, about five minutes
 a generator, so there was no reason to inherit the old budget.
