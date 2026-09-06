@@ -33,6 +33,8 @@ from pathlib import Path
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--per-seed", action="store_true",
+                    help="one row per seed instead of the collapsed mean+range")
     ap.add_argument("--out", type=Path, default=None)
     args = ap.parse_args()
 
@@ -64,24 +66,58 @@ def main() -> int:
     # rejects a backslash escape there (PEP 701 only relaxed it in 3.12), and this
     # project supports 3.10+.
     head = "modes @ 100 rxn (\u2191)"
-    print(f"| {'pipeline':<50} | {head:>19} | {'vs ours':>10} |")
-    print(f"|{'-'*52}|{'-'*21}|{'-'*12}|")
-    table = []
-    for r in sorted(rows, key=lambda q: (q["side"] != "competitor", q["arm"], q.get("seed", ""))):
-        lo, hi = int(r["modes_lower"]), int(r["modes_upper"])
-        ours = ours_for(r)
-        if r["side"] == "ours":
-            ratio = "—"
-        elif lo == hi:
-            ratio = f"{ours/lo:.2f}x" if lo else "—"
-        else:
-            # Interval in the denominator inverts: the competitor's UPPER bound gives
-            # our LOWER ratio, which is the conservative end and the one to lead with.
-            ratio = f"{ours/hi:.2f}-{ours/lo:.2f}x"
-        star = " *" if r is headline else ""
-        print(f"| {r['arm'][:44]:<44} s{str(r.get('seed','')):<3} | "
-              f"{str(r['modes_at_100rxn']):>19} | {ratio:>10} |{star}")
-        table.append({**r, "ours_same_seed": ours, "ratio_vs_headline": ratio})
+    # Collapsed by default: nine rows is a seed ledger, and the paper wants a comparison.
+    # --per-seed keeps the expanded view for the appendix and for checking.
+    if not args.per_seed:
+        print(f"| {'pipeline':<44} | {head:>19} | {'vs ours':>18} |")
+        print(f"|{'-'*46}|{'-'*21}|{'-'*20}|")
+        table = []
+        by_arm = {}
+        for r in rows:
+            by_arm.setdefault((r["side"], r["arm"]), []).append(r)
+        for (side, arm), rs in sorted(by_arm.items(), key=lambda kv: kv[0][0] != "competitor"):
+            counts = [int(r["modes_lower"]) for r in rs]
+            mean_n = sum(counts) / len(counts)
+            cells = f"{mean_n:.1f}  ({min(counts)}\u2013{max(counts)})"
+            if side == "ours":
+                ratio = "\u2014"
+            else:
+                # Mean of the WITHIN-SEED ratios, never the ratio of the means. Averaging
+                # counts first pairs our seed 42 with their seed 44 by the back door; here
+                # it happens to move 1.408 -> 1.400, but the two are different quantities
+                # and only one of them is a measurement.
+                w = [ours_for(r) / int(r["modes_lower"]) for r in rs if int(r["modes_lower"])]
+                ratio = f"{sum(w)/len(w):.2f}x  ({min(w):.2f}\u2013{max(w):.2f})"
+            print(f"| {arm[:44]:<44} | {cells:>19} | {ratio:>18} |")
+            table.append({"arm": arm, "side": side, "n_seeds": len(counts),
+                          "config": rs[0].get("config", ""),
+                          "modes_at_100rxn": cells, "modes_mean": round(mean_n, 2),
+                          "modes_min": min(counts), "modes_max": max(counts),
+                          "modes_lower": min(counts),
+                          "is_headline_config": rs[0].get("is_headline_config", ""),
+                          "ratio_vs_headline": ratio})
+        print(f"\n  n={len(counts)} seeds per row. Parenthesised values are the observed "
+              f"RANGE across seeds, not a confidence interval.")
+        print(f"  Ratios are computed within seed and then averaged.")
+    else:
+        print(f"| {'pipeline':<50} | {head:>19} | {'vs ours':>10} |")
+        print(f"|{'-'*52}|{'-'*21}|{'-'*12}|")
+        table = []
+        for r in sorted(rows, key=lambda q: (q["side"] != "competitor", q["arm"], q.get("seed", ""))):
+            lo, hi = int(r["modes_lower"]), int(r["modes_upper"])
+            ours = ours_for(r)
+            if r["side"] == "ours":
+                ratio = "—"
+            elif lo == hi:
+                ratio = f"{ours/lo:.2f}x" if lo else "—"
+            else:
+                # Interval in the denominator inverts: the competitor's UPPER bound gives
+                # our LOWER ratio, which is the conservative end and the one to lead with.
+                ratio = f"{ours/hi:.2f}-{ours/lo:.2f}x"
+            star = " *" if r is headline else ""
+            print(f"| {r['arm'][:44]:<44} s{str(r.get('seed','')):<3} | "
+                  f"{str(r['modes_at_100rxn']):>19} | {ratio:>10} |{star}")
+            table.append({**r, "ours_same_seed": ours, "ratio_vs_headline": ratio})
     print(f"\n  * the headline configuration ({headline['config']})")
 
     print()

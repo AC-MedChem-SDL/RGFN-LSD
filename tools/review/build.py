@@ -132,9 +132,19 @@ def build() -> str:
                 f'<td class="m num strong">{esc(r["modes_at_100rxn"])}</td>'
                 f'<td class="m num">{esc(r["ratio_vs_headline"])}</td></tr>')
     t1_rows = "".join(t1_row(r) for r in t1)
-    ratios = [f(r["modes_lower"]) for r in t1 if r["side"] == "competitor"]
-    ours_n = next(f(r["modes_lower"]) for r in t1 if r["side"] == "ours")
-    lead = f"{ours_n / max(ratios):.2f}" if ratios else "?"
+    # The conservative headline: the SMALLEST arm mean, read off the ratio the table
+    # already computed within seed. Deriving it here as ours/max(theirs) would divide a
+    # mean by a max and land on a number that appears nowhere in the table.
+    means = []
+    for r in t1:
+        if r["side"] != "competitor":
+            continue
+        txt = str(r.get("ratio_vs_headline", ""))
+        try:
+            means.append(float(txt.split("x")[0]))
+        except (ValueError, IndexError):
+            pass
+    lead = f"{min(means):.2f}" if means else "?"
     verif = (json.loads((ART / "external" / "provenance.json").read_text())
              .get("verification", {}))
 
