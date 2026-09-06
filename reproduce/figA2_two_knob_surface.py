@@ -51,10 +51,13 @@ from pathlib import Path
 BLUE, ORANGE, NEUTRAL = "#1f6f8b", "#c2622d", "#f2f0ec"
 GREY_NOMODE, INK, MUTED = "#d8dcdc", "#0f1e20", "#5b6b6d"
 
-# The gates the paper actually quotes, both at cutoff 0.5. Figure 1 gates sEH at 5.0;
-# Figure 3 and Table 1 at 7.0. Marking both is the point -- the figure has to show that
-# the disagreement between them is immaterial.
-PAPER_GATES = [(5.0, 0.5, "Fig 1"), (7.0, 0.5, "Fig 3 / Table 1")]
+# The three bars in play, all at cutoff 0.5. 5.68 is the project's standard -- the 5%-FPR
+# point on sEH's own actives-vs-decoys set -- and is drawn filled, because it is the one
+# derived by a rule rather than chosen. 5.0 (Figure 1) and 7.0 (Figure 3, Table 1) are
+# drawn hollow: they are where existing numbers happen to sit. Marking all three lets the
+# reader see that the choice between them does not change the verdict, and that 7.0 is the
+# one that lands on a non-comparable cell for RGFN.
+PAPER_GATES = [(5.68, 0.5, True), (5.0, 0.5, False), (7.0, 0.5, False)]
 
 
 def load(path: Path):
@@ -148,10 +151,11 @@ def main() -> int:
                     ax.add_patch(plt.Rectangle((j - 0.5, i - 0.5), 1, 1, facecolor=GREY_NOMODE,
                                                edgecolor="white", lw=0.4))
 
-        for bar_v, cut_v, _ in PAPER_GATES:
+        for bar_v, cut_v, primary in PAPER_GATES:
             if bar_v in bars and cut_v in cuts_plot:
-                ax.plot(cuts_plot.index(cut_v), bars.index(bar_v), marker="o", ms=6.5,
-                        mfc="none", mec=INK, mew=1.6, zorder=5)
+                ax.plot(cuts_plot.index(cut_v), bars.index(bar_v), marker="o", ms=7.5 if primary else 6.0,
+                        mfc=INK if primary else "none", mec=INK if primary else MUTED,
+                        mew=1.5, zorder=5)
 
         n = prov["cells"].get(
             next((k for k, v in prov["cells"].items() if v["label"] == g), ""), {})
@@ -200,9 +204,9 @@ def main() -> int:
     ]
     fig.legend(handles=handles, loc="lower center", ncol=2, frameon=False,
                fontsize=8.5, bbox_to_anchor=(0.5, y_leg), labelcolor=INK)
-    fig.text(0.5, y_note, "○ = the two gates this paper quotes: 5.0 (Fig 1) and 7.0 "
-             "(Fig 3 / Table 1), both at cutoff 0.5.  The 5%-FPR standard for sEH, 5.68, "
-             "falls between two measured bars that are both wins.",
+    fig.text(0.5, y_note, "● = the operating point: bar 5.68, the 5%-FPR gate on sEH's own "
+             "actives-vs-decoys set, at cutoff 0.5.   ○ = the two other bars existing numbers "
+             "sit at, 5.0 (Fig 1) and 7.0 (Fig 3 / Table 1).",
              ha="center", va="bottom", fontsize=8, color=MUTED)
 
     outdir = a.out or (repo / "build" / "figures")

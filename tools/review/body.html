@@ -259,12 +259,17 @@
     that generator&rsquo;s pool clears that bar, for either arm, so there is no selection
     to compare. Both classes cluster at the strict end, which is precisely where an
     unflagged surface would look most impressive.</div>
-  <div class="note caution"><span class="tag">One cell a reader will check, and should</span>
-    On RGFN the circle at bar 7.0 sits on a <em>hatched</em> cell: best-candidate is
-    pool-exhausted there (9 modes for 36 reactions), so that point is not comparable. The
-    Fig-1 gate of 5.0 is comparable on all four generators. Anyone quoting an RGFN number
-    at 7.0 has to say which of the two it is. This is also why the figure marks both gates
-    rather than picking one.</div>
+  <div class="note caution"><span class="tag">This figure settles the 5.0-vs-7.0 question</span>
+    Three bars are marked at cutoff 0.5: <strong>5.68</strong> filled, because it is the
+    project's standard (the 5%-FPR point on sEH's own actives-vs-decoys set); 5.0 and 7.0
+    hollow, because they are only where existing numbers happen to sit. On RGFN the 7.0
+    marker lands on a <em>hatched</em> cell &mdash; best-candidate is pool-exhausted there,
+    9 modes for 36 of its 100 reactions &mdash; and RGFN's entire 7.0 row is hatched. The
+    same starvation was already recorded for both RxnFlow cells on all three seeds. So 7.0
+    is not a stricter version of the same measurement; it is a bar at which one generator
+    in four has no comparable cell, and the ratio there is taken over a starved baseline,
+    which <em>understates</em> hub-batching. At 5.68 all four are comparable:
+    <strong>2.26× / 2.71× / 2.19× / 4.00×</strong> for RGFN / SCENT / RxnFlow / FragGFN.</div>
   <div class="note"><span class="tag">What this does NOT show</span>
     One target, one seed per generator. The surface re-scores a single cached enumeration
     per cell, so it sweeps <em>thresholds</em>, not seeds &mdash; it answers whether the
