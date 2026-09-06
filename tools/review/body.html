@@ -259,26 +259,35 @@
   <figure><div class="plate"><img src="__FIGA2__" alt="Four heatmaps, one per generator, of hub-batching's cost advantage over reward bar and diversity cutoff. Almost every cell is blue, meaning cheaper; the strict-cutoff edge fades toward parity; high-bar rows are hatched or grey where the comparison is not valid."></div></figure>
   <div class="tablewrap"><table>
     <thead><tr><th>Generator</th><th class="num">Cheaper (&uarr;)</th><th class="num">Ties</th>
-      <th class="num">Losses</th><th class="num">Pool-limited</th><th class="num">No modes</th></tr></thead>
+      <th class="num">Losses</th><th class="num">Pool limited</th></tr></thead>
     <tbody>__A2__</tbody></table></div>
-  <div class="note"><span class="tag">The two greyed classes are the honest part</span>
-    Hatched cells are <strong>pool-limited</strong>: one arm ran out of library before it
-    could spend the budget, so its cost is measured over a shorter run and is not
-    comparable. Flat grey cells hold <strong>no modes at all</strong> &mdash; nothing in
-    that generator&rsquo;s pool clears that bar, for either arm, so there is no selection
-    to compare. Both classes cluster at the strict end, which is precisely where an
+  <div class="note"><span class="tag">Hub-batching never loses; it only ever ties</span>
+    Across the drawn grid there are <strong>__A2LOSS__ losses</strong> and
+    <strong>__A2TIE__ ties</strong>. All three ties sit at the two <em>strictest</em>
+    diversity thresholds (0.30 and 0.35), where both arms land on the same small set and
+    price it identically; two of the three are also at the highest reward threshold. That
+    is the shape you would expect if the advantage comes from sharing intermediates &mdash;
+    it has nothing left to share once almost nothing qualifies.</div>
+  <div class="note"><span class="tag">One flag, not two &mdash; a deliberate simplification</span>
+    Hatched cells are <strong>pool limited</strong>: not a valid comparison, because there
+    were not enough candidates to choose from. Underneath that flag are two different
+    facts &mdash; one arm ran short of library, or nothing cleared the threshold at all
+    &mdash; and <span class="m">artifacts/two_knob/surface.csv</span> still records which
+    is which. The figure merges them because this paper does not investigate <em>why</em>
+    a cell is invalid, only that it is, and a second flat grey read as a colormap value
+    rather than as a flag. They cluster at the strict end, which is precisely where an
     unflagged surface would look most impressive.</div>
-  <div class="note caution"><span class="tag">This figure settles the 5.0-vs-7.0 question</span>
-    Three bars are marked at cutoff 0.5: <strong>5.68</strong> filled, because it is the
-    project's standard (the 5%-FPR point on sEH's own actives-vs-decoys set); 5.0 and 7.0
-    hollow, because they are only where existing numbers happen to sit. On RGFN the 7.0
-    marker lands on a <em>hatched</em> cell &mdash; best-candidate is pool-exhausted there,
-    9 modes for 36 of its 100 reactions &mdash; and RGFN's entire 7.0 row is hatched. The
-    same starvation was already recorded for both RxnFlow cells on all three seeds. So 7.0
-    is not a stricter version of the same measurement; it is a bar at which one generator
-    in four has no comparable cell, and the ratio there is taken over a starved baseline,
-    which <em>understates</em> hub-batching. At 5.68 all four are comparable:
-    <strong>2.26× / 2.71× / 2.19× / 4.00×</strong> for RGFN / SCENT / RxnFlow / FragGFN.</div>
+  <div class="note caution"><span class="tag">Why the 7.0 marker sits on a hatched cell</span>
+    Two thresholds are marked, both at diversity 0.5: <strong>5.68</strong> filled, the
+    5%-FPR point on sEH's own actives-vs-decoys set, and <strong>7.0</strong> hollow, where
+    the headline comparison is quoted. (5.0 is no longer marked &mdash; once the 5%-FPR
+    rule was adopted it appears nowhere in the paper.) On RGFN and RxnFlow the 7.0 marker
+    lands on a <em>pool-limited</em> cell: RGFN's best-candidate arm is exhausted there at
+    9 modes having spent 36 of its 100 reactions, and its whole 7.0 row is flagged. So 7.0
+    is not simply a stricter version of the same measurement &mdash; on those two
+    generators the surrogate comparison has no valid cell there at all. At 5.68 all four
+    are comparable: <strong>2.26× / 2.71× / 2.19× / 4.00×</strong> for RGFN / SCENT /
+    RxnFlow / FragGFN.</div>
   <div class="note"><span class="tag">What this does NOT show</span>
     One target, one seed per generator. The surface re-scores a single cached enumeration
     per cell, so it sweeps <em>thresholds</em>, not seeds &mdash; it answers whether the

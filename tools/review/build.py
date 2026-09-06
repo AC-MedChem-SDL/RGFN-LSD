@@ -188,16 +188,31 @@ def build() -> str:
         '8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">\n'
         f'<style>\n{css}</style>\n\n')
 
+    # Recomputed over the drawn grid: the figure suppresses reward threshold 5.5, so the
+    # harvest totals (449/452) describe a grid the reader cannot see. Kept in step with
+    # SUPPRESSED_BARS in reproduce/figA2_two_knob_surface.py.
+    a2rows_raw = [r for r in rows(ART / "two_knob" / "surface.csv")
+                  if abs(f(r["reward_bar"]) - 5.5) > 1e-9]
+    a2cells = {}
+    for r in a2rows_raw:
+        c = a2cells.setdefault(r["generator"], {"comparable": 0, "win": 0, "tie": 0,
+                                                "loss": 0, "pool_limited": 0, "no_modes": 0})
+        if r["cell_class"] == "comparable":
+            c["comparable"] += 1
+            adv = f(r["advantage"])
+            c["win" if adv > 1 + 5e-4 else "loss" if adv < 1 - 5e-4 else "tie"] += 1
+        else:
+            c[r["cell_class"]] += 1
     a2 = json.loads((ART / "two_knob" / "provenance.json").read_text())
     a2rows = "".join(
-        f'<tr><td>{esc(c["label"])}</td>'
-        f'<td class="m num strong">{esc(c["counts"]["win"])}/{esc(c["counts"]["comparable"])}</td>'
-        f'<td class="m num">{esc(c["counts"]["tie"])}</td>'
-        f'<td class="m num">{esc(c["counts"]["loss"])}</td>'
-        f'<td class="m num">{esc(c["counts"]["pool_limited"])}</td>'
-        f'<td class="m num">{esc(c["counts"]["no_modes"])}</td></tr>'
-        for c in a2["cells"].values())
-    a2t = a2["totals"]
+        f'<tr><td>{esc(g)}</td>'
+        f'<td class="m num strong">{c["win"]}/{c["comparable"]}</td>'
+        f'<td class="m num">{c["tie"]}</td>'
+        f'<td class="m num">{c["loss"]}</td>'
+        f'<td class="m num">{c["pool_limited"] + c["no_modes"]}</td></tr>'
+        for g, c in a2cells.items())
+    a2t = {k: sum(c[k] for c in a2cells.values())
+           for k in ("comparable", "win", "tie", "loss", "pool_limited", "no_modes")}
 
     fill = {
         "__FIG1__": b64(FIG / "fig1_reaction_budget.png"),
