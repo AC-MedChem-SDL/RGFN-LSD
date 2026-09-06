@@ -100,15 +100,16 @@ See `artifacts/mechanism/hub_ordering/PROVENANCE.md`.
 Draft caption:
 
 > **The advantage does not depend on where the two thresholds are set.** Every headline
-> number is quoted at one reward bar and one Tanimoto cutoff. Sweeping both — 10 bars ×
-> 13 cutoffs, all four generators on sEH, at the paper's own 100-reaction budget — leaves
-> hub-batching cheaper per distinct molecule in **449 of 452 comparable cells**, with 3
+> number is quoted at one reward threshold and one Tanimoto threshold. Sweeping both — 9
+> × 13, all four generators on sEH, at the paper's own 100-reaction budget — leaves
+> hub-batching cheaper per distinct molecule in **397 of 400 comparable cells**, with 3
 > exact ties and no losses. Colour is the ratio of the two arms' reactions-per-mode, so
 > 1.0 is parity. Hatched cells are pool-limited (one arm exhausted its library before
 > spending the budget, so its cost is measured over a shorter run); grey cells hold no
-> modes at all for either arm. The filled marker is the operating point (bar 5.68, the
-> 5%-FPR gate on sEH's own actives-vs-decoys set); hollow markers are the two other bars
-> existing numbers sit at, 5.0 and 7.0.
+> modes at all for either arm. The filled marker is the operating point (reward threshold
+> 5.68, the 5%-FPR gate on sEH's own actives-vs-decoys set); hollow markers are the two
+> other thresholds existing numbers sit at, 5.0 and 7.0. ↗ marks the direction of
+> increasing stringency, not of improvement — the advantage narrows toward that corner.
 
 ### Three things the caption must not overstate
 
@@ -142,3 +143,13 @@ checkpoint and enumeration, so it is a consistency check on the pipeline, not in
 corroboration of the result.
 
 See `artifacts/two_knob/provenance.json` for per-cell counts and source digests.
+
+### Why the figure shows 9 reward thresholds and the artifact holds 10
+
+The grid was measured at 4.0–8.0 in steps of 0.5 **plus 5.68**, the 5%-FPR operating point.
+The figure suppresses 5.5, so 5.68 replaces its nearest neighbour rather than sitting 0.18
+away from it, which reads as a rendering artefact rather than a measurement. Counts in the
+figure are computed over what is **drawn** (397 of 400), never off the harvest totals (449
+of 452) — otherwise the caption would quote a grid the reader cannot see. `SUPPRESSED_BARS`
+in the reproduce script is the single place this is decided, and `artifacts/two_knob/` keeps
+the 5.5 row for anyone who wants the even ladder.
