@@ -94,55 +94,60 @@ def main() -> int:
     # NAIVE POOL ONLY. A diversity-enforced ("pruned") variant exists and produces a
     # different picture; it is being checked before it is quoted, and the table says so
     # rather than silently reporting whichever is kinder.
-    SEED = 43
-    sel = res / f"s3gfn_seh_seed{SEED}_big_select_N500" / "select_frontier.csv"
-    if sel.is_file():
-        with sel.open() as fh:
-            for r in csv.DictReader(fh):
-                if str(r.get("budget_rxns")) != "100":
-                    continue
-                n = r.get("n_modes") or r.get("n_modes_kept")
-                rows.append({
-                    "arm": "S3-GFN \u2192 retrosynthesis \u2192 SPARROW selects",
-                    "side": "competitor", "seed": SEED,
-                    "config": "SPARROW chooses under a 100-reaction budget; no diversity term",
-                    "modes_at_100rxn": n, "modes_lower": n, "modes_upper": n,
-                    "used_rxns": r.get("used_rxns"), "n_selected": r.get("n_selected"),
-                    "solver": r.get("milp_status"), "exact": True, "gate": 7.0,
-                })
-        sources.append({"file": sel.parent.name + "/select_frontier.csv", "md5": md5(sel)})
+    # All three seeds, not one. This was never a cost limit -- the expensive stage
+    # (MultiAiZ retrosynthesis, ~2.25 h/seed) is done for all three enlarged pools and
+    # so are both selection arms. The table read n=1 because this script discovered
+    # cells from a hard-coded seed.
+    SEEDS = (42, 43, 44)
+    for SEED in SEEDS:
+     sel = res / f"s3gfn_seh_seed{SEED}_big_select_N500" / "select_frontier.csv"
+     if sel.is_file():
+         with sel.open() as fh:
+             for r in csv.DictReader(fh):
+                 if str(r.get("budget_rxns")) != "100":
+                     continue
+                 n = r.get("n_modes") or r.get("n_modes_kept")
+                 rows.append({
+                     "arm": "S3-GFN \u2192 retrosynthesis \u2192 SPARROW selects",
+                     "side": "competitor", "seed": SEED,
+                     "config": "SPARROW chooses under a 100-reaction budget; no diversity term",
+                     "modes_at_100rxn": n, "modes_lower": n, "modes_upper": n,
+                     "used_rxns": r.get("used_rxns"), "n_selected": r.get("n_selected"),
+                     "solver": r.get("milp_status"), "exact": True, "gate": 7.0,
+                 })
+         sources.append({"file": sel.parent.name + "/select_frontier.csv", "md5": md5(sel)})
 
-    # Prefer the 1-mode re-price when present: the 5-mode grid could only bound R=100.
-    gre = res / f"s3gfn_seh_seed{SEED}_big_greedy_FINE" / "greedy_frontier.csv"
-    if not gre.is_file():
-        gre = res / f"s3gfn_seh_seed{SEED}_big_greedy_N500" / "greedy_frontier.csv"
-    if gre.is_file():
-        with gre.open() as fh:
-            grid = [(int(r["n_modes"]), int(r["used_rxns"]), r.get("milp_status"))
-                    for r in csv.DictReader(fh)]
-        step = (grid[1][0] - grid[0][0]) if len(grid) > 1 else 0
-        below = [(m, u) for m, u, _ in grid if u <= 100]
-        above = [(m, u) for m, u, _ in grid if u > 100]
-        lo = max(m for m, _ in below) if below else 0
-        hi = (min(m for m, _ in above) - 1) if above else lo
-        rows.append({
-            "arm": "S3-GFN \u2192 retrosynthesis \u2192 greedy selection",
-            "side": "competitor", "seed": SEED,
-            "config": f"their strongest pipeline; frontier priced every {step} modes",
-            "modes_at_100rxn": str(lo), "modes_lower": lo, "modes_upper": hi,
-            "used_rxns": max((u for _, u in below), default=0),
-            "n_selected": lo, "solver": "greedy", "exact": lo == hi, "gate": 7.0,
-        })
-        if lo != hi:
-            notes.append(
-                f"The greedy-selection arm is priced every {step} modes, so R=100 falls "
-                f"between grid points: {lo} modes fit in "
-                f"{max(u for _, u in below)} reactions and the next point needs "
-                f"{min(u for _, u in above)}. The readout is therefore [{lo}, {hi}] and "
-                f"{lo} is quoted, which is the conservative end for us. A 1-mode "
-                f"re-price makes it exact and costs seconds, since greedy mode selection "
-                f"is prefix-stable.")
-        sources.append({"file": gre.parent.name + "/greedy_frontier.csv", "md5": md5(gre)})
+     # Prefer the 1-mode re-price when present: the 5-mode grid could only bound R=100.
+     gre = res / f"s3gfn_seh_seed{SEED}_big_greedy_FINE" / "greedy_frontier.csv"
+     if not gre.is_file():
+         gre = res / f"s3gfn_seh_seed{SEED}_big_greedy_N500" / "greedy_frontier.csv"
+     if gre.is_file():
+         with gre.open() as fh:
+             grid = [(int(r["n_modes"]), int(r["used_rxns"]), r.get("milp_status"))
+                     for r in csv.DictReader(fh)]
+         step = (grid[1][0] - grid[0][0]) if len(grid) > 1 else 0
+         below = [(m, u) for m, u, _ in grid if u <= 100]
+         above = [(m, u) for m, u, _ in grid if u > 100]
+         lo = max(m for m, _ in below) if below else 0
+         hi = (min(m for m, _ in above) - 1) if above else lo
+         rows.append({
+             "arm": "S3-GFN \u2192 retrosynthesis \u2192 greedy selection",
+             "side": "competitor", "seed": SEED,
+             "config": f"their strongest pipeline; frontier priced every {step} modes",
+             "modes_at_100rxn": str(lo), "modes_lower": lo, "modes_upper": hi,
+             "used_rxns": max((u for _, u in below), default=0),
+             "n_selected": lo, "solver": "greedy", "exact": lo == hi, "gate": 7.0,
+         })
+         if lo != hi:
+             notes.append(
+                 f"The greedy-selection arm is priced every {step} modes, so R=100 falls "
+                 f"between grid points: {lo} modes fit in "
+                 f"{max(u for _, u in below)} reactions and the next point needs "
+                 f"{min(u for _, u in above)}. The readout is therefore [{lo}, {hi}] and "
+                 f"{lo} is quoted, which is the conservative end for us. A 1-mode "
+                 f"re-price makes it exact and costs seconds, since greedy mode selection "
+                 f"is prefix-stable.")
+         sources.append({"file": gre.parent.name + "/greedy_frontier.csv", "md5": md5(gre)})
 
     # ---- our arm, on the SAME seed, from the harvested per-seed values ----
     ours_csv = (Path(__file__).resolve().parents[2] / "artifacts" / "sparrow_diversity"
@@ -150,11 +155,12 @@ def main() -> int:
     if ours_csv.is_file():
         with ours_csv.open() as fh:
             for r in csv.DictReader(fh):
-                if int(r["seed"]) != SEED:
+                if int(r["seed"]) not in SEEDS:
                     continue
                 n = int(r["n_modes_kept"])
                 rows.append({
-                    "arm": "SCENT \u2192 hub-batching", "side": "ours", "seed": SEED,
+                    "arm": "SCENT \u2192 hub-batching", "side": "ours",
+                    "seed": int(r["seed"]),
                     "config": f"{r.get('child_policy')} child policy, "
                               f"K={r.get('prebuild_k')}",
                     "modes_at_100rxn": n, "modes_lower": n, "modes_upper": n,

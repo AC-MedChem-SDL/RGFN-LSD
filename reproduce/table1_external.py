@@ -47,7 +47,14 @@ def main() -> int:
                      if r.get("is_headline_config") == "True"), None)
     if headline is None:
         sys.exit("no row marked as the headline config")
+    # Our value PER SEED. Every ratio below is within-seed: pairing our seed 42 against
+    # their seed 44 compares two different draws and measures nothing. With a single
+    # seed this reduces to the previous behaviour exactly.
+    OURS = {r["seed"]: int(r["modes_lower"]) for r in rows if r["side"] == "ours"}
     ours = int(headline["modes_lower"])
+
+    def ours_for(r):
+        return OURS.get(r.get("seed"), ours)
 
     seeds = {r.get("seed") for r in rows if r.get("seed")}
     seed_s = f"seed {seeds.pop()}" if len(seeds) == 1 else f"seeds {sorted(seeds)}"
@@ -60,10 +67,11 @@ def main() -> int:
     print(f"| {'pipeline':<50} | {head:>19} | {'vs ours':>10} |")
     print(f"|{'-'*52}|{'-'*21}|{'-'*12}|")
     table = []
-    for r in rows:
+    for r in sorted(rows, key=lambda q: (q["side"] != "competitor", q["arm"], q.get("seed", ""))):
         lo, hi = int(r["modes_lower"]), int(r["modes_upper"])
+        ours = ours_for(r)
         if r["side"] == "ours":
-            ratio = "—" if r is headline else f"{ours/lo:.2f}x" if lo else "—"
+            ratio = "—"
         elif lo == hi:
             ratio = f"{ours/lo:.2f}x" if lo else "—"
         else:
@@ -71,24 +79,38 @@ def main() -> int:
             # our LOWER ratio, which is the conservative end and the one to lead with.
             ratio = f"{ours/hi:.2f}-{ours/lo:.2f}x"
         star = " *" if r is headline else ""
-        print(f"| {r['arm'][:50]:<50} | {str(r['modes_at_100rxn']):>19} | {ratio:>10} |{star}")
-        table.append({**r, "ratio_vs_headline": ratio})
+        print(f"| {r['arm'][:44]:<44} s{str(r.get('seed','')):<3} | "
+              f"{str(r['modes_at_100rxn']):>19} | {ratio:>10} |{star}")
+        table.append({**r, "ours_same_seed": ours, "ratio_vs_headline": ratio})
     print(f"\n  * the headline configuration ({headline['config']})")
 
-    exact = [r for r in rows if r["side"] == "competitor" and r["exact"] == "True"]
-    inexact = [r for r in rows if r["side"] == "competitor" and r["exact"] != "True"]
     print()
-    for r in exact:
-        print(f"  vs {r['arm']}: {ours}/{r['modes_lower']} = "
-              f"{ours/int(r['modes_lower']):.2f}x   "
-              f"({r['solver']}, spent {r['used_rxns']} reactions)")
-    if len(exact) > 1:
-        worst = max(exact, key=lambda r: int(r["modes_lower"]))
-        print(f"\n  Lead with the conservative one: "
-              f"{ours/int(worst['modes_lower']):.2f}x against their strongest arm.")
-    for r in inexact:
-        print(f"  {r['arm']} is an interval [{r['modes_lower']}, {r['modes_upper']}] — "
-              f"frontier granularity, not uncertainty. Lead with the conservative end.")
+    per_arm = {}
+    for r in rows:
+        if r["side"] == "competitor":
+            per_arm.setdefault(r["arm"], []).append(r)
+    worst_arm = None
+    for arm, rs in per_arm.items():
+        rs = [r for r in rs if int(r["modes_lower"])]
+        if not rs:
+            continue
+        vals = [ours_for(r) / int(r["modes_lower"]) for r in rs]
+        mean = sum(vals) / len(vals)
+        detail = "  ".join(f"s{r.get('seed')} {ours_for(r)}/{r['modes_lower']}={v:.2f}x"
+                           for r, v in zip(rs, vals))
+        print(f"  vs {arm}:")
+        print(f"      n={len(vals)}  mean {mean:.2f}x  range {min(vals):.2f}-{max(vals):.2f}x")
+        print(f"      within-seed: {detail}")
+        if worst_arm is None or mean < worst_arm[1]:
+            worst_arm = (arm, mean, min(vals))
+    if worst_arm:
+        print(f"\n  Lead with the conservative one: {worst_arm[1]:.2f}x mean, worst seed "
+              f"{worst_arm[2]:.2f}x, against their strongest arm ({worst_arm[0]}).")
+    for r in rows:
+        if r["side"] == "competitor" and r["exact"] != "True":
+            print(f"  {r['arm']} seed {r.get('seed')} is an interval "
+                  f"[{r['modes_lower']}, {r['modes_upper']}] — frontier granularity, not "
+                  f"uncertainty. The lower end is quoted, the conservative end for us.")
     # The verification sentence: SPARROW pricing OUR selection, not competing with it.
     prov = json.loads((src.parent / "provenance.json").read_text())
     v = prov.get("verification")

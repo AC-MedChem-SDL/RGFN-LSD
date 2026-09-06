@@ -190,14 +190,21 @@
     gate, so finding 99 high-reward compounds is trivial &mdash; reward is not the scarce
     thing, distinctness is. At &lambda;=0 the 98 it picks have mean pairwise Tanimoto
     <strong>0.59</strong>, so almost all collapse; at &lambda;=1 they sit at 0.28 and far
-    more survive. Our seeds give 82/81/82, a CV of <strong>0.7%</strong>. The dots show
-    what an error bar hid: &lambda;=0's seeds are 2, 24 and 26 &mdash; one seed collapsing,
-    not a spread.</div>
-  <div class="note"><span class="tag">Our three seed values are harvested now</span>
-    They reproduce Logs/062 Result 12 to the unit (82 / 81 / 82). Seeds 43 and 44 were
-    re-derived by re-running only the final selection stage against surviving artifacts
-    &mdash; nothing re-trained, nothing re-sampled. Matching the log exactly is the
-    evidence it used the right inputs.</div>
+    more survive. Our two retained seeds give 81/82. The dots show the individual seeds
+    rather than an error bar, because two points are not a distribution.</div>
+  <div class="note caution"><span class="tag">Seed 42 is now excluded, and it cost us</span>
+    This figure's whole claim is that both arms choose from the <em>same</em> pool. On
+    seeds 43 and 44 they do &mdash; both read
+    <span class="m">t45_seh_seed{43,44}/enum/enum_children.json</span>. On seed 42 they
+    do <em>not</em>: ours read <span class="m">scent_seh_freefrag</span>, SPARROW's read
+    <span class="m">bc_enum_seh_seed42</span>, per each run's own
+    <span class="m">select_frontier_summary.json</span>. So it is dropped from both arms.
+    The direction matters: &lambda;=0's dramatic collapse to <strong>2</strong> distinct
+    was seed 42's, and it was doing most of the work &mdash; removing it takes our
+    &lambda;=0 ratio <strong>down from 4.71&times; to 3.26&times;</strong>. &lambda;=1's
+    2.51&times; headline does not move, because seed 42 was already excluded there for
+    hitting the solver's time limit. Our own values reproduce Logs/062 Result 12 to the
+    unit on the seeds that remain (81, 82).</div>
   <div class="note"><span class="tag">The violin is the mechanism, measured</span>
     Within-selection pairwise Tanimoto (Morgan r=3/2048), all three arms seed 43 on the
     <em>same</em> enumeration: hub-batching <strong>median 0.137</strong> (IQR 0.108&ndash;0.193,

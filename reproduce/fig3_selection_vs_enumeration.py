@@ -95,6 +95,19 @@ def collect(root: Path):
     ours = list(csv.DictReader((root / "ours_r100.csv").open()))
 
     dropped = []
+    # Seed 42's two arms did not read the same enumeration -- ours came from
+    # scent_seh_freefrag, SPARROW's from bc_enum_seh_seed42, while seeds 43 and 44
+    # both read t45_seh_seed{43,44}/enum/enum_children.json for BOTH arms (checked in
+    # each run's select_frontier_summary.json). The whole point of this figure is that
+    # the two arms choose from the SAME pool, so a different-pool seed cannot sit in it
+    # -- and seed 42 is also where lambda=0's dramatic collapse to 2 distinct came from,
+    # which makes it load-bearing rather than cosmetic. Dropping it LOWERS our lambda=0
+    # ratio from 4.71x to 3.26x.
+    n_before = len(comp), len(ours)
+    comp = [r for r in comp if r["seed"] != "42"]
+    ours = [r for r in ours if r["seed"] != "42"]
+    if n_before != (len(comp), len(ours)):
+        dropped.append("seed 42, both arms (different enumeration from our arm)")
     keep = []
     for r in comp:
         lam = num(r["lambda_div"])
@@ -142,10 +155,12 @@ def collect(root: Path):
 def whisk(ax, x, vals, color="#20343a", spread=0.10):
     """Plot the individual seeds, not a summary of them.
 
-    At n=2-3, a bar with an error bar implies a distribution that cannot be estimated
-    from that many points, and it hides the shape that matters here: lambda=0's seeds
-    are 2, 24 and 26, which is not a spread around a mean, it is one seed collapsing.
-    Dots show that; a whisker averages it away.
+    At n=2, a bar with an error bar implies a distribution that cannot be estimated
+    from that many points. Dots show the actual values; a whisker averages them away.
+    (The starker illustration -- lambda=0 reading 2, 24 and 26 across three seeds --
+    belonged to the 2-distinct seed-42 run, which is now excluded for reading a
+    different enumeration than our arm, so it is no longer the reason for this choice.
+    The reason is simply that two points are not a distribution.)
     """
     if not vals:
         return
