@@ -60,8 +60,16 @@ GREY_NOMODE, INK, MUTED = "#d8dcdc", "#0f1e20", "#5b6b6d"
 PAPER_GATES = [(5.68, 0.5, True), (5.0, 0.5, False), (7.0, 0.5, False)]
 
 
+# 5.68 replaces 5.5 rather than sitting beside it. The operating point is the row that
+# matters, and two rows 0.18 apart read as a rendering artefact rather than a measurement.
+# Both are harvested; this is a display choice, so the artifact keeps 5.5 for anyone who
+# wants the even 0.5 ladder.
+SUPPRESSED_BARS = (5.5,)
+
+
 def load(path: Path):
-    rows = list(csv.DictReader(path.open()))
+    rows = [r for r in csv.DictReader(path.open())
+            if not any(abs(float(r["reward_bar"]) - b) < 1e-9 for b in SUPPRESSED_BARS)]
     if not rows:
         raise SystemExit(f"no rows in {path}")
     gens, by = [], {}
@@ -122,6 +130,7 @@ def main() -> int:
     else:
         ncols, nrows, figsize = len(gens), 1, (3.15 * len(gens) + 1.5, 3.9)
         y_title, y_sub, y_leg, y_note, top, bottom = 1.155, 1.062, -0.085, -0.125, 0.84, 0.16
+    shown = {}
     fig, axes_arr = plt.subplots(nrows, ncols, figsize=figsize, sharey=True, sharex=True)
     axes = list(np.ravel(axes_arr)) if len(gens) > 1 else [axes_arr]
     fig.subplots_adjust(top=top, bottom=bottom, hspace=0.20, wspace=0.08)
@@ -157,9 +166,17 @@ def main() -> int:
                         mfc=INK if primary else "none", mec=INK if primary else MUTED,
                         mew=1.5, zorder=5)
 
-        n = prov["cells"].get(
-            next((k for k, v in prov["cells"].items() if v["label"] == g), ""), {})
-        c = n.get("counts", {})
+        # Counted over what is drawn. Reading these off the harvest totals would quote a
+        # grid the reader cannot see, and the suppressed row would go missing silently.
+        cells = [by[g][(b, c_)] for b in bars for c_ in cuts_plot]
+        comp = [r for r in cells if r["cell_class"] == "comparable"]
+        c = {"comparable": len(comp),
+             "win": sum(1 for r in comp if float(r["advantage"]) > 1 + 5e-4),
+             "tie": sum(1 for r in comp if abs(float(r["advantage"]) - 1) <= 5e-4),
+             "loss": sum(1 for r in comp if float(r["advantage"]) < 1 - 5e-4),
+             "pool_limited": sum(1 for r in cells if r["cell_class"] == "pool_limited"),
+             "no_modes": sum(1 for r in cells if r["cell_class"] == "no_modes")}
+        shown[g] = c
         ax.set_title(g, fontsize=12, fontweight="600", color=INK, pad=17)
         if c:
             ax.text(0.5, 1.012, f"{c['win']}/{c['comparable']} cells cheaper",
@@ -168,7 +185,7 @@ def main() -> int:
         ax.set_xticks(range(len(cuts_plot)))
         ax.set_xticklabels([f"{c:.2f}".rstrip("0") if (i % 2 == 0) else ""
                             for i, c in enumerate(cuts_plot)], fontsize=8)
-        ax.set_xlabel("diversity cutoff (Tanimoto)", fontsize=9.5, color=INK)
+        ax.set_xlabel("diversity threshold (Tanimoto)", fontsize=9.5, color=INK)
         for s in ax.spines.values():
             s.set_color("#c9d1d2")
         ax.tick_params(colors=MUTED, length=2)
@@ -177,7 +194,7 @@ def main() -> int:
         if k % ncols == 0:
             ax.set_yticks(range(len(bars)))
             ax.set_yticklabels([f"{b:g}" for b in bars], fontsize=8)
-            ax.set_ylabel("reward bar", fontsize=9.5, color=INK)
+            ax.set_ylabel("reward threshold", fontsize=9.5, color=INK)
         # Only the bottom row carries the x label, else it repeats under every panel.
         if k < len(axes) - ncols:
             ax.set_xlabel("")
@@ -189,24 +206,27 @@ def main() -> int:
     cb.ax.tick_params(labelsize=8, colors=MUTED)
     cb.outline.set_edgecolor("#c9d1d2")
 
-    fig.suptitle("The advantage does not depend on where the two thresholds are set",
+    # The arrow marks the direction of increasing STRINGENCY, which is what up-and-right
+    # actually is here: up raises the reward threshold, right lowers the Tanimoto cutoff.
+    # It is deliberately not labelled "better" -- the advantage NARROWS toward that
+    # corner, so an arrow implying the opposite would contradict the surface under it.
+    fig.suptitle("The advantage does not depend on where the two thresholds are set  "
+                 "(\u2197 stricter)",
                  fontsize=13.5, fontweight="600", color=INK, y=y_title)
-    sub = (f"sEH · budget {budget} reactions · {len(bars)}×{len(cuts)} grid per generator — "
-           f"hub-batching is cheaper in {tot.get('win','?')} of {tot.get('comparable','?')} "
-           f"comparable cells, ties {tot.get('tie','?')}, loses {tot.get('loss','?')}")
-    fig.text(0.5, y_sub, sub, ha="center", va="bottom", fontsize=9.5, color=MUTED)
+    fig.text(0.5, y_sub, f"sEH · budget {budget} reactions",
+             ha="center", va="bottom", fontsize=9.5, color=MUTED)
 
     handles = [
         Patch(facecolor=NEUTRAL, edgecolor=MUTED, hatch="xxx",
               label="pool-limited — an arm ran out of library before spending the budget"),
         Patch(facecolor=GREY_NOMODE, edgecolor="white",
-              label="no modes — nothing in the pool clears this bar, for either arm"),
+              label="no modes — nothing in the pool clears this threshold, for either arm"),
     ]
     fig.legend(handles=handles, loc="lower center", ncol=2, frameon=False,
                fontsize=8.5, bbox_to_anchor=(0.5, y_leg), labelcolor=INK)
-    fig.text(0.5, y_note, "● = the operating point: bar 5.68, the 5%-FPR gate on sEH's own "
-             "actives-vs-decoys set, at cutoff 0.5.   ○ = the two other bars existing numbers "
-             "sit at, 5.0 (Fig 1) and 7.0 (Fig 3 / Table 1).",
+    fig.text(0.5, y_note, "● = the operating point: reward threshold 5.68, the 5%-FPR gate on "
+             "sEH's own actives-vs-decoys set, at diversity threshold 0.5.   ○ = the two other "
+             "thresholds existing numbers sit at, 5.0 (Fig 1) and 7.0 (Fig 3 / Table 1).",
              ha="center", va="bottom", fontsize=8, color=MUTED)
 
     outdir = a.out or (repo / "build" / "figures")
@@ -217,15 +237,20 @@ def main() -> int:
     fig.savefig(out.with_suffix(".pdf"), bbox_inches="tight", facecolor="white")
     print(f"wrote {out} and {out.with_suffix('.pdf')}")
 
-    print(f"\ntwo-knob surface, budget {budget} reactions:")
+    # Reported over the DRAWN grid, so the printed numbers and the figure cannot diverge.
+    supp = ", ".join(f"{b:g}" for b in SUPPRESSED_BARS)
+    print(f"\ntwo-knob surface, budget {budget} reactions, "
+          f"{len(bars)}x{len(cuts)} shown (bar {supp} suppressed):")
+    tw = tc = tl = 0
     for g in gens:
-        key = next(k for k, v in prov["cells"].items() if v["label"] == g)
-        c = prov["cells"][key]["counts"]
+        c = shown[g]
         vals = sorted(float(r["advantage"]) for r in by[g].values() if r["advantage"] != "")
         med = vals[len(vals) // 2] if vals else float("nan")
+        tw += c["win"]; tc += c["comparable"]; tl += c["loss"]
         print(f"  {g:8s} {c['win']:3d} win / {c['tie']} tie / {c['loss']} loss   "
               f"median {med:.2f}x   (range {vals[0]:.2f}-{vals[-1]:.2f})   "
               f"{c['pool_limited']:2d} pool-limited, {c['no_modes']:2d} no-modes")
+    print(f"  {'TOTAL':8s} {tw} of {tc} comparable cells cheaper, {tl} losses")
     return 0
 
 
