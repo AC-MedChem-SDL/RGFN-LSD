@@ -1,18 +1,15 @@
 {
   "harvested_from_subdir": "experiments/lsd_hubs/campaign/results",
   "n_rows": 9,
-  "notes": [
-    "The greedy-selection arm is priced every 5 modes, so R=100 falls between grid points: 55 modes fit in 99 reactions and the next point needs 108. The readout is therefore [55, 59] and 55 is quoted, which is the conservative end for us. A 1-mode re-price makes it exact and costs seconds, since greedy mode selection is prefix-stable.",
-    "The greedy-selection arm is priced every 5 modes, so R=100 falls between grid points: 65 modes fit in 100 reactions and the next point needs 114. The readout is therefore [65, 69] and 65 is quoted, which is the conservative end for us. A 1-mode re-price makes it exact and costs seconds, since greedy mode selection is prefix-stable."
-  ],
+  "notes": [],
   "sources": [
     {
       "file": "s3gfn_seh_seed42_big_select_N500/select_frontier.csv",
       "md5": "0d669dbdac013789bd1fcee286434aa9"
     },
     {
-      "file": "s3gfn_seh_seed42_big_greedy_N500/greedy_frontier.csv",
-      "md5": "d1079d71843b74f2017c610bfcee4cf8"
+      "file": "s3gfn_seh_seed42_big_greedy_FINE/greedy_frontier.csv",
+      "md5": "18808a82cd0d9f56df066cf3f83e88d9"
     },
     {
       "file": "s3gfn_seh_seed43_big_select_N500/select_frontier.csv",
@@ -27,8 +24,8 @@
       "md5": "847abe6834def0b5025c9f9d7c7b44ee"
     },
     {
-      "file": "s3gfn_seh_seed44_big_greedy_N500/greedy_frontier.csv",
-      "md5": "2c69e368453646a1702cdf338d15a79f"
+      "file": "s3gfn_seh_seed44_big_greedy_FINE/greedy_frontier.csv",
+      "md5": "74527edd45dd3fe6a7ac6dab89f7d64b"
     },
     {
       "file": "artifacts/sparrow_diversity/ours_r100.csv",

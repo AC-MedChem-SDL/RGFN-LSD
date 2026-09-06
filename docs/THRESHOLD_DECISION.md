@@ -134,8 +134,10 @@ binds neither arm's pool differently, we still win.
    at threshold 7.0. Add: the enlarged S3-GFN pools cost **10,271 / 41,346 / 10,342**
    eval-phase oracle calls for seeds 42/43/44 against a 10,048-call training budget —
    **per seed, no average, no error bar**.
-3. **Table 1 exactness.** Seeds 42 and 44 were re-priced on a 1-mode grid and are now
-   **exact** (55 and 65), not the brackets [55,59] and [65,69]. The old bracket note can go.
+3. **Table 1 exactness.** All three seeds are re-priced on a 1-mode grid **at gate 7.0**
+   and every row is exact: 55 / 55 / 65, replacing the brackets [55,59] and [65,69] on
+   seeds 42 and 44. The values did not move, so the lower end was always the right quote.
+   The old bracket note can go.
 4. **Figure 3 caption.** n=2, seeds 43/44. Say seed 42 is excluded for reading a different
    enumeration, and that removing it **lowered** λ=0 from 4.71× to 3.26×.
 5. **A limitations sentence** carrying §3 above.

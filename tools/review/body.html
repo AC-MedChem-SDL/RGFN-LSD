@@ -125,26 +125,28 @@
   <h2>Against someone else&rsquo;s pipeline</h2>
   <div class="prose"><p>S3-GFN generates, a retrosynthesis planner routes its molecules
   over its own catalogue, and SPARROW &mdash; another group&rsquo;s optimizer &mdash;
-  chooses what to make. Three rows, one seed, one gate.</p></div>
+  chooses what to make. Two pipelines and ours, three seeds, one gate.</p></div>
   <div class="tablewrap"><table>
     <thead><tr><th>Pipeline</th><th class="num">Modes @ 100 rxn (&uarr;)</th>
       <th class="num">vs ours</th></tr></thead>
     <tbody>__T1__</tbody></table></div>
   <div class="note flag"><span class="tag">The margin moved &mdash; lead with __LEAD__&times;</span>
-    The competitor is now budget-matched and properly sampled (438 of 500 molecules
-    routed, 181 distinct modes available), and it is a far stronger opponent than the one
-    we were quoting. On seed 43 at gate 7.0, both solves optimal, SPARROW-selects went
-    <strong>24 &rarr; 46</strong> modes (3.42&times; &rarr; 1.76&times;) and greedy
-    selection <strong>38 &rarr; 55</strong> (2.16&times; &rarr;
-    <strong>1.47&times;</strong>). The old numbers came from a checkpoint trained far
-    longer than the generators it was compared against: <em>superseded, not merely
-    older</em>. Both sides are now the same seed, which the previous version could not
-    manage.</div>
-  <div class="note"><span class="tag">Exact, not bounded</span>
-    The greedy arm's 5-mode grid could only place R=100 between 55 and 59, so it was
-    re-priced at 1-mode spacing: 55 modes fit in 99 reactions, 56 need 102. Nine solves,
-    all optimal, minutes of CPU &mdash; and it removes an interval from the headline
-    denominator.</div>
+    The competitor is now budget-matched and properly sampled, and it is a far stronger
+    opponent than the one we were quoting. At gate 7.0, every solve optimal, every row
+    spending its budget: SPARROW-selects delivers <strong>54 / 46 / 41</strong> across
+    seeds 42/43/44 and greedy <strong>55 / 55 / 65</strong>, against our
+    <strong>82 / 81 / 82</strong>. Ratios are paired <em>within seed</em> &mdash; the
+    previous code divided one headline row by every competitor row, which at n=3 would
+    have compared our seed 42 against their seed 44. The conservative headline is
+    <strong>1.41&times; mean, worst seed 1.26&times;</strong> against greedy; against
+    SPARROW it is 1.76&times; (1.52&ndash;2.00&times;).</div>
+  <div class="note"><span class="tag">Exact, not bounded &mdash; on all three seeds now</span>
+    The greedy arm was priced every 5 modes, so R=100 landed between grid points on seeds
+    42 and 44: [55, 59] and [65, 69]. All three are now re-priced at 1-mode spacing and
+    every row is exact. The values did not move (55 and 65), which is the point &mdash;
+    the bracket's lower end was already the honest one to quote, and now it does not have
+    to be defended as a choice. Greedy mode selection is prefix-stable, so this costs
+    seconds, and it removes an interval from the headline denominator.</div>
   <div class="note caution"><span class="tag">Naive pool only</span>
     A diversity-enforced (&ldquo;pruned&rdquo;) pool &mdash; 500 mutually different
     molecules rather than the 500 highest-scoring &mdash; exists for this seed and gives a
@@ -337,11 +339,12 @@
   <p class="eyebrow">Open</p>
   <h2>What still needs a decision</h2>
   <ul class="tight">
-    <li><strong>Seeds 42 and 44 for Table 1 &mdash; now solved, but on enlarged pools.</strong>
-      The table above is still n=1 because the harvest predates them. The solves exist
-      (see the section before this), and they carry a sampling asymmetry that has to be
-      disclosed in the same sentence as the numbers. This matters more at 1.47&times; than
-      it did at 3.42&times;: seed variance could move the margin materially.</li>
+    <li><strong>Table 1 is n=3 now &mdash; and the enlarged pools have to be disclosed.</strong>
+      Seeds 42 and 44 were never a cost limit, only a harvest that hard-coded seed 43. The
+      margin moved <strong>1.47&times; &rarr; 1.41&times;</strong> and the worst seed is
+      1.26&times;. What still needs writing down: those pools cost <strong>10,271 / 41,346
+      / 10,342</strong> eval-phase oracle calls against a 10,048-call training budget,
+      per seed, no average and no error bar.</li>
     <li><strong>Which competitor pool is the fair one</strong> &mdash; highest-scoring, or
       diversity-enforced? The pruned variant exists for seed 43 and answers differently.
       Logs/067 exists because this is genuinely not obvious.</li>
