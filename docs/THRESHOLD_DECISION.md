@@ -68,12 +68,22 @@ the principled threshold and say why it is larger (§3).
 
 **Keep this figure at 7.0.** At 5.68 both competitor arms become unquotable:
 
-- **λ=0** collapses from 24 distinct to **4**. Real mechanism, not a bug — the enumerated
-  pool is ~26,000 candidates, so a looser threshold floods the diversity-blind optimizer
-  with near-duplicates. It would take the ratio from 3.26× to roughly 20×.
-- **λ=1** hits the solver time limit (1,702 s, `TimeLimit`, kept ≥34). A capped row is a
-  **lower bound on the competitor**, i.e. it flatters us, and per project doctrine cannot
-  be quoted as a ratio.
+All four solves are now in (job 75758, 61 min on `debug`). Distinct molecules kept at
+R=100, against our 81 / 95 (seed 43) and 82 / 94 (seed 44) at 7.0 / 5.68:
+
+| seed | λ | @ 7.0 | @ 5.68 | solver @ 5.68 | ratio @ 7.0 | ratio @ 5.68 |
+|---|---|---|---|---|---|---|
+| 43 | 0 | 24 | **4** | Optimal | 3.38× | 23.75× |
+| 43 | 1 | 33 | 34 | **TimeLimit** | 2.45× | *2.79× — not quotable* |
+| 44 | 0 | 26 | **9** | Optimal | 3.15× | 10.44× |
+| 44 | 1 | 32 | **23** | Optimal | 2.56× | 4.09× |
+
+- **λ=0 collapses** (24→4, 26→9). Real mechanism, not a bug: the enumerated pool is
+  ~26,000 candidates, so a looser threshold floods the diversity-blind optimizer with
+  near-duplicates. Ratios of 10–24× are not a result anyone should print.
+- **λ=1 gets worse for the competitor too** (32→23 on seed 44, Optimal), and on seed 43 it
+  hits the solver time limit at 1,702 s. A capped row is a **lower bound on the
+  competitor**, so the ratio beside it is an **upper bound on us** and cannot be quoted.
 
 At 7.0 both arms return `Optimal`. Quote **λ=1 at 2.51×** as the headline and λ=0 at 3.26×
 as the diversity-blind reference.
