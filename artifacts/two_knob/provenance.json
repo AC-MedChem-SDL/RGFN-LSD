@@ -1,0 +1,91 @@
+{
+  "generated_utc": "2026-09-06T21:36:24+00:00",
+  "source_dir_name": "surface_r100",
+  "cells": {
+    "rgfn_seh": {
+      "label": "RGFN",
+      "surface_csv_md5": "8b823970993df2ef2db56587fc2cf18f",
+      "budget_reactions": 100,
+      "child_policy": "reward",
+      "prebuild_k": 0,
+      "rank_by": null,
+      "wall_s": 104.1,
+      "n_reward_bars": 9,
+      "n_cutoffs": 13,
+      "counts": {
+        "comparable": 78,
+        "pool_limited": 13,
+        "no_modes": 26,
+        "win": 78,
+        "tie": 0,
+        "loss": 0
+      }
+    },
+    "scent_seh": {
+      "label": "SCENT",
+      "surface_csv_md5": "79b82500992de7eaeb3dd27d37a59071",
+      "budget_reactions": 100,
+      "child_policy": "free_frag",
+      "prebuild_k": 20,
+      "rank_by": "build_score",
+      "wall_s": 276.9,
+      "n_reward_bars": 9,
+      "n_cutoffs": 13,
+      "counts": {
+        "comparable": 116,
+        "pool_limited": 1,
+        "no_modes": 0,
+        "win": 116,
+        "tie": 0,
+        "loss": 0
+      }
+    },
+    "rxnflow_seh": {
+      "label": "RxnFlow",
+      "surface_csv_md5": "ffd8c078e825c5ba85639530a77a7c39",
+      "budget_reactions": 100,
+      "child_policy": "reward",
+      "prebuild_k": 0,
+      "rank_by": null,
+      "wall_s": 162.7,
+      "n_reward_bars": 9,
+      "n_cutoffs": 13,
+      "counts": {
+        "comparable": 89,
+        "pool_limited": 15,
+        "no_modes": 13,
+        "win": 88,
+        "tie": 1,
+        "loss": 0
+      }
+    },
+    "fraggfn_seh": {
+      "label": "FragGFN",
+      "surface_csv_md5": "60fbfd4db8b2aafda0eb2a8b183caa26",
+      "budget_reactions": 100,
+      "child_policy": "reward",
+      "prebuild_k": 0,
+      "rank_by": null,
+      "wall_s": 286.6,
+      "n_reward_bars": 9,
+      "n_cutoffs": 13,
+      "counts": {
+        "comparable": 117,
+        "pool_limited": 0,
+        "no_modes": 0,
+        "win": 115,
+        "tie": 2,
+        "loss": 0
+      }
+    }
+  },
+  "budget_reactions": 100,
+  "totals": {
+    "comparable": 400,
+    "pool_limited": 29,
+    "no_modes": 39,
+    "win": 397,
+    "tie": 3,
+    "loss": 0
+  }
+}

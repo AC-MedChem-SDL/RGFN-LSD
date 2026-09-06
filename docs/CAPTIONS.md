@@ -92,3 +92,49 @@ It is **not** the same checkpoint the matrix cells use (Figure 1 draws on the
 a coincidence of two checkpoints and must not be presented as a cross-validation.
 
 See `artifacts/mechanism/hub_ordering/PROVENANCE.md`.
+
+---
+
+## Appendix A2 — the two-knob surface
+
+Draft caption:
+
+> **The advantage does not depend on where the two thresholds are set.** Every headline
+> number is quoted at one reward bar and one Tanimoto cutoff. Sweeping both — 9 bars ×
+> 13 cutoffs, all four generators on sEH, at the paper's own 100-reaction budget — leaves
+> hub-batching cheaper per distinct molecule in **397 of 400 comparable cells**, with 3
+> exact ties and no losses. Colour is the ratio of the two arms' reactions-per-mode, so
+> 1.0 is parity. Hatched cells are pool-limited (one arm exhausted its library before
+> spending the budget, so its cost is measured over a shorter run); grey cells hold no
+> modes at all for either arm. Circles mark the two gates the paper quotes, 5.0 and 7.0.
+
+### Three things the caption must not overstate
+
+**The ties are ties, not wins.** Three cells sit at exactly 1.00 — FragGFN at bar 8.0 with
+cutoffs 0.3 and 0.35, RxnFlow at bar 6.5 / cutoff 0.3. Both arms land on the same small set
+and price it identically. Counting them as wins would have been free and wrong; the harvest
+classifies anything within 5e-4 of parity as a tie for that reason.
+
+**RGFN's 7.0 cell is hatched, and that is a fact about Figure 3's gate.** At bar 7.0 /
+cutoff 0.5 the best-candidate arm on RGFN is pool-exhausted (9 modes for 36 reactions), so
+that cell is not comparable. The Fig-1 gate of 5.0 is comparable on all four generators.
+Anyone quoting an RGFN number at 7.0 has to say which of the two it is.
+
+**This is one target and one seed.** sEH only, and the surface re-scores a single cached
+enumeration per generator — it sweeps thresholds, not seeds. It answers "is the result an
+artifact of the thresholds", and nothing else. Seed variance is Figure 3's question.
+
+### Why it is measured at 100 and not 300
+
+An earlier surface exists at a 300-reaction budget (`results/surface/`, 4 generators, same
+grid) and agrees: 381/381 comparable cells, median advantage 2.60–4.47×. It was not reused,
+because defending the thresholds at a budget the paper never quotes invites the obvious
+question. Re-measuring is pure CPU re-scoring of an existing enumeration, about five minutes
+a generator, so there was no reason to inherit the old budget.
+
+**A coincidence worth not leaning on:** SCENT at bar 5.0 / cutoff 0.5 reads 77 modes against
+best-candidate's 28, close to Figure 1's headline SCENT cell. These are the same matrix
+checkpoint and enumeration, so it is a consistency check on the pipeline, not independent
+corroboration of the result.
+
+See `artifacts/two_knob/provenance.json` for per-cell counts and source digests.

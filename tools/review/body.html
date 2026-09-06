@@ -235,6 +235,47 @@
 </section>
 
 <section class="exhibit">
+  <p class="eyebrow">Appendix A2 &middot; threshold robustness</p>
+  <h2>The advantage does not depend on where the two thresholds are set</h2>
+  <div class="prose"><p>Every headline number in this work is quoted at one reward bar
+  and one Tanimoto cutoff. A reviewer&rsquo;s fair question is not &ldquo;are those the
+  right values&rdquo; but &ldquo;does the result survive the other values&rdquo;. So we
+  measured the whole grid &mdash; 9 bars &times; 13 cutoffs, all four generators on sEH,
+  at the paper&rsquo;s own <strong>__A2BUDGET__-reaction budget</strong> &mdash; instead
+  of defending a single point.</p>
+  <p>Colour is the ratio of the two arms&rsquo; reactions-per-distinct-molecule, so 1.0 is
+  parity and the orange half of the scale is kept live even though nothing lands there.
+  Hub-batching is cheaper in <strong>__A2WIN__ of __A2CMP__</strong> comparable cells,
+  with __A2TIE__ exact ties and __A2LOSS__ losses.</p></div>
+  <figure><div class="plate"><img src="__FIGA2__" alt="Four heatmaps, one per generator, of hub-batching's cost advantage over reward bar and diversity cutoff. Almost every cell is blue, meaning cheaper; the strict-cutoff edge fades toward parity; high-bar rows are hatched or grey where the comparison is not valid."></div></figure>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Generator</th><th class="num">Cheaper (&uarr;)</th><th class="num">Ties</th>
+      <th class="num">Losses</th><th class="num">Pool-limited</th><th class="num">No modes</th></tr></thead>
+    <tbody>__A2__</tbody></table></div>
+  <div class="note"><span class="tag">The two greyed classes are the honest part</span>
+    Hatched cells are <strong>pool-limited</strong>: one arm ran out of library before it
+    could spend the budget, so its cost is measured over a shorter run and is not
+    comparable. Flat grey cells hold <strong>no modes at all</strong> &mdash; nothing in
+    that generator&rsquo;s pool clears that bar, for either arm, so there is no selection
+    to compare. Both classes cluster at the strict end, which is precisely where an
+    unflagged surface would look most impressive.</div>
+  <div class="note caution"><span class="tag">One cell a reader will check, and should</span>
+    On RGFN the circle at bar 7.0 sits on a <em>hatched</em> cell: best-candidate is
+    pool-exhausted there (9 modes for 36 reactions), so that point is not comparable. The
+    Fig-1 gate of 5.0 is comparable on all four generators. Anyone quoting an RGFN number
+    at 7.0 has to say which of the two it is. This is also why the figure marks both gates
+    rather than picking one.</div>
+  <div class="note"><span class="tag">What this does NOT show</span>
+    One target, one seed per generator. The surface re-scores a single cached enumeration
+    per cell, so it sweeps <em>thresholds</em>, not seeds &mdash; it answers whether the
+    result is an artifact of the two knobs and nothing else. Seed variance is Figure 3's
+    question. A 300-reaction version of the same grid exists and agrees (381/381
+    comparable cells), but was not reused: defending the thresholds at a budget the paper
+    never quotes invites the obvious question, and re-measuring cost about five minutes of
+    CPU per generator.</div>
+</section>
+
+<section class="exhibit">
   <p class="eyebrow">Landed since these figures were built</p>
   <h2>Assessed, not yet used</h2>
   <div class="prose"><p>Four things finished after the exhibits above were harvested. None

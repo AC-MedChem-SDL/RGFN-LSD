@@ -54,7 +54,8 @@ def build() -> str:
     missing = [p.name for p in (FIG / "fig1_reaction_budget.png",
                                 FIG / "fig2_floor_and_ceiling.png",
                                 FIG / "fig3_selection_vs_enumeration.png",
-                                FIG / "figA1_yield_risk.png") if not p.is_file()]
+                                FIG / "figA1_yield_risk.png",
+                                FIG / "figA2_two_knob_surface.png") if not p.is_file()]
     if missing:
         sys.exit(f"missing figures: {', '.join(missing)}\n"
                  f"run the reproduce/ scripts first")
@@ -177,11 +178,23 @@ def build() -> str:
         '8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">\n'
         f'<style>\n{css}</style>\n\n')
 
+    a2 = json.loads((ART / "two_knob" / "provenance.json").read_text())
+    a2rows = "".join(
+        f'<tr><td>{esc(c["label"])}</td>'
+        f'<td class="m num strong">{esc(c["counts"]["win"])}/{esc(c["counts"]["comparable"])}</td>'
+        f'<td class="m num">{esc(c["counts"]["tie"])}</td>'
+        f'<td class="m num">{esc(c["counts"]["loss"])}</td>'
+        f'<td class="m num">{esc(c["counts"]["pool_limited"])}</td>'
+        f'<td class="m num">{esc(c["counts"]["no_modes"])}</td></tr>'
+        for c in a2["cells"].values())
+    a2t = a2["totals"]
+
     fill = {
         "__FIG1__": b64(FIG / "fig1_reaction_budget.png"),
         "__FIG2__": b64(FIG / "fig2_floor_and_ceiling.png"),
         "__FIG3__": b64(FIG / "fig3_selection_vs_enumeration.png"),
         "__FIGA1__": b64(FIG / "figA1_yield_risk.png"),
+        "__FIGA2__": b64(FIG / "figA2_two_knob_surface.png"),
         "__F1__": f1, "__GATEROWS__": gate_rows,
         "__F2FLOOR__": f2floor, "__F2CEIL__": f2ceil, "__NPL__": str(n_pl),
         "__T1__": t1_rows, "__LEAD__": lead,
@@ -190,6 +203,9 @@ def build() -> str:
         "__F3__": f3_rows, "__YA__": ya_rows,
         "__STEPLO__": f"{min(steps):.2f}", "__STEPHI__": f"{max(steps):.2f}",
         "__ZIPMB__": zip_mb, "__NTESTS__": str(n_tests),
+        "__A2__": a2rows, "__A2WIN__": str(a2t["win"]), "__A2CMP__": str(a2t["comparable"]),
+        "__A2TIE__": str(a2t["tie"]), "__A2LOSS__": str(a2t["loss"]),
+        "__A2BUDGET__": str(a2["budget_reactions"]),
     }
     for k, v in fill.items():
         body = body.replace(k, v)
