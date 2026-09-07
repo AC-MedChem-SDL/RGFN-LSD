@@ -96,16 +96,23 @@ def draw(cells, out_path: Path) -> str:
         Not an error bar. There are two seeds; a whisker over two points implies a
         distribution that cannot be estimated from them, and when the two agree closely it
         collapses to nothing and reads as "no variation measured" rather than "the two runs
-        agreed". Dots say what was actually observed, and match the device Figure 3 uses
-        for the same reason. Where the seeds coincide exactly -- sEH hub-batching route
-        length is 2.0 in both -- the dots overlap, which is the honest picture.
+        agreed". Dots say what was actually observed, in the same mark Figure 3 uses so the
+        two figures do not use different conventions for the same n. Coincident seeds --
+        sEH hub-batching route length is 2.0 in both -- are nudged apart horizontally so
+        two runs never print as one point.
         """
         m, _lo, _hi = stat(tgt, arm, key)
         x = i + (j - 0.5) * w
         ax.bar(x, m, w * 0.92, color=COL[arm], zorder=2, label=label)
-        for v in seed_values(tgt, arm, key):
-            ax.plot(x, v, marker="o", ms=3.6, mfc="white", mec="#20343a", mew=0.9,
-                    zorder=6, clip_on=False)
+        vals = sorted(seed_values(tgt, arm, key))
+        for k, v in enumerate(vals):
+            # Same mark as Figure 3's whisk(): solid ink, s=13, no edge. The horizontal
+            # offset matters as much as the colour -- sEH hub-batching is 2.0 in BOTH
+            # seeds, so without it two dots print as one and the figure looks like it
+            # measured a single run.
+            dx = 0.0 if len(vals) == 1 else (k - (len(vals) - 1) / 2) * (w * 0.28)
+            ax.scatter(x + dx, v, s=13, color="#20343a", zorder=6, linewidths=0,
+                       clip_on=False)
     rw = load_rewards(Path(__file__).resolve().parents[1] / "artifacts" / "rewards")
     ncol = 2 + (1 if rw else 0)
     fig, axes = plt.subplots(1, ncol, figsize=(9.5 if ncol == 2 else 13.0, 4.3),

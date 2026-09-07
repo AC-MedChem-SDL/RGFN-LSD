@@ -224,8 +224,9 @@ artifact**: `mean_route_len` was rounded to 2 decimal places at write time while
 `mean_route_yield` got 4, so a seed spread below 0.01 wrote as identical values. Fixed to 4
 d.p. (`yield_by_strategy.py`), which recovers DRD2 hub-batching's real spread of 0.0039
 steps. sEH hub-batching genuinely is 2.0 in both seeds — every selected molecule is exactly
-two steps — so those dots coincide, and that is the honest picture rather than a rendering
-failure.
+two steps. Coincident seeds are nudged apart horizontally so two runs never print as one
+point; the mark itself is Figure 3's, so the two figures do not use different conventions
+for the same n.
 
 Observed seed spreads, as a fraction of the mean: route yield 0.15%–5.4%, route length
 0.0%–3.8%. The bars are close together because the runs agree, not because the figure is
