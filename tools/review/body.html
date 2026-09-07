@@ -250,6 +250,19 @@
     the oracle has not been shown to track activity, so its higher reward is not evidence of
     better molecules. It does <em>not</em> show ours are more active &mdash; nothing here
     measures activity.</div>
+  <div class="note"><span class="tag">Those are seeds, not error bars</span>
+    Panels 1&ndash;2 draw each of the two seeds as a dot. A whisker over two points implies
+    a distribution that cannot be estimated from them, and it fails in a particular way
+    here: when the seeds agree it collapses to nothing and reads as &ldquo;no
+    variation&rdquo; rather than &ldquo;the runs agreed&rdquo;. Same device Figure 3 uses.
+    <br><br>Two route-length bars previously showed <em>no</em> marker at all, and that was
+    a <strong>storage artifact</strong>: <span class="m">mean_route_len</span> was rounded to
+    2 d.p. at write time while <span class="m">mean_route_yield</span> got 4, so any seed
+    spread below 0.01 wrote as identical values. Now stored at 4 d.p., which recovers DRD2
+    hub-batching's real spread of <strong>0.0039</strong> steps. sEH hub-batching genuinely
+    is 2.0 in both seeds &mdash; every selected molecule is exactly two steps &mdash; so
+    those dots coincide. Observed spreads are 0.15&ndash;5.4% of the mean on yield: the bars
+    are close because the runs agree.</div>
   <div class="note"><span class="tag">A1 was rebuilt to make this panel possible</span>
     All three panels were re-run together at the 5%-FPR thresholds against the enumerations
     every other figure reads. Two things were wrong before. The gates were sEH 7.0 and DRD2

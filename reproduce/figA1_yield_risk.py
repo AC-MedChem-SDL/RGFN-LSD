@@ -72,8 +72,8 @@ def draw(cells, out_path: Path) -> str:
         return "matplotlib not installed - table written, figure skipped"
 
     # Merge seeds: two seeds per target is not two conditions, and drawing them as
-    # separate bars implies a distinction that is not there. Bars are the mean, the
-    # whisker is the full range across seeds.
+    # separate bars implies a distinction that is not there. Bars are the mean; each seed
+    # is drawn as its own dot rather than summarised by a whisker (see bar()).
     TARGET = {"drd2": "DRD2", "seh": "sEH"}
     merged: dict[str, dict[str, list]] = {}
     for cell, arms in cells.items():
@@ -83,18 +83,29 @@ def draw(cells, out_path: Path) -> str:
     names = sorted(merged, key=lambda n: n != "sEH")
     COL = {"hub_batching": "#1f6f8b", "best_candidate": "#9aa5a7"}
 
+    def seed_values(tgt, arm, key):
+        return [f(r, key) for r in merged[tgt].get(arm, [])]
+
     def stat(tgt, arm, key):
-        vals = [f(r, key) for r in merged[tgt].get(arm, [])]
+        vals = seed_values(tgt, arm, key)
         return (sum(vals) / len(vals), min(vals), max(vals)) if vals else (0, 0, 0)
 
     def bar(ax, i, j, tgt, arm, key, label=None):
-        m, lo, hi = stat(tgt, arm, key)
+        """Bar at the mean, with each SEED drawn as its own dot.
+
+        Not an error bar. There are two seeds; a whisker over two points implies a
+        distribution that cannot be estimated from them, and when the two agree closely it
+        collapses to nothing and reads as "no variation measured" rather than "the two runs
+        agreed". Dots say what was actually observed, and match the device Figure 3 uses
+        for the same reason. Where the seeds coincide exactly -- sEH hub-batching route
+        length is 2.0 in both -- the dots overlap, which is the honest picture.
+        """
+        m, _lo, _hi = stat(tgt, arm, key)
         x = i + (j - 0.5) * w
         ax.bar(x, m, w * 0.92, color=COL[arm], zorder=2, label=label)
-        if hi > lo:
-            ax.plot([x, x], [lo, hi], color="#20343a", lw=1.1, zorder=5)
-            for y in (lo, hi):
-                ax.plot([x - 0.05, x + 0.05], [y, y], color="#20343a", lw=1.1, zorder=5)
+        for v in seed_values(tgt, arm, key):
+            ax.plot(x, v, marker="o", ms=3.6, mfc="white", mec="#20343a", mew=0.9,
+                    zorder=6, clip_on=False)
     rw = load_rewards(Path(__file__).resolve().parents[1] / "artifacts" / "rewards")
     ncol = 2 + (1 if rw else 0)
     fig, axes = plt.subplots(1, ncol, figsize=(9.5 if ncol == 2 else 13.0, 4.3),

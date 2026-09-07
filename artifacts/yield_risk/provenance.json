@@ -4,24 +4,25 @@
   "sources": [
     {
       "file": "strategy_yield_seh_seed43.csv",
-      "md5": "e8d0ff78359bf189bc02d99430d68d48"
+      "md5": "c85fdc928b0593ef613fc06bd48d3b98"
     },
     {
       "file": "strategy_yield_seh_seed44.csv",
-      "md5": "a7a4517b9adc26293323ab0a6d271f1b"
+      "md5": "c0d7b79f36abf2a7de42e58a00a8b26f"
     },
     {
       "file": "strategy_yield_drd2_seed43.csv",
-      "md5": "86446f98725882bf1b19a55517e08ad2"
+      "md5": "0257d34249305b828317e929ed3f2196"
     },
     {
       "file": "strategy_yield_drd2_seed44.csv",
-      "md5": "51a75d32adcc2acc856b5b4448749aeb"
+      "md5": "68f8f7d18e637e453009adbc93925536"
     }
   ],
   "gates": {
     "seh": 5.68,
     "drd2": 0.345
   },
-  "note": "Re-run 2026-09-06 at the 5%-FPR rule against the enumerations currently on disk. The previous version used sEH 7.0 / DRD2 0.5 and enumerations that have since been regenerated -- only 8-71% of its molecules still existed, so it was not reproducible."
+  "note": "Re-run 2026-09-06 at the 5%-FPR rule against the enumerations currently on disk. The previous version used sEH 7.0 / DRD2 0.5 and enumerations that have since been regenerated -- only 8-71% of its molecules still existed, so it was not reproducible.",
+  "precision_note": "mean_route_len is stored at 4 d.p. As of 2026-09-06 it was 2, which quantised the seed spread to 0.01 and made two of the four bars draw NO seed markers -- reporting zero variation that had not been measured."
 }

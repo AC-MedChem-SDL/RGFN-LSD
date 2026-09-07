@@ -210,3 +210,23 @@ about molecules.
 
 Source: `artifacts/rewards/selection_rewards.csv` and `artifacts/yield_risk/strategy_yield.csv`
 (pools subsampled to 1,200 points per cell and arm).
+
+### Why panels 1–2 show dots and not error bars
+
+There are **two seeds**. A whisker over two points implies a distribution that cannot be
+estimated from them, and it fails in a specific way here: when the seeds agree closely it
+collapses to nothing, which reads as *"no variation"* rather than *"the two runs agreed"*.
+Each seed is drawn as its own dot instead — the same device Figure 3 uses, for the same
+reason.
+
+Two of the four route-length bars used to show no marker at all. That was a **storage
+artifact**: `mean_route_len` was rounded to 2 decimal places at write time while
+`mean_route_yield` got 4, so a seed spread below 0.01 wrote as identical values. Fixed to 4
+d.p. (`yield_by_strategy.py`), which recovers DRD2 hub-batching's real spread of 0.0039
+steps. sEH hub-batching genuinely is 2.0 in both seeds — every selected molecule is exactly
+two steps — so those dots coincide, and that is the honest picture rather than a rendering
+failure.
+
+Observed seed spreads, as a fraction of the mean: route yield 0.15%–5.4%, route length
+0.0%–3.8%. The bars are close together because the runs agree, not because the figure is
+hiding anything.
