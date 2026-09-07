@@ -99,7 +99,7 @@ See `artifacts/mechanism/hub_ordering/PROVENANCE.md`.
 
 Draft caption:
 
-> **The advantage does not depend on where the two thresholds are set.** Every headline
+> **Hub-batching is cheaper across a wide range of molecule requirements.** Every headline
 > number is quoted at one reward threshold and one Tanimoto threshold. Sweeping both — 9
 > × 13, all four generators on sEH, at the paper's own 100-reaction budget — leaves
 > hub-batching cheaper per distinct molecule in **397 of 400 comparable cells**, with 3
@@ -110,6 +110,19 @@ Draft caption:
 > 5.68, the 5%-FPR gate on sEH's own actives-vs-decoys set); hollow markers are the two
 > other thresholds existing numbers sit at, 5.0 and 7.0. ↗ marks the direction of
 > increasing stringency, not of improvement — the advantage narrows toward that corner.
+
+### The title states a claim; the caption must still answer the objection
+
+The figure's title asserts the result. That is the right register for a paper, but it is not
+the reason the figure exists — it exists because a ratio metric invites the suspicion that
+the authors chose the thresholds they win on. **Keep that sentence in the caption**, in
+whatever wording: *sweeping both thresholds over their full range leaves the conclusion
+unchanged, so it is not an artifact of where they were set.* Without it the panel reads as
+one more result rather than as the answer to a specific challenge.
+
+"Molecule requirements" is the two knobs in plain terms — how good a molecule has to be, and
+how different. The ↗ sits in the subtitle rather than the title because appended to a claim
+it reads as part of it; it marks increasing **stringency**, never improvement.
 
 ### Three things the caption must not overstate
 

@@ -195,19 +195,19 @@ def main() -> int:
 
     cb = fig.colorbar(plt.cm.ScalarMappable(norm=norm, cmap=cmap), ax=axes,
                       fraction=0.022, pad=0.015, extend="max")
-    cb.set_label("× cheaper per distinct molecule  (1.0 = parity)",
-                 fontsize=9, color=INK)
+    cb.set_label("× cheaper per distinct molecule than best-candidate  (1.0 = parity)",
+                 fontsize=8.5, color=INK)
     cb.ax.tick_params(labelsize=8, colors=MUTED)
     cb.outline.set_edgecolor("#c9d1d2")
 
-    # The arrow marks the direction of increasing STRINGENCY, which is what up-and-right
-    # actually is here: up raises the reward threshold, right lowers the Tanimoto cutoff.
-    # It is deliberately not labelled "better" -- the advantage NARROWS toward that
-    # corner, so an arrow implying the opposite would contradict the surface under it.
-    fig.suptitle("The advantage does not depend on where the two thresholds are set  "
-                 "(\u2197 stricter)",
+    # "Molecule requirements" is the two knobs in plain terms: how good a molecule has to
+    # be, and how different. The stringency arrow moves to the subtitle -- it marks the
+    # direction of increasing STRINGENCY (up raises the reward threshold, right lowers the
+    # Tanimoto cutoff), never of improvement, since the advantage narrows toward that
+    # corner. Appended to this title it would read as part of the claim.
+    fig.suptitle("Hub-batching is cheaper across a wide range of molecule requirements",
                  fontsize=13.5, fontweight="600", color=INK, y=y_title)
-    fig.text(0.5, y_sub, f"sEH · budget {budget} reactions",
+    fig.text(0.5, y_sub, f"sEH · budget {budget} reactions · \u2197 stricter",
              ha="center", va="bottom", fontsize=9.5, color=MUTED)
 
     handles = [Patch(facecolor=NEUTRAL, edgecolor=MUTED, hatch="xxx", label="pool limited")]
