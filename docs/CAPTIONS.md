@@ -138,9 +138,26 @@ both RxnFlow cells on all three seeds. At the 5.68 operating point all four gene
 comparable, at 2.26 / 2.71 / 2.19 / 4.00×. The ratio at 7.0 is taken over a starved
 baseline, so it *understates* hub-batching — dropping 7.0 costs us nothing.
 
-**This is one target and one seed.** sEH only, and the surface re-scores a single cached
-enumeration per generator — it sweeps thresholds, not seeds. It answers "is the result an
-artifact of the thresholds", and nothing else. Seed variance is Figure 3's question.
+**This is one target and SEED 42.** sEH only, and the surface re-scores the seed-42
+enumeration of each generator — it sweeps thresholds, not seeds. Name the seed in the
+caption; "one cached enumeration per generator" understates how narrow that is, because
+**seed 42 is the most favourable seed for RGFN**: its sEH ratio at the operating point is
+2.28 on seed 42 against 1.885 on both 43 and 44. The threshold claim is unaffected (it is a
+statement about one surface, and the same surface throughout), but do not let a reader infer
+that the *magnitudes* on this figure are typical.
+
+**Do not write that A2 and Figure 1 "agree".** They are built from the same cells and the
+mode counts match exactly — 57/25, 76/28, 73/33, 80/20 — which is a real cross-check worth
+having. But the two figures divide different things: A2's colour is a **cost** ratio,
+(reactions/mode of best-candidate) ÷ (reactions/mode of hub-batching), while Figure 1's is a
+**mode-count** ratio, hub modes ÷ best-candidate modes. They coincide only when both arms
+spend exactly the budget, so RGFN reads 2.257 on A2 and 2.280 on Figure 1 off identical
+selections. A reviewer recomputing either would find that gap and suspect a bug. Say
+"computed from the same cells" and name the two quantities.
+
+A2's quoted medians are also over the **whole grid**, whereas Figure 1's headline is one
+point on it, so the two numbers are different aggregations even before the ratio definitions
+diverge.
 
 ### Why it is measured at 100 and not 300
 
