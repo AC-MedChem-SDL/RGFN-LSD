@@ -132,12 +132,23 @@ def collect(root: Path, budgets) -> list[dict]:
     return out
 
 
+# The generators that build molecules by REACTION. FragGFN assembles fragments, so its
+# "reactions" are attachments rather than synthesis steps -- it is a cost-model control
+# throughout the project, and it also posts the highest numbers here. Quoting a median that
+# includes it lets the control set the headline. It stays IN the figure, labelled; this
+# governs only which cells enter the quoted median.
+REACTION_GROUNDED = ("rgfn", "scent", "rxnflow")
+
+
 def summarise(rows, budgets, gates, include_uncal: bool):
     cal = {t for t, g in gates.items() if g["calibrated"].lower() == "true"}
     lines, table = [], []
     for R in budgets:
         at_R = [r for r in rows if r["budget_rxns"] == R]
-        for label, subset in (("calibrated", [r for r in at_R if r["target"] in cal]),
+        for label, subset in (("reaction-grounded",
+                               [r for r in at_R if r["target"] in cal
+                                and r["generator"] in REACTION_GROUNDED]),
+                              ("calibrated", [r for r in at_R if r["target"] in cal]),
                               ("all cells", at_R)):
             if label == "all cells" and not include_uncal and cal >= {r["target"] for r in at_R}:
                 continue  # nothing uncalibrated present; the two views coincide
