@@ -1,64 +1,24 @@
 {
   "harvested_from_subdir": "experiments/lsd_hubs/matrix16",
-  "n_cells": 40,
-  "n_files": 156,
+  "n_cells": 32,
+  "n_files": 96,
   "skipped": [
-    "results/fraggfn_drd2 (no curves)",
-    "results/fraggfn_seh (no curves)",
-    "results/fraggfn_seh_thr5 (variant)",
-    "results/fraggfn_seh_thr6 (variant)",
-    "results/fraggfn_seh_thr5 (variant)",
-    "results/fraggfn_seh_thr6 (variant)",
-    "results/fraggfn_seh_thr7 (variant)",
-    "results/rgfn_seh_thr5 (variant)",
-    "results/rgfn_seh_thr6 (variant)",
-    "results/rgfn_seh_thr7 (variant)",
-    "results/rxnflow_drd2_thr0.5 (variant)",
-    "results/rxnflow_drd2_thr0.7 (variant)",
-    "results/rxnflow_drd2_thr0.9 (variant)",
-    "results/rxnflow_seh_thr5 (variant)",
-    "results/rxnflow_seh_thr6 (variant)",
-    "results/rxnflow_seh_thr7 (variant)",
-    "results/scent_drd2 (no curves)",
-    "results/scent_drd2_thr0.5 (variant)",
-    "results/scent_drd2_thr0.7 (variant)",
-    "results/scent_drd2_thr0.9 (variant)",
-    "results/scent_seh (no curves)",
-    "results/scent_seh_thr5 (variant)",
-    "results/scent_seh_thr6 (variant)",
-    "results/scent_seh_thr7 (variant)"
+    "results/fraggfn_6td3 (no curves)",
+    "results/rgfn_6td3 (no curves)",
+    "results/rxnflow_6td3 (no curves)",
+    "results/scent_6td3 (no curves)",
+    "results_seed43/fraggfn_6td3 (no curves)",
+    "results_seed43/rgfn_6td3 (no curves)",
+    "results_seed43/rxnflow_6td3 (no curves)",
+    "results_seed43/scent_6td3 (no curves)"
   ],
   "sources": [
-    {
-      "seed": 42,
-      "cell": "fraggfn_6td3",
-      "file": "curve_hub_batching.csv",
-      "src": "results/fraggfn_6td3/curve_hub_batching.csv",
-      "md5": "87b61bfd13ac438896f2b78e59f2ddb7",
-      "redacted": false
-    },
-    {
-      "seed": 42,
-      "cell": "fraggfn_6td3",
-      "file": "curve_best_candidate.csv",
-      "src": "results/fraggfn_6td3/curve_best_candidate.csv",
-      "md5": "b70342f0cc52a5195fda4ab7719c000a",
-      "redacted": false
-    },
-    {
-      "seed": 42,
-      "cell": "fraggfn_6td3",
-      "file": "summary.json",
-      "src": "results/fraggfn_6td3/summary.json",
-      "md5": "40cbaf9ad274585aa6291e8e838435be",
-      "redacted": true
-    },
     {
       "seed": 42,
       "cell": "fraggfn_clpp",
       "file": "curve_hub_batching.csv",
       "src": "results/fraggfn_clpp/curve_hub_batching.csv",
-      "md5": "e01a153c6e4104453537f95ed30875a4",
+      "md5": "d61aeea019c6e73f5ff8ab2111992400",
       "redacted": false
     },
     {
@@ -74,7 +34,7 @@
       "cell": "fraggfn_clpp",
       "file": "summary.json",
       "src": "results/fraggfn_clpp/summary.json",
-      "md5": "462db2ac54c15d51a90691af58117172",
+      "md5": "b4caca07f3722fc1257ac4f68b4a5b5c",
       "redacted": true
     },
     {
@@ -82,7 +42,7 @@
       "cell": "fraggfn_drd2",
       "file": "curve_hub_batching.csv",
       "src": "results/fraggfn_drd2/curve_hub_batching.csv",
-      "md5": "18870ec0c40068e1875059687b88b70d",
+      "md5": "63ed573058cd1090a1e54499d84af827",
       "redacted": false
     },
     {
@@ -98,7 +58,7 @@
       "cell": "fraggfn_drd2",
       "file": "summary.json",
       "src": "results/fraggfn_drd2/summary.json",
-      "md5": "3d0b60e746719f013afafde43ff2bdff",
+      "md5": "4cfe91ceb39999e85c7bd1408d5279c8",
       "redacted": true
     },
     {
@@ -106,7 +66,7 @@
       "cell": "fraggfn_seh",
       "file": "curve_hub_batching.csv",
       "src": "results/fraggfn_seh/curve_hub_batching.csv",
-      "md5": "bdcb12f3a5472b99b5365d2fe650bd55",
+      "md5": "67c7dc0bec5446118fe9ba679de53ec9",
       "redacted": false
     },
     {
@@ -122,31 +82,7 @@
       "cell": "fraggfn_seh",
       "file": "summary.json",
       "src": "results/fraggfn_seh/summary.json",
-      "md5": "76e31cd5ae7101428cfbe660b6d6e767",
-      "redacted": true
-    },
-    {
-      "seed": 42,
-      "cell": "rgfn_6td3",
-      "file": "curve_hub_batching.csv",
-      "src": "results/rgfn_6td3/curve_hub_batching.csv",
-      "md5": "c37897372625e1b2560523b93f2beef0",
-      "redacted": false
-    },
-    {
-      "seed": 42,
-      "cell": "rgfn_6td3",
-      "file": "curve_best_candidate.csv",
-      "src": "results/rgfn_6td3/curve_best_candidate.csv",
-      "md5": "c3fc4355fde327a3ab94c11665541d13",
-      "redacted": false
-    },
-    {
-      "seed": 42,
-      "cell": "rgfn_6td3",
-      "file": "summary.json",
-      "src": "results/rgfn_6td3/summary.json",
-      "md5": "c739593e0e7156e6478f3ac88364e8bb",
+      "md5": "5fe467c39a1ee8ac4b6e58bbbeecdeb2",
       "redacted": true
     },
     {
@@ -154,7 +90,7 @@
       "cell": "rgfn_clpp",
       "file": "curve_hub_batching.csv",
       "src": "results/rgfn_clpp/curve_hub_batching.csv",
-      "md5": "8ec038cbe33c68edda8c8789f38b54f6",
+      "md5": "dbf14b6019fe47b494de07feabb708a8",
       "redacted": false
     },
     {
@@ -170,7 +106,7 @@
       "cell": "rgfn_clpp",
       "file": "summary.json",
       "src": "results/rgfn_clpp/summary.json",
-      "md5": "0649c74ead2006db30b885506319ef22",
+      "md5": "e59bfab543adeb95a73c19e8c350f98c",
       "redacted": true
     },
     {
@@ -178,7 +114,7 @@
       "cell": "rgfn_drd2",
       "file": "curve_hub_batching.csv",
       "src": "results/rgfn_drd2/curve_hub_batching.csv",
-      "md5": "40d0a90ffdc183a325f6d185f6b106cd",
+      "md5": "8100943734b1c1e030870460aa711b50",
       "redacted": false
     },
     {
@@ -194,7 +130,7 @@
       "cell": "rgfn_drd2",
       "file": "summary.json",
       "src": "results/rgfn_drd2/summary.json",
-      "md5": "90db08c5ba326c283e1085343bae9367",
+      "md5": "ee4cdf2f27d429fb5fdac174981755e9",
       "redacted": true
     },
     {
@@ -202,7 +138,7 @@
       "cell": "rgfn_seh",
       "file": "curve_hub_batching.csv",
       "src": "results/rgfn_seh/curve_hub_batching.csv",
-      "md5": "4df284959ed9c768f3036cdcb3408f06",
+      "md5": "dd706c12f9f8a45ef906ddcd95dc37e1",
       "redacted": false
     },
     {
@@ -218,31 +154,7 @@
       "cell": "rgfn_seh",
       "file": "summary.json",
       "src": "results/rgfn_seh/summary.json",
-      "md5": "8302e0ab8f4e6be8905b6076f73a0292",
-      "redacted": true
-    },
-    {
-      "seed": 42,
-      "cell": "rxnflow_6td3",
-      "file": "curve_hub_batching.csv",
-      "src": "results/rxnflow_6td3/curve_hub_batching.csv",
-      "md5": "49ec5e737102f5d07423fff0b3482970",
-      "redacted": false
-    },
-    {
-      "seed": 42,
-      "cell": "rxnflow_6td3",
-      "file": "curve_best_candidate.csv",
-      "src": "results/rxnflow_6td3/curve_best_candidate.csv",
-      "md5": "0af46fb41642dcd47dfb9f74d18662e8",
-      "redacted": false
-    },
-    {
-      "seed": 42,
-      "cell": "rxnflow_6td3",
-      "file": "summary.json",
-      "src": "results/rxnflow_6td3/summary.json",
-      "md5": "828e1386e2f17d9ceaf1098dab78b8b6",
+      "md5": "d43a65c8b072c96359b16198bf278225",
       "redacted": true
     },
     {
@@ -250,7 +162,7 @@
       "cell": "rxnflow_clpp",
       "file": "curve_hub_batching.csv",
       "src": "results/rxnflow_clpp/curve_hub_batching.csv",
-      "md5": "1b05fb0636a744f10a4e8a0d37b24c0c",
+      "md5": "3d8a6b6243d93062f8790daef5ebf87e",
       "redacted": false
     },
     {
@@ -258,7 +170,7 @@
       "cell": "rxnflow_clpp",
       "file": "curve_best_candidate.csv",
       "src": "results/rxnflow_clpp/curve_best_candidate.csv",
-      "md5": "73733f4d88772fb4c03e5a2eb16e24d3",
+      "md5": "25776d7b031da45935871f7467bb4e56",
       "redacted": false
     },
     {
@@ -266,7 +178,7 @@
       "cell": "rxnflow_clpp",
       "file": "summary.json",
       "src": "results/rxnflow_clpp/summary.json",
-      "md5": "1adb32bc16945c580111ec93ccdd0fa6",
+      "md5": "a4432f285342801cc3b8861154b539f1",
       "redacted": true
     },
     {
@@ -274,7 +186,7 @@
       "cell": "rxnflow_drd2",
       "file": "curve_hub_batching.csv",
       "src": "results/rxnflow_drd2/curve_hub_batching.csv",
-      "md5": "a1abd197994f4874d198b3e71618311b",
+      "md5": "d6b723015ac54a2f884fb91d9c5235dc",
       "redacted": false
     },
     {
@@ -282,7 +194,7 @@
       "cell": "rxnflow_drd2",
       "file": "curve_best_candidate.csv",
       "src": "results/rxnflow_drd2/curve_best_candidate.csv",
-      "md5": "ccfc55b283e59315616292d8ab228b19",
+      "md5": "4a90268e84c2089dc8d7b4931b7b65f6",
       "redacted": false
     },
     {
@@ -290,7 +202,7 @@
       "cell": "rxnflow_drd2",
       "file": "summary.json",
       "src": "results/rxnflow_drd2/summary.json",
-      "md5": "6d0c005fbc8e53c5ac4375fc7f6bcb38",
+      "md5": "cde5e037d344ab723b9745055954d3ee",
       "redacted": true
     },
     {
@@ -298,7 +210,7 @@
       "cell": "rxnflow_seh",
       "file": "curve_hub_batching.csv",
       "src": "results/rxnflow_seh/curve_hub_batching.csv",
-      "md5": "630f8daf6c3ce464ea9abda9fdf94fb2",
+      "md5": "08442103f08bc1e7280045ac61fadc31",
       "redacted": false
     },
     {
@@ -314,31 +226,7 @@
       "cell": "rxnflow_seh",
       "file": "summary.json",
       "src": "results/rxnflow_seh/summary.json",
-      "md5": "20b92c7e0de003969ed354a2916f7f17",
-      "redacted": true
-    },
-    {
-      "seed": 42,
-      "cell": "scent_6td3",
-      "file": "curve_hub_batching.csv",
-      "src": "results/scent_6td3/curve_hub_batching.csv",
-      "md5": "add43d73d543f1ff40bfff593bef35ba",
-      "redacted": false
-    },
-    {
-      "seed": 42,
-      "cell": "scent_6td3",
-      "file": "curve_best_candidate.csv",
-      "src": "results/scent_6td3/curve_best_candidate.csv",
-      "md5": "8229ced0438198aa1fcae20d76028d2f",
-      "redacted": false
-    },
-    {
-      "seed": 42,
-      "cell": "scent_6td3",
-      "file": "summary.json",
-      "src": "results/scent_6td3/summary.json",
-      "md5": "cffc75810c87f7f4d0738dfa347f8bb1",
+      "md5": "d922eb990dafa32b25295db83bc4db72",
       "redacted": true
     },
     {
@@ -346,7 +234,7 @@
       "cell": "scent_clpp",
       "file": "curve_hub_batching.csv",
       "src": "results/scent_clpp/curve_hub_batching.csv",
-      "md5": "7bc2b1bac0810088c87a1137094e3351",
+      "md5": "4f62589d371a8fd1831d7f419f5069f0",
       "redacted": false
     },
     {
@@ -362,7 +250,7 @@
       "cell": "scent_clpp",
       "file": "summary.json",
       "src": "results/scent_clpp/summary.json",
-      "md5": "648b288b58e38649bf54b7e08e2a8fb9",
+      "md5": "372867e0d7a9707366af85d428e4a36d",
       "redacted": true
     },
     {
@@ -370,7 +258,7 @@
       "cell": "scent_drd2",
       "file": "curve_hub_batching.csv",
       "src": "results/scent_drd2/curve_hub_batching.csv",
-      "md5": "703b399b3a04b34e58512706fc46620f",
+      "md5": "aff84e481d5c3c2aecb6a1d24e05459b",
       "redacted": false
     },
     {
@@ -386,7 +274,7 @@
       "cell": "scent_drd2",
       "file": "summary.json",
       "src": "results/scent_drd2/summary.json",
-      "md5": "d63e437dcbbf70f0589aa5d2695c4c8b",
+      "md5": "6022d838de7d806f3c57ba935e3ce12f",
       "redacted": true
     },
     {
@@ -394,7 +282,7 @@
       "cell": "scent_seh",
       "file": "curve_hub_batching.csv",
       "src": "results/scent_seh/curve_hub_batching.csv",
-      "md5": "e8feec2f20b306e4fa961cc40749ab92",
+      "md5": "0fc3282ef3025285254e31144495db0b",
       "redacted": false
     },
     {
@@ -410,31 +298,7 @@
       "cell": "scent_seh",
       "file": "summary.json",
       "src": "results/scent_seh/summary.json",
-      "md5": "ce9b7b8bd704a00e2e5d4fb00dc093a3",
-      "redacted": true
-    },
-    {
-      "seed": 43,
-      "cell": "fraggfn_6td3",
-      "file": "curve_hub_batching.csv",
-      "src": "results_seed43/fraggfn_6td3/curve_hub_batching.csv",
-      "md5": "3e9a62ea59906d619c788d4e621c5113",
-      "redacted": false
-    },
-    {
-      "seed": 43,
-      "cell": "fraggfn_6td3",
-      "file": "curve_best_candidate.csv",
-      "src": "results_seed43/fraggfn_6td3/curve_best_candidate.csv",
-      "md5": "38e3581d1d44417a3731c993309e53a5",
-      "redacted": false
-    },
-    {
-      "seed": 43,
-      "cell": "fraggfn_6td3",
-      "file": "summary.json",
-      "src": "results_seed43/fraggfn_6td3/summary.json",
-      "md5": "cd175b45b3bf5a4251bbe6765e5d49ff",
+      "md5": "b9db9ce18d3d419da33624a2fce725e3",
       "redacted": true
     },
     {
@@ -442,7 +306,7 @@
       "cell": "fraggfn_clpp",
       "file": "curve_hub_batching.csv",
       "src": "results_seed43/fraggfn_clpp/curve_hub_batching.csv",
-      "md5": "b0c6d811054d3f64ba209e9a6e9abbb1",
+      "md5": "2e365d6304c0e5d7daabefd16a246601",
       "redacted": false
     },
     {
@@ -458,7 +322,7 @@
       "cell": "fraggfn_clpp",
       "file": "summary.json",
       "src": "results_seed43/fraggfn_clpp/summary.json",
-      "md5": "caa97fe1f394070dba05c6f1c22e744a",
+      "md5": "3107a81201607e49923afdbfd77e00f7",
       "redacted": true
     },
     {
@@ -466,7 +330,7 @@
       "cell": "fraggfn_drd2",
       "file": "curve_hub_batching.csv",
       "src": "results_seed43/fraggfn_drd2/curve_hub_batching.csv",
-      "md5": "c0584ddc62ed5d5740180389cd8526de",
+      "md5": "35f9482b566a9a00865c16080b5057e6",
       "redacted": false
     },
     {
@@ -482,7 +346,7 @@
       "cell": "fraggfn_drd2",
       "file": "summary.json",
       "src": "results_seed43/fraggfn_drd2/summary.json",
-      "md5": "4ff9f6810aab6916e8942c4e58538d2e",
+      "md5": "ff6636dd736a565b84e3a6cb20788168",
       "redacted": true
     },
     {
@@ -490,7 +354,7 @@
       "cell": "fraggfn_seh",
       "file": "curve_hub_batching.csv",
       "src": "results_seed43/fraggfn_seh/curve_hub_batching.csv",
-      "md5": "a95a7fa1954c157315225783e9a63d57",
+      "md5": "09d48564e9bf09e8d909e696814891f3",
       "redacted": false
     },
     {
@@ -506,31 +370,7 @@
       "cell": "fraggfn_seh",
       "file": "summary.json",
       "src": "results_seed43/fraggfn_seh/summary.json",
-      "md5": "6508f85601a729b519d036bb7647cd7a",
-      "redacted": true
-    },
-    {
-      "seed": 43,
-      "cell": "rgfn_6td3",
-      "file": "curve_hub_batching.csv",
-      "src": "results_seed43/rgfn_6td3/curve_hub_batching.csv",
-      "md5": "2176f10c700e16e3edeb39f1032c5420",
-      "redacted": false
-    },
-    {
-      "seed": 43,
-      "cell": "rgfn_6td3",
-      "file": "curve_best_candidate.csv",
-      "src": "results_seed43/rgfn_6td3/curve_best_candidate.csv",
-      "md5": "505df45617ba3412751f1de629b22570",
-      "redacted": false
-    },
-    {
-      "seed": 43,
-      "cell": "rgfn_6td3",
-      "file": "summary.json",
-      "src": "results_seed43/rgfn_6td3/summary.json",
-      "md5": "b82204306dff0063e5eeed52ee1dcd16",
+      "md5": "10eafb718fc4c629cf1ce2679b2cce68",
       "redacted": true
     },
     {
@@ -538,7 +378,7 @@
       "cell": "rgfn_clpp",
       "file": "curve_hub_batching.csv",
       "src": "results_seed43/rgfn_clpp/curve_hub_batching.csv",
-      "md5": "8018462447faf4298d3acc0a06491c71",
+      "md5": "b1c76663075a14014eee1b8e1c80784b",
       "redacted": false
     },
     {
@@ -554,7 +394,7 @@
       "cell": "rgfn_clpp",
       "file": "summary.json",
       "src": "results_seed43/rgfn_clpp/summary.json",
-      "md5": "029f8a558e5d1384e6d2593bec248b52",
+      "md5": "8fb6e5728a806cf01b7b2a294b4d4467",
       "redacted": true
     },
     {
@@ -562,7 +402,7 @@
       "cell": "rgfn_drd2",
       "file": "curve_hub_batching.csv",
       "src": "results_seed43/rgfn_drd2/curve_hub_batching.csv",
-      "md5": "c6d78e023fc76dbcdd4359d252a57af2",
+      "md5": "e78f366d09ff792080044a9de6f5fe12",
       "redacted": false
     },
     {
@@ -578,7 +418,7 @@
       "cell": "rgfn_drd2",
       "file": "summary.json",
       "src": "results_seed43/rgfn_drd2/summary.json",
-      "md5": "dcf77cfcbbfb967ae790d9abc4fad390",
+      "md5": "ab53940ba11a833bbb952fd7273b50da",
       "redacted": true
     },
     {
@@ -586,7 +426,7 @@
       "cell": "rgfn_seh",
       "file": "curve_hub_batching.csv",
       "src": "results_seed43/rgfn_seh/curve_hub_batching.csv",
-      "md5": "1ab4a23ab0dcc7f5bef82a5de354b970",
+      "md5": "eed74524db709ed22c2361b3785c7d12",
       "redacted": false
     },
     {
@@ -602,31 +442,7 @@
       "cell": "rgfn_seh",
       "file": "summary.json",
       "src": "results_seed43/rgfn_seh/summary.json",
-      "md5": "a3dd58f1135bd19e924488ccd69b43fd",
-      "redacted": true
-    },
-    {
-      "seed": 43,
-      "cell": "rxnflow_6td3",
-      "file": "curve_hub_batching.csv",
-      "src": "results_seed43/rxnflow_6td3/curve_hub_batching.csv",
-      "md5": "58d99d8c76580569b2324583db379722",
-      "redacted": false
-    },
-    {
-      "seed": 43,
-      "cell": "rxnflow_6td3",
-      "file": "curve_best_candidate.csv",
-      "src": "results_seed43/rxnflow_6td3/curve_best_candidate.csv",
-      "md5": "c66c7b086771e7743e7e3d459562e1e8",
-      "redacted": false
-    },
-    {
-      "seed": 43,
-      "cell": "rxnflow_6td3",
-      "file": "summary.json",
-      "src": "results_seed43/rxnflow_6td3/summary.json",
-      "md5": "504f022d57dba4f4c28e194527104f95",
+      "md5": "d0ad97c949765addaaf560b00f6cc823",
       "redacted": true
     },
     {
@@ -634,7 +450,7 @@
       "cell": "rxnflow_clpp",
       "file": "curve_hub_batching.csv",
       "src": "results_seed43/rxnflow_clpp/curve_hub_batching.csv",
-      "md5": "1db2f51b3e4a7c86fc577391f6374de2",
+      "md5": "a4896c293ee8b8671bf1e36e1adf1f8e",
       "redacted": false
     },
     {
@@ -650,7 +466,7 @@
       "cell": "rxnflow_clpp",
       "file": "summary.json",
       "src": "results_seed43/rxnflow_clpp/summary.json",
-      "md5": "ccbb61b735dc5a224a48f827ed22c543",
+      "md5": "e9b20670860d173a13f8b1fcb5740c80",
       "redacted": true
     },
     {
@@ -658,7 +474,7 @@
       "cell": "rxnflow_drd2",
       "file": "curve_hub_batching.csv",
       "src": "results_seed43/rxnflow_drd2/curve_hub_batching.csv",
-      "md5": "1e976aad436f324aeca6e127066b3f10",
+      "md5": "b2a5329a55854d1c42c91d823ae148d2",
       "redacted": false
     },
     {
@@ -666,7 +482,7 @@
       "cell": "rxnflow_drd2",
       "file": "curve_best_candidate.csv",
       "src": "results_seed43/rxnflow_drd2/curve_best_candidate.csv",
-      "md5": "8988026167f3fb9258c00f725163d0e8",
+      "md5": "d5c0419125913594d6b5f049645a76bb",
       "redacted": false
     },
     {
@@ -674,7 +490,7 @@
       "cell": "rxnflow_drd2",
       "file": "summary.json",
       "src": "results_seed43/rxnflow_drd2/summary.json",
-      "md5": "5b274b0b0faf6229570db98b715f1ce0",
+      "md5": "f4e99417a3ce778f61bdd4791cd4640b",
       "redacted": true
     },
     {
@@ -682,7 +498,7 @@
       "cell": "rxnflow_seh",
       "file": "curve_hub_batching.csv",
       "src": "results_seed43/rxnflow_seh/curve_hub_batching.csv",
-      "md5": "23e574b1cf9e1e4e7dd837c8140ab559",
+      "md5": "2a6c8de29dfbf32733fbcd387542f741",
       "redacted": false
     },
     {
@@ -698,31 +514,7 @@
       "cell": "rxnflow_seh",
       "file": "summary.json",
       "src": "results_seed43/rxnflow_seh/summary.json",
-      "md5": "5fa6bf580de3dc3e252d639c5a84c05c",
-      "redacted": true
-    },
-    {
-      "seed": 43,
-      "cell": "scent_6td3",
-      "file": "curve_hub_batching.csv",
-      "src": "results_seed43/scent_6td3/curve_hub_batching.csv",
-      "md5": "a3460711ed988f157eee30c8834bd2b6",
-      "redacted": false
-    },
-    {
-      "seed": 43,
-      "cell": "scent_6td3",
-      "file": "curve_best_candidate.csv",
-      "src": "results_seed43/scent_6td3/curve_best_candidate.csv",
-      "md5": "1df6936a12c69316556418632cf3697d",
-      "redacted": false
-    },
-    {
-      "seed": 43,
-      "cell": "scent_6td3",
-      "file": "summary.json",
-      "src": "results_seed43/scent_6td3/summary.json",
-      "md5": "aa8405062f82e235d968864a48568310",
+      "md5": "2a940726303dcdad70f70d7c4b7e9516",
       "redacted": true
     },
     {
@@ -730,7 +522,7 @@
       "cell": "scent_clpp",
       "file": "curve_hub_batching.csv",
       "src": "results_seed43/scent_clpp/curve_hub_batching.csv",
-      "md5": "28fd13199a0183f2b5fea101bb948080",
+      "md5": "6ba9f000db32b9b2096cce35597828c5",
       "redacted": false
     },
     {
@@ -746,7 +538,7 @@
       "cell": "scent_clpp",
       "file": "summary.json",
       "src": "results_seed43/scent_clpp/summary.json",
-      "md5": "b4b6d803078d0f2c43da40eb910be48e",
+      "md5": "fd6a6c1b67d8c368a7f02d1d70514d4d",
       "redacted": true
     },
     {
@@ -754,7 +546,7 @@
       "cell": "scent_drd2",
       "file": "curve_hub_batching.csv",
       "src": "results_seed43/scent_drd2/curve_hub_batching.csv",
-      "md5": "88ba51a12b2fe6dc397b1b552c43e3fb",
+      "md5": "333486ccad0ce2bd1bfc8e98313681a2",
       "redacted": false
     },
     {
@@ -770,7 +562,7 @@
       "cell": "scent_drd2",
       "file": "summary.json",
       "src": "results_seed43/scent_drd2/summary.json",
-      "md5": "b2c519b786c775d0cf63d0d9addebfae",
+      "md5": "9b9b8166f2b6c7877395b918da9fa27d",
       "redacted": true
     },
     {
@@ -778,7 +570,7 @@
       "cell": "scent_seh",
       "file": "curve_hub_batching.csv",
       "src": "results_seed43/scent_seh/curve_hub_batching.csv",
-      "md5": "956353284cdb0739bb07650c8f47791f",
+      "md5": "0e380a3e8d9f79ca3c60d2ed07b12f96",
       "redacted": false
     },
     {
@@ -794,7 +586,7 @@
       "cell": "scent_seh",
       "file": "summary.json",
       "src": "results_seed43/scent_seh/summary.json",
-      "md5": "a31125d3886eb04fc2649e02b51e8dc7",
+      "md5": "b76878ae949fcc72fb03e99deddbfa28",
       "redacted": true
     },
     {
@@ -802,7 +594,7 @@
       "cell": "fraggfn_drd2",
       "file": "curve_hub_batching.csv",
       "src": "results_seed44/fraggfn_drd2/curve_hub_batching.csv",
-      "md5": "8135e4f191001d42731794190334871d",
+      "md5": "0b2535aa08115f98a3dc0d491c832d82",
       "redacted": false
     },
     {
@@ -818,7 +610,7 @@
       "cell": "fraggfn_drd2",
       "file": "summary.json",
       "src": "results_seed44/fraggfn_drd2/summary.json",
-      "md5": "2a9932b9adea00a44cca5af811695cd4",
+      "md5": "6d0c5a1e2d27119e593d8ce2f94d02d3",
       "redacted": true
     },
     {
@@ -826,7 +618,7 @@
       "cell": "fraggfn_seh",
       "file": "curve_hub_batching.csv",
       "src": "results_seed44/fraggfn_seh/curve_hub_batching.csv",
-      "md5": "98b45ca49646be70110215b493bfdbe9",
+      "md5": "44091864ef259bf85182547ec6f1f1f8",
       "redacted": false
     },
     {
@@ -842,7 +634,7 @@
       "cell": "fraggfn_seh",
       "file": "summary.json",
       "src": "results_seed44/fraggfn_seh/summary.json",
-      "md5": "ea5cd011c9760dd9da4082f72afdd4cb",
+      "md5": "ddef60b292a5d5bd8eddf88e23fb4a96",
       "redacted": true
     },
     {
@@ -850,7 +642,7 @@
       "cell": "rgfn_drd2",
       "file": "curve_hub_batching.csv",
       "src": "results_seed44/rgfn_drd2/curve_hub_batching.csv",
-      "md5": "665ff29646f28880c16f1ab030e00feb",
+      "md5": "5cd26f74329292810793b933e3f60548",
       "redacted": false
     },
     {
@@ -866,7 +658,7 @@
       "cell": "rgfn_drd2",
       "file": "summary.json",
       "src": "results_seed44/rgfn_drd2/summary.json",
-      "md5": "e4338c12667ab8753ad8bce43425b8cb",
+      "md5": "c3aac839514be64e1b9644d7e8565421",
       "redacted": true
     },
     {
@@ -874,7 +666,7 @@
       "cell": "rgfn_seh",
       "file": "curve_hub_batching.csv",
       "src": "results_seed44/rgfn_seh/curve_hub_batching.csv",
-      "md5": "425d47e36f2d2f632f2af98a34b80c66",
+      "md5": "3b8801baef8491294251948e3d991205",
       "redacted": false
     },
     {
@@ -890,7 +682,7 @@
       "cell": "rgfn_seh",
       "file": "summary.json",
       "src": "results_seed44/rgfn_seh/summary.json",
-      "md5": "81ff794bbc9ae88b52d99cbb9b38dca6",
+      "md5": "3c39deab925dbe98daa06ac641913686",
       "redacted": true
     },
     {
@@ -898,7 +690,7 @@
       "cell": "rxnflow_drd2",
       "file": "curve_hub_batching.csv",
       "src": "results_seed44/rxnflow_drd2/curve_hub_batching.csv",
-      "md5": "fbd17b0c7782f3432e254ddaa8642bd8",
+      "md5": "6a190d22b8f7794db1d4e7869fb42a11",
       "redacted": false
     },
     {
@@ -914,7 +706,7 @@
       "cell": "rxnflow_drd2",
       "file": "summary.json",
       "src": "results_seed44/rxnflow_drd2/summary.json",
-      "md5": "8b16ea0930bb9d04249391bef67d247c",
+      "md5": "c045cef98777766ac91a076420b3a090",
       "redacted": true
     },
     {
@@ -922,7 +714,7 @@
       "cell": "rxnflow_seh",
       "file": "curve_hub_batching.csv",
       "src": "results_seed44/rxnflow_seh/curve_hub_batching.csv",
-      "md5": "904504aaad098c2514d8bda0bca1db04",
+      "md5": "e32f9f715ee6697b677ab030e4379585",
       "redacted": false
     },
     {
@@ -930,7 +722,7 @@
       "cell": "rxnflow_seh",
       "file": "curve_best_candidate.csv",
       "src": "results_seed44/rxnflow_seh/curve_best_candidate.csv",
-      "md5": "7bb394bf551c6ac3aa29b3132c4107e5",
+      "md5": "25cfd2e0171e4d8f2d21a0c6b8bf374d",
       "redacted": false
     },
     {
@@ -938,7 +730,7 @@
       "cell": "rxnflow_seh",
       "file": "summary.json",
       "src": "results_seed44/rxnflow_seh/summary.json",
-      "md5": "cb137276af9ea55277e05d5fa52736bc",
+      "md5": "5346e230300110b1a254ca02c9ae0340",
       "redacted": true
     },
     {
@@ -946,7 +738,7 @@
       "cell": "scent_drd2",
       "file": "curve_hub_batching.csv",
       "src": "results_seed44/scent_drd2/curve_hub_batching.csv",
-      "md5": "25d5597a65e7e1aa2ddbcbfc5dfdcd23",
+      "md5": "62f043856fbea3271cf53a415a492359",
       "redacted": false
     },
     {
@@ -962,7 +754,7 @@
       "cell": "scent_drd2",
       "file": "summary.json",
       "src": "results_seed44/scent_drd2/summary.json",
-      "md5": "f71fad9a26c4e2fa3763cdc8873cccf8",
+      "md5": "062fb4bd6fe2377dc1e9223ca7a55cde",
       "redacted": true
     },
     {
@@ -970,7 +762,7 @@
       "cell": "scent_seh",
       "file": "curve_hub_batching.csv",
       "src": "results_seed44/scent_seh/curve_hub_batching.csv",
-      "md5": "dd27fb20de3ca09e0a285f62edd342ef",
+      "md5": "4c8ce3052fa4d30543b83776cb56e149",
       "redacted": false
     },
     {
@@ -986,332 +778,8 @@
       "cell": "scent_seh",
       "file": "summary.json",
       "src": "results_seed44/scent_seh/summary.json",
-      "md5": "f1323f1fb7a26939e75b5117377a01e8",
+      "md5": "02f1fa8472fdad60268f3c91f2c7d436",
       "redacted": true
-    },
-    {
-      "seed": 42,
-      "cell": "fraggfn_seh_thr5",
-      "file": "curve_hub_batching.csv",
-      "src": "results/fraggfn_seh_thr5/curve_hub_batching.csv",
-      "md5": "bdcb12f3a5472b99b5365d2fe650bd55",
-      "redacted": false,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "fraggfn_seh_thr5",
-      "file": "curve_best_candidate.csv",
-      "src": "results/fraggfn_seh_thr5/curve_best_candidate.csv",
-      "md5": "86f36aa1232c7c81a17a5d4c75074afb",
-      "redacted": false,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "fraggfn_seh_thr5",
-      "file": "summary.json",
-      "src": "results/fraggfn_seh_thr5/summary.json",
-      "md5": "648c0028383c590b64fe12211b94b42b",
-      "redacted": true,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "fraggfn_seh_thr6",
-      "file": "curve_hub_batching.csv",
-      "src": "results/fraggfn_seh_thr6/curve_hub_batching.csv",
-      "md5": "056e496e81ec6b4ea593e3a720ef818b",
-      "redacted": false,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "fraggfn_seh_thr6",
-      "file": "curve_best_candidate.csv",
-      "src": "results/fraggfn_seh_thr6/curve_best_candidate.csv",
-      "md5": "86f36aa1232c7c81a17a5d4c75074afb",
-      "redacted": false,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "fraggfn_seh_thr6",
-      "file": "summary.json",
-      "src": "results/fraggfn_seh_thr6/summary.json",
-      "md5": "c9a9f18c987cca1177ba1d3937b4068d",
-      "redacted": true,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "fraggfn_seh_thr7",
-      "file": "curve_hub_batching.csv",
-      "src": "results/fraggfn_seh_thr7/curve_hub_batching.csv",
-      "md5": "f160dede319f306dce03266e305d386c",
-      "redacted": false,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "fraggfn_seh_thr7",
-      "file": "curve_best_candidate.csv",
-      "src": "results/fraggfn_seh_thr7/curve_best_candidate.csv",
-      "md5": "86f36aa1232c7c81a17a5d4c75074afb",
-      "redacted": false,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "fraggfn_seh_thr7",
-      "file": "summary.json",
-      "src": "results/fraggfn_seh_thr7/summary.json",
-      "md5": "eebe652e3f3888a4ada2c4c91fd72fab",
-      "redacted": true,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "rgfn_seh_thr5",
-      "file": "curve_hub_batching.csv",
-      "src": "results/rgfn_seh_thr5/curve_hub_batching.csv",
-      "md5": "4df284959ed9c768f3036cdcb3408f06",
-      "redacted": false,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "rgfn_seh_thr5",
-      "file": "curve_best_candidate.csv",
-      "src": "results/rgfn_seh_thr5/curve_best_candidate.csv",
-      "md5": "f379e3cf910efd4ac0673bccf3c4bbe2",
-      "redacted": false,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "rgfn_seh_thr5",
-      "file": "summary.json",
-      "src": "results/rgfn_seh_thr5/summary.json",
-      "md5": "f04c500eed39e7ab93a97082d5e47a26",
-      "redacted": true,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "rgfn_seh_thr6",
-      "file": "curve_hub_batching.csv",
-      "src": "results/rgfn_seh_thr6/curve_hub_batching.csv",
-      "md5": "1242751b5132f5a85e14118bc2c9f7fb",
-      "redacted": false,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "rgfn_seh_thr6",
-      "file": "curve_best_candidate.csv",
-      "src": "results/rgfn_seh_thr6/curve_best_candidate.csv",
-      "md5": "f379e3cf910efd4ac0673bccf3c4bbe2",
-      "redacted": false,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "rgfn_seh_thr6",
-      "file": "summary.json",
-      "src": "results/rgfn_seh_thr6/summary.json",
-      "md5": "066733a95f37b172415c1d26cce4aada",
-      "redacted": true,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "rgfn_seh_thr7",
-      "file": "curve_hub_batching.csv",
-      "src": "results/rgfn_seh_thr7/curve_hub_batching.csv",
-      "md5": "ba84491c62c7941d751b3b469ca23439",
-      "redacted": false,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "rgfn_seh_thr7",
-      "file": "curve_best_candidate.csv",
-      "src": "results/rgfn_seh_thr7/curve_best_candidate.csv",
-      "md5": "79d66f25a9214185c2b55c14c7cda30b",
-      "redacted": false,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "rgfn_seh_thr7",
-      "file": "summary.json",
-      "src": "results/rgfn_seh_thr7/summary.json",
-      "md5": "c17de2e482278bd942a2fb71ddb7e13f",
-      "redacted": true,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "rxnflow_seh_thr5",
-      "file": "curve_hub_batching.csv",
-      "src": "results/rxnflow_seh_thr5/curve_hub_batching.csv",
-      "md5": "630f8daf6c3ce464ea9abda9fdf94fb2",
-      "redacted": false,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "rxnflow_seh_thr5",
-      "file": "curve_best_candidate.csv",
-      "src": "results/rxnflow_seh_thr5/curve_best_candidate.csv",
-      "md5": "a6f61f0386ce903f8fe5ae45137444db",
-      "redacted": false,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "rxnflow_seh_thr5",
-      "file": "summary.json",
-      "src": "results/rxnflow_seh_thr5/summary.json",
-      "md5": "6997f2b1961acbdd6de0c1ab6edfcfdf",
-      "redacted": true,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "rxnflow_seh_thr6",
-      "file": "curve_hub_batching.csv",
-      "src": "results/rxnflow_seh_thr6/curve_hub_batching.csv",
-      "md5": "a67a1603d03b8f666da32f504e702208",
-      "redacted": false,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "rxnflow_seh_thr6",
-      "file": "curve_best_candidate.csv",
-      "src": "results/rxnflow_seh_thr6/curve_best_candidate.csv",
-      "md5": "a6f61f0386ce903f8fe5ae45137444db",
-      "redacted": false,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "rxnflow_seh_thr6",
-      "file": "summary.json",
-      "src": "results/rxnflow_seh_thr6/summary.json",
-      "md5": "f8c41eaac11248862e835d5b67849d88",
-      "redacted": true,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "rxnflow_seh_thr7",
-      "file": "curve_hub_batching.csv",
-      "src": "results/rxnflow_seh_thr7/curve_hub_batching.csv",
-      "md5": "f5c6872fc48edd2adc6ac2183490ae24",
-      "redacted": false,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "rxnflow_seh_thr7",
-      "file": "curve_best_candidate.csv",
-      "src": "results/rxnflow_seh_thr7/curve_best_candidate.csv",
-      "md5": "1a27dacc7b51875d3e05b7464e080e01",
-      "redacted": false,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "rxnflow_seh_thr7",
-      "file": "summary.json",
-      "src": "results/rxnflow_seh_thr7/summary.json",
-      "md5": "766627dde81ee62176df4c503a3663fb",
-      "redacted": true,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "scent_seh_thr5",
-      "file": "curve_hub_batching.csv",
-      "src": "results/scent_seh_thr5/curve_hub_batching.csv",
-      "md5": "01acf2c0420511eda6cc9e19a8174772",
-      "redacted": false,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "scent_seh_thr5",
-      "file": "curve_best_candidate.csv",
-      "src": "results/scent_seh_thr5/curve_best_candidate.csv",
-      "md5": "ca2c3b429a312a1fde80fd8177f74a6c",
-      "redacted": false,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "scent_seh_thr5",
-      "file": "summary.json",
-      "src": "results/scent_seh_thr5/summary.json",
-      "md5": "60f54fcdbd96b8eb973172ef422b0784",
-      "redacted": true,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "scent_seh_thr6",
-      "file": "curve_hub_batching.csv",
-      "src": "results/scent_seh_thr6/curve_hub_batching.csv",
-      "md5": "919095a91df69b806796bdb104d22657",
-      "redacted": false,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "scent_seh_thr6",
-      "file": "curve_best_candidate.csv",
-      "src": "results/scent_seh_thr6/curve_best_candidate.csv",
-      "md5": "ca2c3b429a312a1fde80fd8177f74a6c",
-      "redacted": false,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "scent_seh_thr6",
-      "file": "summary.json",
-      "src": "results/scent_seh_thr6/summary.json",
-      "md5": "be80ab0c4ac7496a97139f9ff6765483",
-      "redacted": true,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "scent_seh_thr7",
-      "file": "curve_hub_batching.csv",
-      "src": "results/scent_seh_thr7/curve_hub_batching.csv",
-      "md5": "ec8b539b0782adb725c710e135683ead",
-      "redacted": false,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "scent_seh_thr7",
-      "file": "curve_best_candidate.csv",
-      "src": "results/scent_seh_thr7/curve_best_candidate.csv",
-      "md5": "ca2c3b429a312a1fde80fd8177f74a6c",
-      "redacted": false,
-      "variant": true
-    },
-    {
-      "seed": 42,
-      "cell": "scent_seh_thr7",
-      "file": "summary.json",
-      "src": "results/scent_seh_thr7/summary.json",
-      "md5": "1cb340bfc103435a8e196e63c4171c51",
-      "redacted": true,
-      "variant": true
     }
   ]
 }

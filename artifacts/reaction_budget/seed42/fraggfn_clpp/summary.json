@@ -1,6 +1,6 @@
 {
   "tag": "fraggfn_clpp",
-  "reward_threshold": -8.0,
+  "reward_threshold": -9.1,
   "similarity": 0.5,
   "budget_reactions": 100,
   "budget_modes": 300,
@@ -32,7 +32,7 @@
     "reward_gen_calls_per_mode": 37.45,
     "distinct_promoted_fragments": 0,
     "distinct_hubs_used": 7,
-    "n_scaffolds": 228,
+    "n_scaffolds": 225,
     "best_reward": -13.5,
     "median_reward": -11.6,
     "case1_modes_at_100rxn": 96,
@@ -83,11 +83,11 @@
       "reward_gen_s": 3422.1787,
       "flow_extract_s": 3.742,
       "unattributed_s": 0.0,
-      "mode_selection_s": 2.91,
+      "mode_selection_s": 2.7589,
       "n_hubs_walked": 7,
       "n_children_scored": 11235,
       "missing_hub_keys": [],
-      "total_s": 3449.7542
+      "total_s": 3449.6031
     },
     "best_candidate": {
       "strategy": "best_candidate",
@@ -97,17 +97,17 @@
       "reward_gen_s": 0.0,
       "flow_extract_s": 0.0,
       "unattributed_s": 0.0,
-      "mode_selection_s": 0.2666,
+      "mode_selection_s": 0.2656,
       "n_hubs_walked": 0,
       "n_children_scored": 0,
       "missing_hub_keys": [],
-      "total_s": 0.2666
+      "total_s": 0.2656
     },
     "head_to_head": {
-      "hub_total_s": 3449.7542,
-      "best_total_s": 0.2666,
-      "extra_compute_s": 3449.4877,
-      "ratio_hub_over_best": 12941.533,
+      "hub_total_s": 3449.6031,
+      "best_total_s": 0.2656,
+      "extra_compute_s": 3449.3375,
+      "ratio_hub_over_best": 12987.764,
       "per_component_delta_s": {
         "setup_s": 1.337,
         "hub_pick_s": 0.165,
@@ -115,7 +115,7 @@
         "reward_gen_s": 3422.1787,
         "flow_extract_s": 3.742,
         "unattributed_s": 0.0,
-        "mode_selection_s": 2.6434
+        "mode_selection_s": 2.4932
       },
       "note": "Stage-1 sampling (shared pool) excluded; it cancels in the marginal."
     }

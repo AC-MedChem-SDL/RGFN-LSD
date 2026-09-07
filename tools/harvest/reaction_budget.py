@@ -38,22 +38,34 @@ ARMS = ("hub_batching", "best_candidate")
 VARIANT_MARKERS = ("thr", "cap9", "naive")
 
 # Per-target gate, direction, and calibration status. `calibrated` is what Fig 1's
-# headline filters on, and each value is a claim with evidence behind it:
-#   seh   5.0  Logs/034 (weak enrichment above ~6) + Logs/051 (diversity collapse past ~7)
-#   drd2  0.5  Logs/028 gate fix; Logs/066 validated on held-out actives (AUROC 0.949)
-#   clpp -8.0  Logs/045 Youden-optimal vs property-matched decoys (AUROC 0.895)
-#   6td3 -2.0  PROVISIONAL, never AUROC-calibrated -- and Logs/072 then measured the
-#              generator exploiting it (78% clear the trained gate, 0% of 400 clear the
-#              untrained one), so the differential is gameable rather than merely noisy.
+# headline filters on, and each value is a claim with evidence behind it.
+#
+# ONE RULE, not four numbers: every gate is the 5%-FPR point on that oracle's OWN
+# actives-vs-decoys set. That is what a reader has to accept -- once, in a sentence --
+# rather than four separately-argued thresholds. It replaced sEH 5.0 (16% FPR), DRD2 0.5,
+# and ClpP -8.0 (Youden-optimal, a different criterion) on 2026-09-06.
+#
+#   seh   5.68  5% FPR (TPR 13%, 2.5x enrichment)
+#   drd2  0.345 5% FPR (TPR 74%, 14.9x)
+#   clpp -9.1   5% FPR; supersedes the Youden-optimal -8.0 of Logs/045
+#   6td3 -2.0   NOT on the rule and cannot be: its 5%-FPR gate (6.718) belongs to the
+#               6TD3-B CNN_VS oracle, a different reward from the differential these cells
+#               were docked with. Moving it is a re-dock. It was never AUROC-calibrated
+#               anyway, and Logs/072 measured the generator exploiting it (78% clear the
+#               trained gate, 0% of 400 clear the untrained one), so it is gameable rather
+#               than merely noisy -- hence calibrated=False, which keeps it out of the
+#               headline while leaving it in the figure as a labelled control.
 GATES = [
-    {"target": "seh",  "gate": 5.0,  "higher_is_better": True,  "calibrated": True,
-     "basis": "Logs/034, Logs/051; 7.0 kept as the paper-comparable variant"},
-    {"target": "drd2", "gate": 0.5,  "higher_is_better": True,  "calibrated": True,
-     "basis": "Logs/028 gate fix; Logs/066 held-out AUROC 0.949"},
-    {"target": "clpp", "gate": -8.0, "higher_is_better": False, "calibrated": True,
-     "basis": "Logs/045 Youden-optimal, AUROC 0.895 vs matched decoys"},
-    {"target": "6td3", "gate": -2.0, "higher_is_better": False, "calibrated": False,
-     "basis": "PROVISIONAL, no AUROC calibration; Logs/072 measured reward exploitation"},
+    {"target": "seh",  "gate": 5.68,  "higher_is_better": True,  "calibrated": True,
+     "basis": "5% FPR on its own actives-vs-decoys set; 7.0 retained as the "
+              "paper-comparable variant used by Fig 2 and Table 1"},
+    {"target": "drd2", "gate": 0.345, "higher_is_better": True,  "calibrated": True,
+     "basis": "5% FPR; supersedes 0.5. Logs/066 held-out AUROC 0.949"},
+    {"target": "clpp", "gate": -9.1,  "higher_is_better": False, "calibrated": True,
+     "basis": "5% FPR; supersedes the Youden-optimal -8.0 of Logs/045 (AUROC 0.895)"},
+    {"target": "6td3", "gate": -2.0,  "higher_is_better": False, "calibrated": False,
+     "basis": "PROVISIONAL, no AUROC calibration; not on the 5%-FPR rule because its "
+              "gate belongs to a different oracle (6TD3-B). Logs/072 measured exploitation"},
 ]
 
 

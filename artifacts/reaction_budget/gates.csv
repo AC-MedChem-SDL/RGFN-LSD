@@ -1,5 +1,5 @@
 target,gate,higher_is_better,calibrated,basis
-seh,5.0,True,True,"Logs/034, Logs/051; 7.0 kept as the paper-comparable variant"
-drd2,0.5,True,True,Logs/028 gate fix; Logs/066 held-out AUROC 0.949
-clpp,-8.0,False,True,"Logs/045 Youden-optimal, AUROC 0.895 vs matched decoys"
-6td3,-2.0,False,False,"PROVISIONAL, no AUROC calibration; Logs/072 measured reward exploitation"
+seh,5.68,True,True,5% FPR on its own actives-vs-decoys set; 7.0 retained as the paper-comparable variant used by Fig 2 and Table 1
+drd2,0.345,True,True,5% FPR; supersedes 0.5. Logs/066 held-out AUROC 0.949
+clpp,-9.1,False,True,5% FPR; supersedes the Youden-optimal -8.0 of Logs/045 (AUROC 0.895)
+6td3,-2.0,False,False,"PROVISIONAL, no AUROC calibration; not on the 5%-FPR rule because its gate belongs to a different oracle (6TD3-B). Logs/072 measured exploitation"

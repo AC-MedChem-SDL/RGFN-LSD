@@ -77,3 +77,5 @@ best_candidate,75,190,75,0,2,0.5944,CC(O)CNCCc1c[nH]c2ccc(O)cc12
 best_candidate,76,193,76,0,3,0.5803,CC(C)C(NC(=O)N(CCc1c[nH]c2ccc(O)cc12)C1CNC1)C(=O)O
 best_candidate,77,194,77,0,1,0.5721,CCC=O
 best_candidate,78,197,78,0,3,0.5692,Oc1ccc2[nH]cc(CCN(Cc3ccnc(F)c3)C3CCNC3)c2c1
+best_candidate,79,200,79,0,3,0.3906,Oc1ccc(CCN(Cc2ccnc(F)c2)C2CCCNC2)cc1
+best_candidate,80,201,80,0,1,0.3739,CC(N)CN(CCc1c[nH]c2ccccc12)CC1CNC1

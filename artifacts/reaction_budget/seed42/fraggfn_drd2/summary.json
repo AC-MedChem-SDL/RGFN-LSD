@@ -1,6 +1,6 @@
 {
   "tag": "fraggfn_drd2",
-  "reward_threshold": 0.5,
+  "reward_threshold": 0.345,
   "similarity": 0.5,
   "budget_reactions": 100,
   "budget_modes": 300,
@@ -32,9 +32,9 @@
     "reward_gen_calls_per_mode": 45.85,
     "distinct_promoted_fragments": 0,
     "distinct_hubs_used": 13,
-    "n_scaffolds": 246,
+    "n_scaffolds": 247,
     "best_reward": 1.0,
-    "median_reward": 0.964,
+    "median_reward": 0.956,
     "case1_modes_at_100rxn": 88,
     "case2_reactions_at_300modes": 352,
     "stop_reason": "modes"
@@ -63,11 +63,11 @@
       "reward_gen_s": 35.5244,
       "flow_extract_s": 5.8843,
       "unattributed_s": 0.0,
-      "mode_selection_s": 2.989,
+      "mode_selection_s": 2.931,
       "n_hubs_walked": 13,
       "n_children_scored": 13755,
       "missing_hub_keys": [],
-      "total_s": 70.8166
+      "total_s": 70.7586
     },
     "best_candidate": {
       "strategy": "best_candidate",
@@ -77,17 +77,17 @@
       "reward_gen_s": 0.0,
       "flow_extract_s": 0.0,
       "unattributed_s": 0.0,
-      "mode_selection_s": 0.269,
+      "mode_selection_s": 0.2674,
       "n_hubs_walked": 0,
       "n_children_scored": 0,
       "missing_hub_keys": [],
-      "total_s": 0.269
+      "total_s": 0.2674
     },
     "head_to_head": {
-      "hub_total_s": 70.8166,
-      "best_total_s": 0.269,
-      "extra_compute_s": 70.5476,
-      "ratio_hub_over_best": 263.284,
+      "hub_total_s": 70.7586,
+      "best_total_s": 0.2674,
+      "extra_compute_s": 70.4912,
+      "ratio_hub_over_best": 264.588,
       "per_component_delta_s": {
         "setup_s": 0.534,
         "hub_pick_s": 0.173,
@@ -95,7 +95,7 @@
         "reward_gen_s": 35.5244,
         "flow_extract_s": 5.8843,
         "unattributed_s": 0.0,
-        "mode_selection_s": 2.72
+        "mode_selection_s": 2.6636
       },
       "note": "Stage-1 sampling (shared pool) excluded; it cancels in the marginal."
     }
