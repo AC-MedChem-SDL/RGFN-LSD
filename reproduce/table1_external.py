@@ -118,7 +118,17 @@ def main() -> int:
             print(f"| {r['arm'][:44]:<44} s{str(r.get('seed','')):<3} | "
                   f"{str(r['modes_at_100rxn']):>19} | {ratio:>10} |{star}")
             table.append({**r, "ours_same_seed": ours, "ratio_vs_headline": ratio})
-    print(f"\n  * the headline configuration ({headline['config']})")
+    cfg = headline["config"]
+    if cfg.rstrip().endswith("K="):
+        # Seed 42's row has no prebuild_k recorded, so the headline printed "K=" with
+        # nothing after it. A provenance string that trails off is worse than a short one:
+        # borrow the value from a row of the same config that does record it, else drop
+        # the clause rather than imply a blank.
+        known = {r.get("prebuild_k") for r in rows
+                 if r["side"] == "ours" and str(r.get("prebuild_k", "")).strip()}
+        cfg = cfg + (known.pop() if len(known) == 1 else "?") if len(known) == 1 \
+            else cfg[:cfg.rindex(",")]
+    print(f"\n  * the headline configuration ({cfg})")
 
     print()
     per_arm = {}
@@ -146,7 +156,9 @@ def main() -> int:
         if r["side"] == "competitor" and r["exact"] != "True":
             print(f"  {r['arm']} seed {r.get('seed')} is an interval "
                   f"[{r['modes_lower']}, {r['modes_upper']}] — frontier granularity, not "
-                  f"uncertainty. The lower end is quoted, the conservative end for us.")
+                  f"uncertainty. The lower end is quoted, which UNDERSTATES the "
+                  f"competitor and so OVERSTATES our ratio -- the conservative end for us "
+                  f"is the upper one. Re-price at 1-mode spacing to remove the interval.")
     # The verification sentence: SPARROW pricing OUR selection, not competing with it.
     prov = json.loads((src.parent / "provenance.json").read_text())
     v = prov.get("verification")

@@ -144,7 +144,8 @@ def main() -> int:
                  f"between grid points: {lo} modes fit in "
                  f"{max(u for _, u in below)} reactions and the next point needs "
                  f"{min(u for _, u in above)}. The readout is therefore [{lo}, {hi}] and "
-                 f"{lo} is quoted, which is the conservative end for us. A 1-mode "
+                 f"{lo} is quoted, which UNDERSTATES the competitor and therefore "
+                 f"OVERSTATES our ratio; the conservative end for us is {hi}. A 1-mode "
                  f"re-price makes it exact and costs seconds, since greedy mode selection "
                  f"is prefix-stable.")
          sources.append({"file": gre.parent.name + "/greedy_frontier.csv", "md5": md5(gre)})
@@ -153,16 +154,24 @@ def main() -> int:
     ours_csv = (Path(__file__).resolve().parents[2] / "artifacts" / "sparrow_diversity"
                 / "ours_r100.csv")
     if ours_csv.is_file():
-        with ours_csv.open() as fh:
-            for r in csv.DictReader(fh):
-                if int(r["seed"]) not in SEEDS:
-                    continue
+        ours_rows = [r for r in csv.DictReader(ours_csv.open())
+                     if int(r["seed"]) in SEEDS]
+        # Seed 42's prebuild_k was never recorded (its source run is the scent_seh_freefrag
+        # tree). All three rows are the same configuration, so take the value from the
+        # seeds that do record it rather than emitting a provenance string ending "K=".
+        ks = {r.get("prebuild_k", "").strip() for r in ours_rows}
+        ks.discard("")
+        k_common = ks.pop() if len(ks) == 1 else None
+        for r in ours_rows:
                 n = int(r["n_modes_kept"])
                 rows.append({
                     "arm": "SCENT \u2192 hub-batching", "side": "ours",
                     "seed": int(r["seed"]),
-                    "config": f"{r.get('child_policy')} child policy, "
-                              f"K={r.get('prebuild_k')}",
+                    "config": (f"{r.get('child_policy')} child policy, "
+                               f"K={r.get('prebuild_k', '').strip() or k_common}"
+                               if (r.get('prebuild_k', '').strip() or k_common)
+                               else f"{r.get('child_policy')} child policy"),
+                    "prebuild_k": r.get("prebuild_k", "").strip() or (k_common or ""),
                     "modes_at_100rxn": n, "modes_lower": n, "modes_upper": n,
                     "used_rxns": r.get("used_rxns"), "n_selected": n,
                     "solver": "greedy walk", "exact": True, "gate": r.get("gate"),

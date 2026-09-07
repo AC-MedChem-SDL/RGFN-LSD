@@ -144,10 +144,26 @@ binds neither arm's pool differently, we still win.
    at threshold 7.0. Add: the enlarged S3-GFN pools cost **10,271 / 41,346 / 10,342**
    eval-phase oracle calls for seeds 42/43/44 against a 10,048-call training budget —
    **per seed, no average, no error bar**.
-3. **Table 1 exactness.** All three seeds are re-priced on a 1-mode grid **at gate 7.0**
-   and every row is exact: 55 / 55 / 65, replacing the brackets [55,59] and [65,69] on
-   seeds 42 and 44. The values did not move, so the lower end was always the right quote.
-   The old bracket note can go.
+3. **Table 1 exactness — re-priced 2026-09-06, and the brackets resolve to their LOWER
+   ends.** Seeds 42 and 44 were re-priced on a 1-mode grid at gate 7.0
+   (`results/s3gfn_seh_seed{42,44}_big_greedy_FINE`, 36 points each, every solve
+   `Optimal`). Both land exactly on the bracket's lower end, and the boundary is not close:
+
+   | seed | quoted modes | cost | next mode up | cost |
+   |---|---|---|---|---|
+   | 42 | **55** | 99 rxn | 56 | **103** rxn |
+   | 44 | **65** | 100 rxn | 66 | **101** rxn |
+
+   So 55 and 65 are measurements, not the optimistic end of a range. The old bracket note
+   can go, and the headline stands at **1.41× mean / 1.26× worst**.
+
+   **Why this needed checking rather than assuming.** With a 5-mode grid the competitor's
+   true count lies in [lo, hi], meaning it delivers *at least* lo — so quoting lo
+   **understates the competitor and inflates our ratio**. Had the brackets stood, the
+   honest headline would have been 1.35× mean / 1.19× worst (82/59, 81/55, 82/69), not
+   1.41×/1.26×. Two strings in the code said the opposite — that quoting lo was "the
+   conservative end for us" — and both are corrected. The direction is worth holding onto:
+   *a lower competitor count always flatters us.*
 4. **Figure 3 caption.** n=2, seeds 43/44. Say seed 42 is excluded for reading a different
    enumeration, and that removing it **lowered** λ=0 from 4.71× to 3.26×.
 5. **A limitations sentence** carrying §3 above.
