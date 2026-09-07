@@ -144,6 +144,15 @@ corroboration of the result.
 
 See `artifacts/two_knob/provenance.json` for per-cell counts and source digests.
 
+### Two layouts, one figure
+
+`--layout row` (1×4, ~14.1 in wide) and `--layout grid` (2×2, ~8.4 in). Both render from
+the same code, so every content decision above applies to either; only the figure size and
+the title/legend offsets differ. The row reads better — four panels on one baseline, one
+shared y-axis — but only fits as a full-page landscape plate or a two-column span at small
+type. The grid drops into an ordinary column-spanning slot. Pick on the page budget, not on
+the content; the review board shows the row.
+
 ### Why the figure shows 9 reward thresholds and the artifact holds 10
 
 The grid was measured at 4.0–8.0 in steps of 0.5 **plus 5.68**, the 5%-FPR operating point.

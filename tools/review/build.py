@@ -55,7 +55,7 @@ def build() -> str:
                                 FIG / "fig2_floor_and_ceiling.png",
                                 FIG / "fig3_selection_vs_enumeration.png",
                                 FIG / "figA1_yield_risk.png",
-                                FIG / "figA2_two_knob_surface.png") if not p.is_file()]
+                                FIG / "figA2_two_knob_surface_row.png") if not p.is_file()]
     if missing:
         sys.exit(f"missing figures: {', '.join(missing)}\n"
                  f"run the reproduce/ scripts first")
@@ -219,7 +219,7 @@ def build() -> str:
         "__FIG2__": b64(FIG / "fig2_floor_and_ceiling.png"),
         "__FIG3__": b64(FIG / "fig3_selection_vs_enumeration.png"),
         "__FIGA1__": b64(FIG / "figA1_yield_risk.png"),
-        "__FIGA2__": b64(FIG / "figA2_two_knob_surface.png"),
+        "__FIGA2__": b64(FIG / "figA2_two_knob_surface_row.png"),
         "__F1__": f1, "__GATEROWS__": gate_rows,
         "__F2FLOOR__": f2floor, "__F2CEIL__": f2ceil, "__NPL__": str(n_pl),
         "__T1__": t1_rows, "__LEAD__": lead,

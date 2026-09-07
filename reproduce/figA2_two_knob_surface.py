@@ -127,8 +127,8 @@ def main() -> int:
         # 7.6in-tall grid.
         y_title, y_sub, y_leg, y_note, top, bottom = 1.062, 1.014, -0.035, -0.062, 0.925, 0.075
     else:
-        ncols, nrows, figsize = len(gens), 1, (3.15 * len(gens) + 1.5, 3.9)
-        y_title, y_sub, y_leg, y_note, top, bottom = 1.155, 1.062, -0.085, -0.125, 0.84, 0.16
+        ncols, nrows, figsize = len(gens), 1, (3.15 * len(gens) + 1.5, 4.0)
+        y_title, y_sub, y_leg, y_note, top, bottom = 1.095, 0.985, -0.020, -0.078, 0.855, 0.165
     shown = {}
     fig, axes_arr = plt.subplots(nrows, ncols, figsize=figsize, sharey=True, sharex=True)
     axes = list(np.ravel(axes_arr)) if len(gens) > 1 else [axes_arr]
