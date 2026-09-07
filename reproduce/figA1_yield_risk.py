@@ -42,7 +42,10 @@ GREY, BLUE = "#9aa5a7", "#1f6f8b"
 VCOL = {"best-candidate": GREY, "hub-batching": BLUE}
 # The 5%-FPR hit thresholds. Every molecule in BOTH violins clears these, which is what
 # makes the panel a statement about distance from the bar rather than about hits vs misses.
-GATES = {"sEH": 5.68, "DRD2": 0.345}
+# The gates panels 1-2 were built with, so all three panels describe one set of
+# molecules. DRD2 0.5 is NOT the 5%-FPR rule (0.345) -- moving A1 to the rule means
+# re-running all three panels together, which is an open item, not a silent mismatch.
+GATES = {"sEH": 7.0, "DRD2": 0.5}
 
 
 def load(root: Path) -> dict[str, dict[str, dict]]:
@@ -136,33 +139,35 @@ def draw(cells, out_path: Path) -> str:
 
 
 def load_rewards(root: Path):
-    """Selected-molecule rewards, pooled over the three reaction-aware generators.
+    """Selected-molecule rewards and the pools they were drawn from.
 
-    Pooling is a compromise and worth naming: the two arms contribute different numbers
-    of molecules per generator (hub-batching ~57-82, best-candidate ~25-33), so the pooled
-    shape is not a plain average of three equal parts. The per-generator medians are drawn
-    on top for exactly that reason -- if one generator disagreed with the pooled story you
-    would see it.
+    Scope matches this figure's other two panels exactly: SCENT, seeds 43 and 44, sEH and
+    DRD2. Seeds are pooled, as they are in the bars beside it.
     """
     f = root / "selection_rewards.csv"
     if not f.is_file():
         return None
-    out = {}
+    out: dict = {}
     with f.open() as fh:
         for r in csv.DictReader(fh):
             out.setdefault(r["target"], {}).setdefault(r["arm"], {}) \
-               .setdefault(r["generator"], []).append(float(r["reward"]))
+               .setdefault(r["kind"], []).append(float(r["reward"]))
     return out or None
 
 
 def draw_reward_violins(ax, rw) -> None:
-    """Reward of every selected molecule, both arms, one target per sub-axis.
+    """What each arm picked, against what it picked FROM.
+
+    The pale violin at each position is that arm's SOURCE pool, the solid one its
+    selection. The two pools are different sets -- best-candidate draws from the sampled
+    candidates, hub-batching from the enumerated children of its hubs -- so each arm is
+    shown against its own, which is the only comparison that means anything.
 
     Two sub-axes rather than four violins on one: sEH reward is a proxy score (~4-9) and
-    DRD2 is a classifier probability (0-1), so they cannot share a y-axis without one of
-    them collapsing to a line.
+    DRD2 a probability (0-1), so a shared y-axis would collapse one of them.
     """
     import numpy as np
+
     targets = [t for t in ("sEH", "DRD2") if t in rw]
     ax.axis("off")
     inner = ax.get_subplotspec().subgridspec(1, len(targets), wspace=0.42)
@@ -170,43 +175,39 @@ def draw_reward_violins(ax, rw) -> None:
         sub = ax.get_figure().add_subplot(inner[0, k])
         arms = [a for a in ("best-candidate", "hub-batching") if a in rw[tgt]]
         for i, arm in enumerate(arms):
-            per_gen = rw[tgt][arm]
-            vals = [v for g in per_gen.values() for v in g]
-            body = sub.violinplot([vals], positions=[i], widths=0.72,
-                                  showextrema=False, showmedians=False)
-            for b in body["bodies"]:
-                b.set_facecolor(VCOL[arm])
-                b.set_alpha(0.85)
-                b.set_edgecolor("none")
-            # Per-generator medians, so a pooled shape cannot hide a generator that
-            # disagrees with it.
-            for g, v in sorted(per_gen.items()):
-                sub.plot(i, float(np.median(v)), marker="o", ms=3.4, mfc="white",
-                         mec="#20343a", mew=0.9, zorder=6)
-            sub.plot(i, float(np.median(vals)), marker="_", ms=17, color="#20343a",
-                     mew=2.0, zorder=7)
-        # The gate every molecule in BOTH distributions clears -- without it a reader
-        # reads the lower violin as "worse than the bar" rather than "further from it".
+            pool = rw[tgt][arm].get("pool", [])
+            sel = rw[tgt][arm].get("selected", [])
+            if pool:
+                b = sub.violinplot([pool], positions=[i], widths=0.86,
+                                   showextrema=False, showmedians=False)["bodies"][0]
+                b.set_facecolor(VCOL[arm]); b.set_alpha(0.22); b.set_edgecolor("none")
+            if sel:
+                b = sub.violinplot([sel], positions=[i], widths=0.50,
+                                   showextrema=False, showmedians=False)["bodies"][0]
+                b.set_facecolor(VCOL[arm]); b.set_alpha(0.92); b.set_edgecolor("none")
+                sub.plot(i, float(np.median(sel)), marker="_", ms=13,
+                         color="#20343a", mew=2.0, zorder=7)
         gate = GATES.get(tgt)
         if gate is not None:
             sub.axhline(gate, color="#c2622d", lw=1.1, ls=(0, (4, 2)), zorder=3)
-            sub.text(-0.62, gate, f"hit threshold {gate:g}", va="bottom", ha="left",
+            sub.text(-0.62, gate, f"hit threshold {gate}", va="bottom", ha="left",
                      fontsize=6.8, color="#c2622d")
         # sEH only: the level above which the proxy stops being evidence of activity.
-        # Without it, best-candidate's higher violin reads as "better molecules".
+        # Without it, best-candidate's higher selection reads as "better molecules".
         if tgt == "sEH":
             sub.axhline(8.0, color="#5b6b6d", lw=1.0, ls=(0, (1.5, 2)), zorder=3)
             sub.text(-0.62, 8.0, "no known active reaches 8.0", va="bottom", ha="left",
                      fontsize=6.8, color="#5b6b6d")
         sub.set_xticks(range(len(arms)))
         sub.set_xticklabels(["best-\ncandidate", "hub-\nbatching"], fontsize=7.5)
-        sub.set_xlim(-0.68, 1.6)
+        sub.set_xlim(-0.68, 1.62)
         sub.set_title(tgt, fontsize=9.5, color="#0f1e20")
         sub.tick_params(labelsize=8)
         sub.spines[["top", "right"]].set_visible(False)
         if k == 0:
-            sub.set_ylabel("reward of each selected molecule")
-    ax.set_title("Reward of what each arm picked  (\u2191)", fontsize=10.5, pad=14)
+            sub.set_ylabel("reward")
+    ax.set_title("What each arm picked, against what it picked from",
+                 fontsize=10.5, pad=14)
 
 
 def main() -> int:

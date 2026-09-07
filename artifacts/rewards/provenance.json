@@ -1,114 +1,78 @@
 {
-  "generated_utc": "2026-09-07T00:06:49+00:00",
-  "budget_reactions": 100,
+  "scope": "SCENT, seeds 43 and 44, sEH and DRD2 -- identical to Appendix A1's first two panels",
+  "gates": {
+    "sEH": 7.0,
+    "DRD2": 0.5
+  },
+  "gate_note": "The gates panels 1-2 were built with, so all three panels describe one set of molecules. DRD2 0.5 is NOT the 5%-FPR rule (0.345); moving A1 to the rule means re-running all three panels together.",
+  "pools": "The two arms draw from DIFFERENT sources: best-candidate from the sampled candidates (deduplicated), hub-batching from the enumerated children of its hubs. Pools are subsampled to 4,000 per cell for the artifact.",
+  "selections_are_fresh": "Panels 1-2's own molecules could not be reused: only 8-71% of them are present in the enumerations currently on disk, which have been regenerated since. Selections here come from a fresh run_campaign.py pass at the same gates.",
+  "source_md5": "df950ac68c30f2017737884c17479ae3",
   "cells": {
-    "rgfn_seh/best_candidate": {
-      "n_within_budget": 25,
-      "n_accepted_total": 300,
-      "gate": 5.68,
-      "tau": 0.5,
-      "child_policy": "reward",
-      "prebuild_k": 0,
-      "selection_md5": "9e1c49be788cf9cbb7956368b039f642"
+    "seh_seed43/best-candidate/pool": {
+      "n_total": 26149,
+      "n_sampled": 4000
     },
-    "rgfn_seh/hub_batching": {
-      "n_within_budget": 57,
-      "n_accepted_total": 300,
-      "gate": 5.68,
-      "tau": 0.5,
-      "child_policy": "reward",
-      "prebuild_k": 0,
-      "selection_md5": "b710739d5bfe8013228f925894b50199"
+    "seh_seed43/hub-batching/pool": {
+      "n_total": 136170,
+      "n_sampled": 4000
     },
-    "scent_seh/best_candidate": {
-      "n_within_budget": 28,
-      "n_accepted_total": 300,
-      "gate": 5.68,
-      "tau": 0.5,
-      "child_policy": "free_frag",
-      "prebuild_k": 20,
-      "selection_md5": "58c9356c818f4becaae9d444422e2b07"
+    "seh_seed43/best-candidate/selected": {
+      "n_within_budget": 27,
+      "gate": 7.0
     },
-    "scent_seh/hub_batching": {
-      "n_within_budget": 76,
-      "n_accepted_total": 300,
-      "gate": 5.68,
-      "tau": 0.5,
-      "child_policy": "free_frag",
-      "prebuild_k": 20,
-      "selection_md5": "43152c3f0941d0c45d93a4eaefb36a11"
+    "seh_seed43/hub-batching/selected": {
+      "n_within_budget": 81,
+      "gate": 7.0
     },
-    "rxnflow_seh/best_candidate": {
-      "n_within_budget": 33,
-      "n_accepted_total": 300,
-      "gate": 5.68,
-      "tau": 0.5,
-      "child_policy": "reward",
-      "prebuild_k": 0,
-      "selection_md5": "ff56033e8a1819696fc4a723b76ad0c7"
+    "seh_seed44/best-candidate/pool": {
+      "n_total": 27133,
+      "n_sampled": 4000
     },
-    "rxnflow_seh/hub_batching": {
-      "n_within_budget": 73,
-      "n_accepted_total": 300,
-      "gate": 5.68,
-      "tau": 0.5,
-      "child_policy": "reward",
-      "prebuild_k": 0,
-      "selection_md5": "4907484c32566bb4513d100d39e57016"
+    "seh_seed44/hub-batching/pool": {
+      "n_total": 140559,
+      "n_sampled": 4000
     },
-    "rgfn_drd2/best_candidate": {
-      "n_within_budget": 25,
-      "n_accepted_total": 300,
-      "gate": 0.345,
-      "tau": 0.5,
-      "child_policy": "reward",
-      "prebuild_k": 0,
-      "selection_md5": "e42b1e0b76aeae226ece669c1f959a91"
+    "seh_seed44/best-candidate/selected": {
+      "n_within_budget": 27,
+      "gate": 7.0
     },
-    "rgfn_drd2/hub_batching": {
+    "seh_seed44/hub-batching/selected": {
       "n_within_budget": 82,
-      "n_accepted_total": 300,
-      "gate": 0.345,
-      "tau": 0.5,
-      "child_policy": "reward",
-      "prebuild_k": 0,
-      "selection_md5": "82d210c2bbd735e0ced204fe135b6c73"
+      "gate": 7.0
     },
-    "scent_drd2/best_candidate": {
+    "drd2_seed43/best-candidate/pool": {
+      "n_total": 29822,
+      "n_sampled": 4000
+    },
+    "drd2_seed43/hub-batching/pool": {
+      "n_total": 80259,
+      "n_sampled": 4000
+    },
+    "drd2_seed43/best-candidate/selected": {
       "n_within_budget": 26,
-      "n_accepted_total": 300,
-      "gate": 0.345,
-      "tau": 0.5,
-      "child_policy": "free_frag",
-      "prebuild_k": 20,
-      "selection_md5": "24514509854578238694c7d6ad6397f0"
+      "gate": 0.5
     },
-    "scent_drd2/hub_batching": {
-      "n_within_budget": 78,
-      "n_accepted_total": 300,
-      "gate": 0.345,
-      "tau": 0.5,
-      "child_policy": "free_frag",
-      "prebuild_k": 20,
-      "selection_md5": "57343b005bb7fe5ee373e497acff006a"
+    "drd2_seed43/hub-batching/selected": {
+      "n_within_budget": 87,
+      "gate": 0.5
     },
-    "rxnflow_drd2/best_candidate": {
-      "n_within_budget": 33,
-      "n_accepted_total": 300,
-      "gate": 0.345,
-      "tau": 0.5,
-      "child_policy": "reward",
-      "prebuild_k": 0,
-      "selection_md5": "98e96e9e512fb704cd82d13be689ba1e"
+    "drd2_seed44/best-candidate/pool": {
+      "n_total": 29793,
+      "n_sampled": 4000
     },
-    "rxnflow_drd2/hub_batching": {
-      "n_within_budget": 58,
-      "n_accepted_total": 300,
-      "gate": 0.345,
-      "tau": 0.5,
-      "child_policy": "reward",
-      "prebuild_k": 0,
-      "selection_md5": "064e228b44c128eb823b8448955304ee"
+    "drd2_seed44/hub-batching/pool": {
+      "n_total": 120791,
+      "n_sampled": 4000
+    },
+    "drd2_seed44/best-candidate/selected": {
+      "n_within_budget": 28,
+      "gate": 0.5
+    },
+    "drd2_seed44/hub-batching/selected": {
+      "n_within_budget": 91,
+      "gate": 0.5
     }
-  }
+  },
+  "pool_points_per_cell_arm": 1200
 }

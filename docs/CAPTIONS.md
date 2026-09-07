@@ -156,52 +156,53 @@ the 5.5 row for anyone who wants the even ladder.
 
 ---
 
-## Appendix A1, third panel — the reward of what each arm picked
+
+## Appendix A1, third panel — what each arm picked, against what it picked from
 
 Draft caption:
 
-> **Are the extra molecules worse ones?** Reward of every molecule each arm selected under
-> the 100-reaction budget, pooled over the three reaction-aware generators (RGFN, SCENT,
-> RxnFlow); open dots are per-generator medians. Both arms clear the same hit threshold, so
-> every molecule in both distributions is a hit by our own definition. Best-candidate's
-> selections sit higher — median 7.34 against 6.68 on sEH, 1.000 against 0.879 on DRD2 —
-> which is expected, since it selects the top of the pool by reward by construction. The
-> question is where that extra reward lies: **33% of its sEH picks score above 8.0, which no
-> known active reaches**, and **57% of its DRD2 picks are pinned at exactly 1.000**. The
-> corresponding figures for hub-batching are 3% and 6%.
+> **Are the extra molecules worse ones?** Pale violins are each arm's source pool, solid
+> violins its selection under the 100-reaction budget; SCENT, seeds 43 and 44, the same
+> scope as the panels beside it. The two arms draw from **different pools** — best-candidate
+> from the sampled candidates, hub-batching from the enumerated children of its hubs — so
+> each is shown against its own. Best-candidate takes a sliver at the extreme top of its
+> pool (sEH median **8.31**, 5th–95th percentile 8.26–8.40); hub-batching takes a band above
+> the threshold (median **7.37**, 7.02–8.02). Both clear the same gate, so every molecule in
+> both selections is a hit by our own definition.
 
-### This panel goes against us on the obvious reading, and that is why it is in the paper
+### The panel goes against us on the median, and that is why it is here
 
-The median comparison favours best-candidate on both targets. Do not bury that, and do not
-dress it up. The defensible claim is narrower than "our molecules are better":
+Best-candidate's selections score higher on both targets. That is what it is built to do —
+it takes the top of its pool by reward. Do not bury it and do not dress it up. What the pool
+violins add is *where* that top lies:
+
+- On sEH its selection sits **above 8.0, a level no known active reaches** — Logs/034
+  measured 0 of 2,315 real actives getting there, with proxy AUROC 0.76/0.68 against decoys.
+- On DRD2 its selection is **pinned at exactly 1.000** (5th percentile also 1.000), the
+  saturation Logs/066 documented. The 0.5 gate is nowhere near binding.
+
+The defensible claim, narrower than "our molecules are better":
 
 > Both arms deliver hits. Best-candidate's additional reward accumulates in a region where
 > the oracle has not been shown to track activity, so it is not evidence of better molecules.
 
-**The supporting facts, and their limits.** Logs/034 measured **0 of 2,315 real sEH actives
-reaching 8.0**, and put the proxy's AUROC against decoys at 0.76/0.68 — weak. Logs/066
-documented DRD2 gate saturation. So a score above 8.0, or a probability of exactly 1.000, is
-an extrapolation rather than a measurement. That justifies *discounting* best-candidate's
-lead. It does **not** establish that hub-batching's molecules are more active — nothing here
-measures activity, and a 6.68 is not shown to beat a 7.34 within the calibrated range.
+It does **not** establish that hub-batching's molecules are more active. Nothing here
+measures activity, and 7.37 is not shown to beat 8.31 within the calibrated range.
 
-### Three caveats the caption must carry
+### Two things the caption must carry
 
-**Pooling is not a plain average.** The two arms contribute different numbers of molecules
-per generator (hub-batching 57–82, best-candidate 25–33), so the pooled shape is weighted
-towards whichever generator supplied more. The per-generator medians are drawn on top for
-that reason; if one generator disagreed with the pooled story, it would show. On sEH they do
-not agree perfectly — RGFN is the one cell where hub-batching's median is *higher* than
-best-candidate's (6.60 vs 6.36 over the full run).
+**The gates are A1's, not the paper's rule.** sEH 7.0 and DRD2 **0.5**, because that is what
+panels 1–2 were built with and all three panels have to describe one set of molecules. DRD2
+0.5 is not the 5%-FPR value (0.345). Moving A1 onto the rule means re-running all three
+panels together — an open item, not a silent mismatch.
 
-**FragGFN is excluded.** It is a cost-model control whose fragment attachments are not
-synthesis steps, so pooling its rewards would mix two different quantities.
+**The selections are freshly derived, not panels 1–2's own molecules.** They could not be
+reused: only **8–71%** of panels 1–2's hub-batching molecules still exist in the enumerations
+on disk, which have been regenerated since (seh_seed43 71%, seh_seed44 46%, drd2_seed43
+**8%**, drd2_seed44 29%). The fresh pass reproduces their mode counts to within a molecule or
+two on sEH (81/27 against 80/28) and less closely on DRD2 (87/26 against 96/27). That
+discrepancy is a property of A1's existing panels and is logged as an open item; it does not
+affect this panel, which is internally consistent.
 
-**n is the budget prefix, not the run.** Each arm accepts 300 modes over a full campaign;
-only the prefix fitting 100 reactions is plotted (86 and 206 molecules on sEH, 84 and 218 on
-DRD2), because that is the readout the paper reports. The larger hub-batching n is the
-result being illustrated, not a sampling advantage.
-
-Source: `artifacts/rewards/selection_rewards.csv`, harvested by
-`tools/harvest/selection_rewards.py` from six `run_campaign.py` runs at the 5%-FPR
-thresholds.
+Source: `artifacts/rewards/selection_rewards.csv` (pools subsampled to 1,200 points per cell
+and arm; the violin's kernel estimate is stable well below that).
