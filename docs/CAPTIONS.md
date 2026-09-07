@@ -162,47 +162,51 @@ the 5.5 row for anyone who wants the even ladder.
 Draft caption:
 
 > **Are the extra molecules worse ones?** Pale violins are each arm's source pool, solid
-> violins its selection under the 100-reaction budget; SCENT, seeds 43 and 44, the same
-> scope as the panels beside it. The two arms draw from **different pools** — best-candidate
-> from the sampled candidates, hub-batching from the enumerated children of its hubs — so
-> each is shown against its own. Best-candidate takes a sliver at the extreme top of its
-> pool (sEH median **8.31**, 5th–95th percentile 8.26–8.40); hub-batching takes a band above
-> the threshold (median **7.37**, 7.02–8.02). Both clear the same gate, so every molecule in
-> both selections is a hit by our own definition.
+> violins its selection under the 100-reaction budget; SCENT, seeds 43 and 44, at the same
+> 5%-FPR thresholds as the rest of the paper. The arms draw from **different pools** —
+> best-candidate from the sampled candidates, hub-batching from the enumerated children of
+> its hubs — so each is shown against its own. Best-candidate takes a sliver at the extreme
+> top of its pool (sEH median **8.31**); hub-batching takes a band spanning most of its own
+> (median **6.53**). Both clear the same threshold, so every molecule in both selections is
+> a hit by our own definition.
 
 ### The panel goes against us on the median, and that is why it is here
 
 Best-candidate's selections score higher on both targets. That is what it is built to do —
 it takes the top of its pool by reward. Do not bury it and do not dress it up. What the pool
-violins add is *where* that top lies:
+violins add is *where* that top lies, and at the 5%-FPR thresholds the answer is categorical:
 
-- On sEH its selection sits **above 8.0, a level no known active reaches** — Logs/034
-  measured 0 of 2,315 real actives getting there, with proxy AUROC 0.76/0.68 against decoys.
-- On DRD2 its selection is **pinned at exactly 1.000** (5th percentile also 1.000), the
-  saturation Logs/066 documented. The 0.5 gate is nowhere near binding.
+- On sEH, **all 54 of its selected molecules score above 8.0** — a level Logs/034 measured
+  that **0 of 2,315 real actives** reach, with proxy AUROC 0.76/0.68 against decoys.
+  Hub-batching puts 2 of 189 there.
+- On DRD2, **all 54 sit at exactly 1.000**, the saturation Logs/066 documented. Hub-batching
+  puts 22 of 179 there.
 
 The defensible claim, narrower than "our molecules are better":
 
-> Both arms deliver hits. Best-candidate's additional reward accumulates in a region where
-> the oracle has not been shown to track activity, so it is not evidence of better molecules.
+> Both arms deliver hits. Best-candidate's entire selection lies in a region where the
+> oracle has not been shown to track activity, so its higher reward is not evidence of
+> better molecules.
 
 It does **not** establish that hub-batching's molecules are more active. Nothing here
-measures activity, and 7.37 is not shown to beat 8.31 within the calibrated range.
+measures activity, and 6.53 is not shown to beat 8.31 within the calibrated range.
 
-### Two things the caption must carry
+### What was fixed to make this panel possible
 
-**The gates are A1's, not the paper's rule.** sEH 7.0 and DRD2 **0.5**, because that is what
-panels 1–2 were built with and all three panels have to describe one set of molecules. DRD2
-0.5 is not the 5%-FPR value (0.345). Moving A1 onto the rule means re-running all three
-panels together — an open item, not a silent mismatch.
+All three A1 panels were re-run together on 2026-09-06, at the 5%-FPR thresholds and against
+the enumerations every other figure reads. Both changes were needed:
 
-**The selections are freshly derived, not panels 1–2's own molecules.** They could not be
-reused: only **8–71%** of panels 1–2's hub-batching molecules still exist in the enumerations
-on disk, which have been regenerated since (seh_seed43 71%, seh_seed44 46%, drd2_seed43
-**8%**, drd2_seed44 29%). The fresh pass reproduces their mode counts to within a molecule or
-two on sEH (81/27 against 80/28) and less closely on DRD2 (87/26 against 96/27). That
-discrepancy is a property of A1's existing panels and is logged as an open item; it does not
-affect this panel, which is internally consistent.
+- The previous panels 1–2 used sEH **7.0** and DRD2 **0.5**, pre-dating the threshold rule.
+- More seriously, they were built against enumerations that have since been regenerated:
+  only **8–71%** of their hub-batching molecules still existed on disk (drd2_seed43 was 8 of
+  96). They were therefore not reproducible from the artifacts, which is how the problem was
+  found — a join against them failed.
 
-Source: `artifacts/rewards/selection_rewards.csv` (pools subsampled to 1,200 points per cell
-and arm; the violin's kernel estimate is stable well below that).
+The two selection paths now agree: `yield_by_strategy.py` and `run_campaign.py` return
+identical hub-batching counts on three of four cells and differ by one molecule on
+best-candidate, which is a budget-boundary convention (the former allows the slight
+overshoot its `used_rxns` column shows, the latter truncates at ≤100), not a disagreement
+about molecules.
+
+Source: `artifacts/rewards/selection_rewards.csv` and `artifacts/yield_risk/strategy_yield.csv`
+(pools subsampled to 1,200 points per cell and arm).

@@ -1,23 +1,27 @@
 {
-  "harvested_from_subdir": "experiments/lsd_hubs/campaign/results/yield_preference",
+  "harvested_from": "lsdflow/a1_rule/yield",
   "n_rows": 8,
   "sources": [
     {
-      "file": "strategy_yield_drd2_drd2_seed43.csv",
-      "md5": "04fc7aa5991cfe8fa750fc5b5ea41fa9"
-    },
-    {
-      "file": "strategy_yield_drd2_drd2_seed44.csv",
-      "md5": "4601fa1447bf55f72883ab79f9e5013f"
-    },
-    {
       "file": "strategy_yield_seh_seed43.csv",
-      "md5": "2f48f685551f28f281138e9f8d63132f"
+      "md5": "e8d0ff78359bf189bc02d99430d68d48"
     },
     {
       "file": "strategy_yield_seh_seed44.csv",
-      "md5": "bb4f0189f1be958a68b9caf0f0707cb8"
+      "md5": "a7a4517b9adc26293323ab0a6d271f1b"
+    },
+    {
+      "file": "strategy_yield_drd2_seed43.csv",
+      "md5": "86446f98725882bf1b19a55517e08ad2"
+    },
+    {
+      "file": "strategy_yield_drd2_seed44.csv",
+      "md5": "51a75d32adcc2acc856b5b4448749aeb"
     }
   ],
-  "note": "Per-molecule route detail (strategy_yield_detail_*.csv) intentionally not harvested: the summary carries every quantity the figure reads."
+  "gates": {
+    "seh": 5.68,
+    "drd2": 0.345
+  },
+  "note": "Re-run 2026-09-06 at the 5%-FPR rule against the enumerations currently on disk. The previous version used sEH 7.0 / DRD2 0.5 and enumerations that have since been regenerated -- only 8-71% of its molecules still existed, so it was not reproducible."
 }

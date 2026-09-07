@@ -235,30 +235,31 @@
       <th class="num">Step yield</th><th class="num">Modes</th></tr></thead>
     <tbody>__YA__</tbody></table></div>
   <div class="note caution"><span class="tag">The third panel goes against us &mdash; read it carefully</span>
-    Pale violins are each arm's <em>source pool</em>, solid violins its selection. The two
-    arms draw from <strong>different pools</strong> &mdash; best-candidate from the sampled
+    Pale violins are each arm's <em>source pool</em>, solid violins its selection. The arms
+    draw from <strong>different pools</strong> &mdash; best-candidate from the sampled
     candidates, hub-batching from the enumerated children of its hubs &mdash; so each is
     shown against its own. <strong>Best-candidate's selections score higher on both
     targets</strong>, which is what it is built to do.
-    <br><br>What the pool violins add is <em>where</em> that top lies. On sEH it takes a
-    sliver at the extreme top of its pool &mdash; median <strong>8.31</strong>, 5th&ndash;95th
-    percentile 8.26&ndash;8.40 &mdash; which is <strong>above 8.0, a level no known active
-    reaches</strong> (Logs/034: 0 of 2,315). On DRD2 its selection is pinned at exactly
-    <strong>1.000</strong>, 5th percentile included, the saturation Logs/066 documented.
-    Hub-batching takes a band above the threshold instead (sEH median 7.37, 7.02&ndash;8.02).
-    <br><br>The claim this supports is narrow: best-candidate's extra reward accumulates
-    where the oracle has not been shown to track activity, so it is not evidence of better
-    molecules. It does <em>not</em> show ours are more active &mdash; nothing here measures
-    activity.</div>
-  <div class="note flag"><span class="tag">An open item this panel uncovered</span>
-    Panels 1&ndash;2's own molecules could not be reused, because most of them no longer
-    exist: only <strong>8&ndash;71%</strong> are present in the enumerations currently on
-    disk, which have been regenerated since (seh_seed43 71%, seh_seed44 46%,
-    <strong>drd2_seed43 8%</strong>, drd2_seed44 29%). So A1's first two panels are not
-    reproducible from the artifacts on disk, and the fix is to re-run all three panels
-    together &mdash; which is also when A1 should move onto the 5%-FPR rule, since it
-    currently gates DRD2 at 0.5 rather than 0.345. This panel is internally consistent; the
-    problem is beside it, not in it.</div>
+    <br><br>What the pool violins add is <em>where</em> that top lies, and at the 5%-FPR
+    thresholds it is categorical: <strong>all 54 of best-candidate's sEH picks score above
+    8.0</strong>, a level <strong>0 of 2,315 real actives</strong> reach (Logs/034), and
+    <strong>all 54 of its DRD2 picks sit at exactly 1.000</strong>, the saturation Logs/066
+    documented. Hub-batching puts 2 of 189 and 22 of 179 in those regions, taking a band
+    across its pool instead of a sliver off the top.
+    <br><br>The claim this supports is narrow: best-candidate's entire selection lies where
+    the oracle has not been shown to track activity, so its higher reward is not evidence of
+    better molecules. It does <em>not</em> show ours are more active &mdash; nothing here
+    measures activity.</div>
+  <div class="note"><span class="tag">A1 was rebuilt to make this panel possible</span>
+    All three panels were re-run together at the 5%-FPR thresholds against the enumerations
+    every other figure reads. Two things were wrong before. The gates were sEH 7.0 and DRD2
+    0.5, pre-dating the rule. More seriously, panels 1&ndash;2 had been built against
+    enumerations since regenerated &mdash; only <strong>8&ndash;71%</strong> of their
+    hub-batching molecules still existed on disk (drd2_seed43: <strong>8 of 96</strong>) &mdash;
+    so they were not reproducible from the artifacts. That surfaced only because a join
+    against them failed. The two selection paths now agree: identical hub-batching counts on
+    three of four cells, and one molecule apart on best-candidate, which is a budget-boundary
+    convention rather than a disagreement about molecules.</div>
   <div class="note caution"><span class="tag">What this deliberately no longer shows</span>
     An earlier version drew error bars from a batch-failure model that treats each route
     yield as a coin-flip success probability. That is an assumption, not a measurement, and

@@ -42,10 +42,9 @@ GREY, BLUE = "#9aa5a7", "#1f6f8b"
 VCOL = {"best-candidate": GREY, "hub-batching": BLUE}
 # The 5%-FPR hit thresholds. Every molecule in BOTH violins clears these, which is what
 # makes the panel a statement about distance from the bar rather than about hits vs misses.
-# The gates panels 1-2 were built with, so all three panels describe one set of
-# molecules. DRD2 0.5 is NOT the 5%-FPR rule (0.345) -- moving A1 to the rule means
-# re-running all three panels together, which is an open item, not a silent mismatch.
-GATES = {"sEH": 7.0, "DRD2": 0.5}
+# The 5%-FPR rule, same as every other figure. All three A1 panels were re-run together
+# at these gates and against the enumerations currently on disk.
+GATES = {"sEH": 5.68, "DRD2": 0.345}
 
 
 def load(root: Path) -> dict[str, dict[str, dict]]:

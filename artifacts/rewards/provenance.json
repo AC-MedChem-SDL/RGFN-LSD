@@ -1,78 +1,12 @@
 {
-  "scope": "SCENT, seeds 43 and 44, sEH and DRD2 -- identical to Appendix A1's first two panels",
+  "scope": "SCENT, seeds 43 and 44, sEH and DRD2 -- identical to A1's first two panels",
   "gates": {
-    "sEH": 7.0,
-    "DRD2": 0.5
+    "sEH": 5.68,
+    "DRD2": 0.345
   },
-  "gate_note": "The gates panels 1-2 were built with, so all three panels describe one set of molecules. DRD2 0.5 is NOT the 5%-FPR rule (0.345); moving A1 to the rule means re-running all three panels together.",
-  "pools": "The two arms draw from DIFFERENT sources: best-candidate from the sampled candidates (deduplicated), hub-batching from the enumerated children of its hubs. Pools are subsampled to 4,000 per cell for the artifact.",
-  "selections_are_fresh": "Panels 1-2's own molecules could not be reused: only 8-71% of them are present in the enumerations currently on disk, which have been regenerated since. Selections here come from a fresh run_campaign.py pass at the same gates.",
-  "source_md5": "df950ac68c30f2017737884c17479ae3",
-  "cells": {
-    "seh_seed43/best-candidate/pool": {
-      "n_total": 26149,
-      "n_sampled": 4000
-    },
-    "seh_seed43/hub-batching/pool": {
-      "n_total": 136170,
-      "n_sampled": 4000
-    },
-    "seh_seed43/best-candidate/selected": {
-      "n_within_budget": 27,
-      "gate": 7.0
-    },
-    "seh_seed43/hub-batching/selected": {
-      "n_within_budget": 81,
-      "gate": 7.0
-    },
-    "seh_seed44/best-candidate/pool": {
-      "n_total": 27133,
-      "n_sampled": 4000
-    },
-    "seh_seed44/hub-batching/pool": {
-      "n_total": 140559,
-      "n_sampled": 4000
-    },
-    "seh_seed44/best-candidate/selected": {
-      "n_within_budget": 27,
-      "gate": 7.0
-    },
-    "seh_seed44/hub-batching/selected": {
-      "n_within_budget": 82,
-      "gate": 7.0
-    },
-    "drd2_seed43/best-candidate/pool": {
-      "n_total": 29822,
-      "n_sampled": 4000
-    },
-    "drd2_seed43/hub-batching/pool": {
-      "n_total": 80259,
-      "n_sampled": 4000
-    },
-    "drd2_seed43/best-candidate/selected": {
-      "n_within_budget": 26,
-      "gate": 0.5
-    },
-    "drd2_seed43/hub-batching/selected": {
-      "n_within_budget": 87,
-      "gate": 0.5
-    },
-    "drd2_seed44/best-candidate/pool": {
-      "n_total": 29793,
-      "n_sampled": 4000
-    },
-    "drd2_seed44/hub-batching/pool": {
-      "n_total": 120791,
-      "n_sampled": 4000
-    },
-    "drd2_seed44/best-candidate/selected": {
-      "n_within_budget": 28,
-      "gate": 0.5
-    },
-    "drd2_seed44/hub-batching/selected": {
-      "n_within_budget": 91,
-      "gate": 0.5
-    }
-  },
-  "pool_points_per_cell_arm": 1200
+  "gate_note": "The 5%-FPR rule, same as the rest of the paper. All three A1 panels were re-run together at these gates.",
+  "enumerations": "The enumerations currently on disk, which every other figure also reads.",
+  "pools": "The arms draw from DIFFERENT sources: best-candidate from the sampled candidates (deduplicated), hub-batching from the enumerated children of its hubs.",
+  "pool_points_per_cell_arm": 1200,
+  "source_md5": "c96cfcd836ed31d66d44b03335a3bcde"
 }
