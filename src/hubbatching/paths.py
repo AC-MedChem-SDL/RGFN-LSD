@@ -14,6 +14,7 @@ function            environment variable                  default
 :func:`repo_root`   ``HUBBATCH_REPO``                      inferred from this file
 :func:`data_dir`    ``HUBBATCH_DATA``                      ``<repo>/data``
 :func:`artifacts`   ``HUBBATCH_ARTIFACTS``                 ``<repo>/artifacts``
+:func:`results`     ``HUBBATCH_RESULTS``                   ``<cwd>/results``
 :func:`scratch`     ``HUBBATCH_SCRATCH`` / ``SCRATCH``     ``<repo>/runs``
 ==================  ====================================  ==========================
 
@@ -21,6 +22,12 @@ function            environment variable                  default
 intermediates every ``reproduce/`` script reads, so a reader with no cluster and no
 GPU can still regenerate every published figure. ``scratch()`` is the opposite --
 large regenerable run output, never committed.
+
+``results()`` is where the CLI writes, and it is the one root that defaults to the
+**working directory** rather than the repo. That is deliberate: a pip-installed
+package must never write into its own site-packages directory, and someone running
+``hubbatching campaign`` on their own data expects the output beside them rather
+than buried in an installation whose location they did not choose.
 """
 
 from __future__ import annotations
@@ -28,7 +35,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-__all__ = ["repo_root", "data_dir", "artifacts", "scratch", "describe"]
+__all__ = ["repo_root", "data_dir", "artifacts", "results", "scratch", "describe"]
 
 
 def _from_env(*names: str) -> Path | None:
@@ -57,6 +64,15 @@ def artifacts() -> Path:
     return (_from_env("HUBBATCH_ARTIFACTS") or repo_root() / "artifacts").resolve()
 
 
+def results() -> Path:
+    """Where the CLI writes campaign output. Defaults beside the caller, not in the package.
+
+    Resolving this relative to the working directory is what lets an installed
+    ``hubbatching`` be used on data that has nothing to do with this repository.
+    """
+    return (_from_env("HUBBATCH_RESULTS") or Path.cwd() / "results").resolve()
+
+
 def scratch() -> Path:
     """Regenerable run output: samples, enumerations, checkpoints. Never committed.
 
@@ -77,6 +93,7 @@ def describe() -> str:
         ("repo", repo_root, ("HUBBATCH_REPO",)),
         ("data", data_dir, ("HUBBATCH_DATA",)),
         ("artifacts", artifacts, ("HUBBATCH_ARTIFACTS",)),
+        ("results", results, ("HUBBATCH_RESULTS",)),
         ("scratch", scratch, ("HUBBATCH_SCRATCH", "SCRATCH")),
     ):
         source = next((f"${e}" for e in envs if os.environ.get(e)), "default")

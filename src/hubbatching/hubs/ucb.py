@@ -30,9 +30,8 @@ from __future__ import annotations
 
 from typing import Callable, Dict, List
 
-import gin
-
 from hubbatching import uncertainty
+from hubbatching._gin import gin
 from hubbatching.hubs.base import HubSelectionStrategy
 
 _NEG_INF = float("-inf")

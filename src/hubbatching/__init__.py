@@ -24,6 +24,8 @@ routes, and keeping it that way means the number a paper quotes can be audited
 without installing a deep-learning stack.
 """
 
+__version__ = "0.2.0"
+
 from hubbatching import hubs  # noqa: F401
 from hubbatching import paths  # noqa: F401
 from hubbatching.campaign import (  # noqa: F401

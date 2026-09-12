@@ -13,9 +13,7 @@ from typing import Dict, List, Type
 
 from hubbatching.hubs.base import HubSelectionStrategy
 from hubbatching.hubs.highest_flow import HighestFlowStrategy
-from hubbatching.hubs.highest_terminating_flow import (
-    HighestTerminatingFlowStrategy,
-)
+from hubbatching.hubs.highest_terminating_flow import HighestTerminatingFlowStrategy
 from hubbatching.hubs.highest_visitation import HighestVisitationStrategy
 from hubbatching.hubs.lowest_uncertainty import LowestUncertaintyStrategy
 from hubbatching.hubs.most_modes import MostModesStrategy

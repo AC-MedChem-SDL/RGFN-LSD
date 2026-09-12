@@ -1,0 +1,4 @@
+proxy/gin.singleton.constructor = @SenoProxy
+train_proxy = @proxy/gin.singleton()
+valid_proxy = %train_proxy
+SenoProxy.checkpoint_path = "external/gneprop/models/seno.ckpt"

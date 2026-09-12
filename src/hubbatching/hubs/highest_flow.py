@@ -7,9 +7,8 @@ favours hubs with *many* terminating children regardless of each one's individua
 
 from __future__ import annotations
 
-import gin
-
 from hubbatching import flow
+from hubbatching._gin import gin
 from hubbatching.hubs.base import HubSelectionStrategy
 
 

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hubbatching"
-version = "0.1.0"
+version = "0.2.0"
 description = "Post-hoc hub selection over a trained reaction GFlowNet: library cost, not per-molecule synthesizability"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -23,21 +23,32 @@ classifiers = [
 # audit should not require installing torch to check. `hubbatching.cost` goes further
 # and imports nothing but the standard library.
 dependencies = [
-  "gin-config>=0.5",
   "rdkit>=2023.9",
 ]
 
+[project.scripts]
+hubbatching = "hubbatching.cli:main"
+
 [project.optional-dependencies]
-# Only hubbatching.adapters needs these: reading a trained checkpoint and enumerating
-# a hub's children means running the generator.
-generators = ["torch>=2.0"]
-# reproduce/ writes its tables with the standard library alone and skips the plot if
-# matplotlib is absent, so a reader can check every number without a plotting stack.
+# Only hubbatching.adapters and hubbatching.chemistry.reaction_data_factory need these: reading a
+# trained checkpoint, enumerating a hub's children, or turning a chemistry library into RGFN's
+# action space all mean running the generator. gin lives here rather than in the core because it
+# is RGFN plumbing -- hubbatching.hubs degrades to a no-op decorator without it (see
+# hubbatching/_gin.py), so every strategy works, and only configuring one from a .gin file does not.
+generators = ["torch>=2.0", "gin-config>=0.5"]
+# reproduce/ writes its tables with the standard library alone and skips the plot if matplotlib is
+# absent, so a reader can check every number without a plotting stack.
 figures = ["matplotlib>=3.6"]
-dev = ["pytest>=7"]
+dev = ["pytest>=7", "nbstripout>=0.6"]
+# Everything a tutorial notebook needs, and nothing a cluster does.
+notebooks = ["matplotlib>=3.6", "jupyter>=1.0", "pandas>=2.0"]
 
 [tool.setuptools.packages.find]
-where = ["src"]
+# Two roots. `src` is our code; `third_party` holds the vendored, unmodified upstream RGFN, which
+# must stay importable as top-level `rgfn` because its own internal imports say so -- renaming it
+# into a sub-package would mean editing upstream, which is exactly what vendoring avoids.
+# See NOTICE for licensing and docs/PATCHES.md for every deliberate divergence.
+where = ["src", "third_party"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -11,9 +11,8 @@ active-learning acquisition claim and must not be leaned on in phase 1.
 
 from __future__ import annotations
 
-import gin
-
 from hubbatching import uncertainty
+from hubbatching._gin import gin
 from hubbatching.hubs.base import HubSelectionStrategy
 
 
