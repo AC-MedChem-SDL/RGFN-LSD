@@ -1,0 +1,24 @@
+name,filename,url,sha256,size_mb,description
+# Trained checkpoints, fetched by setup/fetch_models.py. This file is DATA: adding a model or
+# moving a host is an edit here, never a code change.
+#
+# HOW TO ADD ONE
+#   1. Upload to the Zenodo deposit for this project.
+#   2. Zenodo file URLs look like:
+#        https://zenodo.org/records/<RECORD_ID>/files/<FILENAME>?download=1
+#      Use the URL of a SPECIFIC VERSION, not the concept DOI. The concept DOI resolves to
+#      "latest", so a later upload silently changes what an old command downloads -- which is
+#      exactly the reproducibility hole a fetch script is supposed to close.
+#   3. Record the sha256 (`shasum -a 256 <file>`). It is always checked. A truncated download
+#      loads as a model with garbage weights and produces plausible, wrong numbers.
+#   4. Add the row, and mirror it into artifacts/MANIFEST.csv.
+#
+# ANONYMITY: a Zenodo record shows its authors even when its files are restricted, so a URL here
+# is identifying. The rows are wrapped in the identity markers below and the anonymous-snapshot
+# build strips them -- which is safe because nothing a reviewer needs requires a download: the
+# toy checkpoint is committed, and reproduce/ reads committed artifacts.
+#
+# <!-- IDENTITY:BEGIN -->
+toy_rgfn_seh,toy_rgfn_seh.pt,TBD_ZENODO_URL,,8,"Deliberately small RGFN trained on a cut-down library. Illustrative, not a published model -- for notebook 07 and for testing the adapter path on a laptop."
+rgfn_seh,rgfn_seh.pt,TBD_ZENODO_URL,,56,"RGFN trained on the sEH proxy. One of the generators in the published comparison."
+# <!-- IDENTITY:END -->

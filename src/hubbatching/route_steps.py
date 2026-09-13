@@ -3,7 +3,7 @@
 WHY THIS MODULE EXISTS. Three different places need to write "the step
 that turns molecule X into molecule Y": recipe logging, ``fragments_<N>.json`` routes, and
 ``enum_children.json`` children[].reaction. If they disagree by even a key name, a route assembled
-from a mix of them prices the wrong molecule. The architecture rule is that ``validation/`` may
+from a mix of them prices the wrong molecule. The layering rule is that analysis code may
 import from the core but never the reverse, so the shared definition lives HERE for the
 enumeration path and the artifact writers to use the same one.
 

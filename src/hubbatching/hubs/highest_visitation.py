@@ -9,8 +9,7 @@ balance — §2, §8).
 
 from __future__ import annotations
 
-import gin
-
+from hubbatching._gin import gin
 from hubbatching.hubs.base import HubSelectionStrategy
 
 

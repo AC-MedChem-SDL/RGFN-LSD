@@ -1,4 +1,4 @@
-"""hub-batching flow recovery — the ``docs/LSD_FLOW_PROPOSAL.md`` §2 math, log-space.
+"""hub-batching flow recovery — the ``docs/METHOD.md`` §2 math, log-space.
 
 For a hub ``h`` and a terminal product ``x`` reachable from ``h`` by **one reaction
 then stop**, the trajectory-balance flow the model implies is
@@ -14,14 +14,15 @@ variance is dominated by a single outlier), from the per-step ``logP_F`` / ``log
 This module is **pure** — it takes already-extracted scalar log-quantities and knows
 nothing about RGFN internals, ``networkx``, or RDKit. The rgfn-native extraction of those
 scalars from a ``Trajectories`` object lives in ``hubbatching.rgfn_extract``; the
-cross-env extraction lives in ``validation/hubbatching``. Both feed the numbers here.
+cross-env extraction is whatever your generator's worker writes into ``records.csv``
+(``docs/INPUT_CONTRACT.md``). Both feed the numbers here.
 
 The two consuming axes (proposal §3):
   * the production AL path (``hubbatching``) — hub selection strategies call the
     aggregators below over each hub's sampled terminal children;
-  * the validation analysis world (``validation/hubbatching``) — the DAG stores per-child
-    ``log_flow`` from :func:`log_flow_estimate` and the severe-test suite reuses the
-    aggregators for consistency.
+  * the offline analysis path — the DAG stores per-child ``log_flow`` from
+    :func:`log_flow_estimate`, and the severe-test suite reuses the aggregators for
+    consistency.
 """
 
 from __future__ import annotations

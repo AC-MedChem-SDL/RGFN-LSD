@@ -2,7 +2,7 @@
 
 The purest diversity criterion: a hub's score is the number of **distinct** terminal children
 observed from it. By default "distinct" means distinct canonical keys; pass a ``mode_counter``
-(keys -> cluster count, e.g. Butina/ECFP from ``validation/hubbatching/metrics/diversity``) to
+(keys -> cluster count, e.g. Butina/ECFP from ``hubbatching.mode_select``) to
 score by chemical *modes* rather than raw structural distinctness — kept injectable so this
 production strategy stays free of the RDKit clustering that lives on the validation axis.
 """
@@ -11,8 +11,7 @@ from __future__ import annotations
 
 from typing import Callable, Optional, Sequence
 
-import gin
-
+from hubbatching._gin import gin
 from hubbatching.hubs.base import HubSelectionStrategy
 
 

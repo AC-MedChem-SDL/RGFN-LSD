@@ -8,8 +8,7 @@ diverse / cheaper batches than this control, the flow signal is buying nothing.
 
 from __future__ import annotations
 
-import gin
-
+from hubbatching._gin import gin
 from hubbatching.hubs.base import HubSelectionStrategy
 
 

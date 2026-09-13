@@ -10,9 +10,8 @@ the variant most likely to find hubs SCENT's reward-averaging utility misses.
 
 from __future__ import annotations
 
-import gin
-
 from hubbatching import flow
+from hubbatching._gin import gin
 from hubbatching.hubs.base import HubSelectionStrategy
 
 
