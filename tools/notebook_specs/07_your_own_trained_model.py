@@ -20,9 +20,14 @@ python3 setup/fetch_models.py --list        # what checkpoints are available
 
 A GPU makes it faster and is not required — a small checkpoint samples on CPU.
 
-If you have no checkpoint, the cells below **skip cleanly** and tell you what to do. Nothing
-here fails just because you have not downloaded anything, which means you can read the notebook
-through before deciding whether it is worth the install.
+**The bundled checkpoint is committed**, so if you have torch installed this notebook runs with
+no download at all. It is deliberately tiny -- 48 building blocks, 12 reaction templates, a few
+hundred iterations against QED -- and trained by `tools/train_toy_checkpoint.py`, which you can
+re-run in about half an hour on a CPU. It exists to prove the adapter path works end to end;
+no number it produces means anything about chemistry.
+
+If the checkpoint is missing, the cells below **skip cleanly** and say what to do, so you can
+read the notebook through before deciding whether the install is worth it.
 """,
     ),
     (
@@ -34,8 +39,8 @@ from pathlib import Path
 from hubbatching.paths import repo_root
 
 # Set CHECKPOINT / CONFIG to your own, or fetch one with setup/fetch_models.py.
-CHECKPOINT = Path(os.environ.get("HB_CHECKPOINT", repo_root() / "data/checkpoints/toy_rgfn_seh.pt"))
-CONFIG     = Path(os.environ.get("HB_CONFIG", repo_root() / "third_party/rgfn_configs/rgfn_seh_proxy.gin"))
+CHECKPOINT = Path(os.environ.get("HB_CHECKPOINT", repo_root() / "examples/toy_model/toy_rgfn_qed.pt"))
+CONFIG     = Path(os.environ.get("HB_CONFIG", repo_root() / "configs/hubbatching/toy_rgfn_qed.gin"))
 
 HAVE_CHECKPOINT = CHECKPOINT.exists()
 try:
@@ -54,7 +59,7 @@ if not READY:
         print("  pip install -e '.[generators]'")
     if not HAVE_CHECKPOINT:
         print("  python3 setup/fetch_models.py --list")
-        print("  python3 setup/fetch_models.py toy_rgfn_seh")
+        print("  python3 tools/train_toy_checkpoint.py    # ~30 min, CPU, no download")
         print("  ...or point HB_CHECKPOINT at a checkpoint you trained yourself")
 """,
     ),
@@ -83,7 +88,7 @@ if READY:
         "rgfn",
         config_path=str(CONFIG),
         checkpoint_path=str(CHECKPOINT),
-        reward_name="seh",
+        reward_name="qed",
         device="auto",          # falls back to CPU
     )
     print(f"loaded {adapter.model_name}")
@@ -120,7 +125,19 @@ if READY:
         print(f"{len(stats)} backward-policy parameter tensors")
         for name, std in stats[:5]:
             print(f"  std={std:.4f}  {name}")
-        print("\\nAll std values suspiciously uniform => possibly un-loaded initialisation.")
+
+        # An actual verdict, not a caption. Freshly-initialised layers of the same shape come out
+        # of one initialiser and their spreads cluster tightly; a trained policy's do not. This
+        # is a heuristic and it says so -- but a heuristic that computes something beats a
+        # warning printed unconditionally, which is just a sentence that always looks alarming.
+        spreads = [s for _, s in stats]
+        ratio = max(spreads) / max(min(spreads), 1e-12)
+        print(f"\\nspread of per-tensor std: {min(spreads):.4f} .. {max(spreads):.4f}  "
+              f"(ratio {ratio:.1f}x)")
+        if ratio < 1.5:
+            print("  SUSPICIOUS: nearly uniform, consistent with weights that never loaded.")
+        else:
+            print("  OK: varied, consistent with a policy that was actually trained.")
 else:
     print("skipped")
 """,
@@ -137,7 +154,7 @@ computed during sampling, so there is no oracle cost here.
     (
         "py",
         """
-N_TRAJECTORIES = 200   # raise for a real run; 200 keeps this notebook quick
+N_TRAJECTORIES = 600   # ~25 s on a CPU. See the note below on why this matters.
 
 if READY:
     sample = adapter.sample_flow_records(N_TRAJECTORIES)
@@ -183,6 +200,27 @@ else:
     (
         "md",
         """
+### How many hubs you get, and why it is fewer than you expect -- and unstable
+
+From 600 trajectories the toy model finds 400+ distinct hubs and only a handful that are
+*rankable*. Across runs of this very notebook that number came out as 8, 34 and 7. **Sampling is
+not seeded, and with a flow field this thin the count is genuinely that volatile** -- so do not
+be surprised when your figure differs from the sentence above, and do not tune anything based on
+one draw of it.
+
+A hub becomes rankable only once it has been reached with **more than one distinct terminal
+child**: one child gives one flow estimate, and `min_children=2` refuses a ranking built on a
+single sample. With 48 building blocks, 24 anchored reactions and up to 4 reactions per
+molecule, the reachable state space is far larger than a few hundred trajectories can revisit,
+so most hubs are seen once and drop out. Which ones survive is close to a coin toss.
+
+**Two lessons, and the second is the one that transfers.** Hub-batching reads a flow field, and
+a flow field needs traffic -- if your ranking comes back nearly empty, the question is not "is
+the method working" but "have I sampled enough for hubs to be revisited", which scales with your
+action space rather than your model's quality. And a statistic computed from an unseeded sample
+this sparse is not a measurement yet: quote a range, or seed it. A published run here samples
+tens of thousands of trajectories, which is what makes its hub counts stable enough to report.
+
 ### The reward-free cross-check
 
 A trained GFlowNet visits states in proportion to their flow, so empirical visitation is a
@@ -192,6 +230,12 @@ between them — after the `log Z` shift — is a direct test of whether traject
 This is worth running on any model whose backward policy has been modified (by cost guidance,
 say). Large systematic disagreement means the flow field you are reading is not the one the
 identity assumes.
+
+**On this toy model expect a large offset -- around -7 -- and do not read it as a defect.** The
+visitation estimator assumes the sampler visits states in proportion to their flow, which holds
+only for a *converged* model. Six hundred iterations on a 48-block library is nowhere near
+converged, so the two estimators genuinely disagree. What the diagnostic is for is the same
+measurement on a properly trained model, where a large offset would point at something real.
 """,
     ),
     (
@@ -235,12 +279,17 @@ Start with one hub.
         """
 if READY and ranked:
     hub = ranked[0]
-    children = adapter.enumerate_hub_children(hub.key)
+    # Takes (smiles, depth) PAIRS, and returns (flow_records, per_hub_stats). The records are
+    # the same FlowRecord type sampling produced, so an enumeration merges into the same DAG.
+    records, stats = adapter.enumerate_hub_children([(hub.key, hub.depth)])
+
     print(f"hub  {hub.key}")
-    print(f"  {len(children)} applicable one-reaction children enumerated and scored\\n")
-    top = sorted(children, key=lambda c: c.reward, reverse=sample.higher_is_better)[:8]
-    for c in top:
-        print(f"  reward={c.reward:7.3f}  {c.smiles}")
+    print(f"  {stats[0]['n_enumerated_paths']} applicable one-reaction paths")
+    print(f"  {stats[0]['n_records']} distinct children enumerated AND scored\\n")
+
+    best = sorted(records, key=lambda r: r.reward, reverse=sample.higher_is_better)[:8]
+    for r in best:
+        print(f"  qed={r.reward:6.3f}  {r.child_key}")
 else:
     print("skipped")
 """,

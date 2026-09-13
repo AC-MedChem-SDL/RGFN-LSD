@@ -16,13 +16,18 @@ jupyter lab notebooks/
 | [`04_bring_your_own_reward`](04_bring_your_own_reward.ipynb) | swap the oracle, calibrate a gate, see the library move | CPU |
 | [`05_bring_your_own_chemistry`](05_bring_your_own_chemistry.ipynb) | your building blocks, your reaction templates | CPU |
 | [`06_export_a_bench_plan`](06_export_a_bench_plan.ipynb) | buy lists, protocols, reaction schemes — the deliverable | CPU |
-| [`07_your_own_trained_model`](07_your_own_trained_model.ipynb) | drive a real checkpoint: sample, recover flow, enumerate | **torch + a checkpoint** |
+| [`07_your_own_trained_model`](07_your_own_trained_model.ipynb) | drive a real trained checkpoint: sample, recover flow, enumerate | **torch** |
 
 Start with `01`. The rest are independent of each other.
 
-`07` is the only one with heavy requirements, and it **skips cleanly** if you have no
-checkpoint — so you can read it through before deciding whether the install is worth it.
-`pip install -e ".[generators]"` then `python3 setup/fetch_models.py --list`.
+`07` is the only one needing torch (`pip install -e ".[generators]"`). Its **checkpoint is
+committed** — `examples/toy_model/`, 2.2 MB — so there is still nothing to download. That model
+is deliberately tiny: 48 building blocks, 12 reaction templates, a few hundred iterations against
+QED. Rebuild it with `python3 tools/train_toy_checkpoint.py` (~30 min, CPU). It exists to prove
+the adapter path works end to end; no number it produces means anything about chemistry.
+
+If torch is absent the notebook **skips cleanly**, so you can read it through before deciding
+whether the install is worth it.
 
 ---
 

@@ -83,7 +83,9 @@ benchmarks/         comparing against other selection methods and planners
 reproduce/          one script per published figure and table
 artifacts/          the committed intermediates those scripts read
 examples/toy/       a complete, valid input contract -- 432 real molecules
+examples/toy_model/ a tiny trained checkpoint, so notebook 07 needs no download
 notebooks/          worked examples, one per extension point
+configs/            upstream RGFN's gin configs; ours under configs/hubbatching/
 data/libraries/     swappable chemistry: fragments + reaction templates
 setup/              fetch scripts for checkpoints and third-party tools
 docs/               method, contracts, extension guides

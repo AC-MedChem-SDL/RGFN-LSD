@@ -1,0 +1,14 @@
+{
+  "cost_units": "scent_small (unitless, relative price)",
+  "default_cost": 1.0,
+  "default_yield": 0.5,
+  "fragments_sha256": "859c3d3dc5b9d6f74bd5646ad1e5533afcd80080ea600ec8a1cf974f33f83b28",
+  "n_fragments": 48,
+  "n_reactions": 12,
+  "name": "toy_v1",
+  "purpose": "Deliberately small, so a laptop-scale checkpoint trained on it is small enough to commit. Illustrative of the mechanism; not a library anyone should run a real campaign against.",
+  "reactions_sha256": "5b1f43833d014bc3ba0ec613387208cc84700fefd8717440779fc131ca824cf2",
+  "seed": 20260912,
+  "source": "data/libraries/glue_standard_v1, subset by tools/make_toy_library.py",
+  "version": "1.0"
+}

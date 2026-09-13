@@ -1,0 +1,69 @@
+# The toy checkpoint: a deliberately small RGFN, trained so notebook 07 runs on a laptop.
+#
+# NOT a scientific configuration. Everything here is chosen to make the resulting checkpoint
+# small enough to commit and quick enough to train on a CPU, and each of those choices costs
+# something a real run would not give up. Read the trade-offs before reusing any of it:
+#
+#   library      data/libraries/toy_v1 -- 48 fragments, 12 templates, against 418/112 in the
+#                standard set. The policy heads are sized by the action space, so this is what
+#                actually makes the checkpoint committable. It also makes the chemistry narrow.
+#   reward       QED. Needs no download, so the notebook has no prerequisite beyond the repo,
+#                and it matches examples/toy/ so the two tell one story. It is a drug-likeness
+#                heuristic, not a target.
+#   hidden_dim   32 rather than 64.
+#   iterations   600 rather than 5002.
+#
+# The one thing NOT compromised is max_num_reactions. It stays at upstream's 4, because a
+# depth-1 environment has no intermediates -- every molecule would be one reaction from stock,
+# there would be no hubs, and a checkpoint trained on it could not demonstrate the method it
+# exists to demonstrate.
+#
+# Train:  python tools/train_toy_checkpoint.py
+
+include 'configs/rgfn_base.gin'
+include 'configs/envs/reaction.gin'
+include 'configs/proxies/target/qed.gin'
+
+# --- chemistry: the cut-down library ---------------------------------------------------------
+# After the include, so it overrides reaction.gin's xlsx-backed singleton. ReactionEnv still
+# reads %data_factory, now backed by the toy set.
+data_factory/gin.singleton.constructor = @GlueReactionDataFactory
+GlueReactionDataFactory.library_dir = 'data/libraries/toy_v1'
+GlueReactionDataFactory.docking = False
+
+# Upstream's default. Keep it: depth is what creates intermediates, and intermediates are hubs.
+ReactionEnv.max_num_reactions = 4
+
+# --- size -------------------------------------------------------------------------------------
+hidden_dim = 32
+
+# --- reward shaping ---------------------------------------------------------------------------
+# QED is bounded in [0, 1], unlike the unbounded proxies the default beta was tuned for. beta=8
+# over that range gives a reward ratio of about 3000 between a QED of 0.3 and 0.9 -- enough
+# pressure for the policy to learn a preference within a short run without collapsing onto one
+# molecule.
+beta = 8
+
+# --- logging: OFFLINE, and this is not a preference ------------------------------------------
+# The vendored upstream default is 'online', which uploads the run to wandb.ai under whatever
+# account the machine happens to be logged into. A tool that trains a throwaway toy checkpoint
+# must not publish anything to an external service as a side effect of being run, least of all
+# on someone else's machine. Set here as a BINDING rather than by editing the vendored config,
+# per docs/PATCHES.md -- third_party stays byte-identical to upstream.
+WandbLogger.mode = 'offline'
+
+# --- training ---------------------------------------------------------------------------------
+Trainer.n_iterations = 600
+Trainer.train_forward_n_trajectories = 64
+Trainer.train_replay_n_trajectories = 16
+Trainer.device = 'cpu'
+
+# --- metrics: keep only what is cheap ---------------------------------------------------------
+# The mode-tracking metrics dominate a short run's wall-clock and none of them is read here;
+# what matters is that the checkpoint loads and samples.
+evaluation_step = 200
+train_metrics = [@StandardGFNMetrics(), @FractionEarlyTerminate(), @QED()]
+
+# QED's own scale, not the proxies' -- the default [5, 6, 7, 8] is meaningless on a [0, 1] range
+# and would report zero scaffolds found for the entire run.
+NumScaffoldsFound.proxy_value_threshold_list = [0.5, 0.7, 0.9]

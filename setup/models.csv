@@ -18,7 +18,11 @@ name,filename,url,sha256,size_mb,description
 # build strips them -- which is safe because nothing a reviewer needs requires a download: the
 # toy checkpoint is committed, and reproduce/ reads committed artifacts.
 #
+# NOTE: the toy checkpoint is NOT listed here -- it is COMMITTED at
+# examples/toy_model/toy_rgfn_qed.pt (2.2 MB), so notebook 07 needs no download at all. Rebuild
+# it with `python3 tools/train_toy_checkpoint.py` (~30 min, CPU). Only the full-size published
+# models need fetching.
+#
 # <!-- IDENTITY:BEGIN -->
-toy_rgfn_seh,toy_rgfn_seh.pt,TBD_ZENODO_URL,,8,"Deliberately small RGFN trained on a cut-down library. Illustrative, not a published model -- for notebook 07 and for testing the adapter path on a laptop."
 rgfn_seh,rgfn_seh.pt,TBD_ZENODO_URL,,56,"RGFN trained on the sEH proxy. One of the generators in the published comparison."
 # <!-- IDENTITY:END -->
