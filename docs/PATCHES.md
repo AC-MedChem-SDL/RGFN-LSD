@@ -15,6 +15,25 @@ diff -r /tmp/rgfn-upstream/rgfn third_party/rgfn
 The only expected difference is `third_party/rgfn/LICENSE`, which is upstream's MIT licence
 copied in beside the code it covers.
 
+### Upstream's gin configs live at `configs/`, and ours at `configs/hubbatching/`
+
+Not under `third_party/`, which would be the tidier-looking choice. Upstream's config files
+include each other by paths relative to a `configs/` directory at the working directory, so
+moving them anywhere else means editing those include lines -- and then the vendored copy is no
+longer byte-identical to upstream and the check above stops meaning anything.
+
+(gin's own search-path mechanism looks like the answer and is not: `add_config_file_search_path`
+is tried after a module-resource reader that raises `TypeError` on a relative path before any
+prefix is consulted.)
+
+So the split is by subdirectory instead. Everything directly under `configs/` is upstream and
+unmodified; everything under `configs/hubbatching/` is ours. Verify the upstream half the same
+way:
+
+```bash
+diff -r /tmp/rgfn-upstream/configs configs --exclude=hubbatching
+```
+
 ## Why there are none, when the research tree has three
 
 The research tree this work came from carries three small operational overrides to upstream
@@ -36,6 +55,18 @@ default, and capping it silently is worse than saying so. If you need a cap, set
 ```bash
 python train.py --cfg configs/rgfn_seh_docking.gin --bindings "Trainer.n_iterations=400"
 ```
+
+### The offline-wandb case is worth spelling out, because it cuts both ways
+
+Restoring upstream's `mode = 'online'` is correct for the vendored copy and it has a real
+consequence: **a training run uploads to wandb.ai under whatever account the machine is logged
+into.** That happened once during this repository's own development, on a throwaway toy run.
+
+The fix is a binding at the point of use, not a patch to `third_party/`.
+`configs/hubbatching/toy_rgfn_qed.gin` sets `WandbLogger.mode = 'offline'` and
+`tools/train_toy_checkpoint.py` additionally sets `WANDB_MODE=offline` in the environment,
+because that is read before any gin binding applies. A tool that trains a throwaway checkpoint
+must not publish anything to an external service as a side effect of being run.
 
 ## If you need site-specific overrides
 

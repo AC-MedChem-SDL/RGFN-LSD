@@ -28,7 +28,11 @@ import torch
 from rgfn.gfns.reaction_gfn.api.reaction_api import ReactionAction0, ReactionActionC
 from rgfn.trainer.trainer import Trainer  # noqa: F401  (registers @Trainer, as scripts/*.py do)
 
-import hubbatching.chemistry  # noqa: F401  (registers our gin-configurable components)
+# Import the NAME, not just the package. hubbatching.chemistry resolves this lazily so that
+# reading a chemistry library does not require torch, which means importing the package alone
+# does NOT register the class with gin -- any config referencing @GlueReactionDataFactory then
+# dies with "No configurable matching reference". Touching the name is what registers it.
+from hubbatching.chemistry import GlueReactionDataFactory  # noqa: F401
 from hubbatching.adapters.contract import FlowSample, GFNAdapter
 from hubbatching.adapters.rgfn_extract import _stripped_key, extract_flow_records
 from hubbatching.route_steps import reaction_step

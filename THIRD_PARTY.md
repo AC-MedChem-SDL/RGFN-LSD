@@ -29,7 +29,7 @@ would mean editing upstream, which is exactly what vendoring is meant to avoid.
 It is an **optional** dependency: `pip install hubbatching` does not require it, and everything
 except running a generator works without it.
 
-Upstream's gin configs are vendored alongside at `third_party/rgfn_configs/`, also unmodified.
+Upstream's gin configs are vendored alongside at `configs/`, also unmodified.
 
 ### Chemistry library — `data/libraries/glue_standard_v1/`
 
