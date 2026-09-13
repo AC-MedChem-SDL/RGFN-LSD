@@ -1,0 +1,135 @@
+# The science gate.
+#
+# Separate from identity.yml on purpose. That workflow deliberately depends on nothing but the
+# standard library plus pytest, so it keeps working when the scientific stack is broken; this
+# one installs the scientific stack and would therefore take the anonymity gate down with it.
+# Two jobs, two failure modes, two signals.
+#
+# What this asserts, in order of how much it would cost to get wrong:
+#
+#   1. The package imports with NO optional dependencies. pyproject claims the core needs no
+#      deep-learning stack; nothing checked that, and a stray `import torch` at module scope
+#      would break every reader auditing the cost model without anyone noticing.
+#   2. The test suite passes.
+#   3. `reproduce/` actually regenerates a published figure. The README says T1 "is the claim
+#      that the numbers in the paper come from the code in this repository" -- that claim was
+#      previously unenforced, so a refactor could silently break every figure script and CI
+#      would stay green.
+#   4. The toy dataset is byte-reproducible from its generator, so `examples/toy/` cannot drift
+#      away from the script that is supposed to produce it.
+
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  core-imports-without-extras:
+    # The narrowest, most load-bearing claim in pyproject.toml, checked first and alone.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install the core only -- no torch, no gin, no matplotlib
+        run: python -m pip install --quiet -e .
+
+      - name: The core imports
+        run: python -c "import hubbatching; print(hubbatching.__version__)"
+
+      - name: The cost model imports with the standard library alone
+        # hubbatching.cost promises it imports nothing but stdlib. Load it in isolation and
+        # assert that neither rdkit nor torch came along for the ride.
+        run: |
+          python - <<'EOF'
+          import sys
+          import hubbatching.cost  # noqa: F401
+          leaked = [m for m in ("torch", "gin", "matplotlib") if m in sys.modules]
+          assert not leaked, f"hubbatching.cost dragged in {leaked}"
+          print("hubbatching.cost is clean")
+          EOF
+
+      - name: Hub strategies work without gin
+        run: |
+          python - <<'EOF'
+          from hubbatching._gin import HAS_GIN
+          from hubbatching.hubs.registry import available
+          assert not HAS_GIN, "this job is meant to run WITHOUT gin installed"
+          assert "highest_flow" in available()
+          print(f"{len(available())} strategies registered, gin absent")
+          EOF
+
+      - name: The CLI help works with no optional dependencies
+        # Someone whose install is incomplete reads --help first. It must not need the thing
+        # they have not installed.
+        run: python -m hubbatching.cli --help
+
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install with the figure and dev extras
+        run: python -m pip install --quiet -e ".[figures,dev]"
+
+      - name: Test suite
+        run: python -m pytest -q
+
+      - name: The toy dataset matches its generator
+        # examples/toy/ is committed AND generated. If they diverge, every notebook and the T0
+        # demo are running on something no script produces.
+        run: python tools/make_toy_dataset.py --check
+
+      - name: T0 -- the whole pipeline runs end to end
+        run: python -m hubbatching.cli demo --out-dir "${RUNNER_TEMP}/demo"
+
+      - name: T1 -- a published figure regenerates from committed artifacts
+        # The repository's central reproducibility claim, asserted rather than asserted-about.
+        run: python reproduce/fig1_reaction_budget.py
+
+      - name: Documentation links resolve
+        # Docs rot by pointing at things that moved or were never written, and that failure is
+        # invisible until a reader follows the link. This repo shipped several such pointers --
+        # to files named in the README's planned layout, and to research-tree paths that do not
+        # exist here at all.
+        run: python tools/check_links.py
+
+      - name: The artifact manifest is current
+        # Generated from the filesystem + each group's provenance.json. A stale manifest means
+        # the inventory describes a state the repository is not in -- which is the failure mode
+        # a hand-maintained inventory has, and the reason this one is generated.
+        run: python tools/build_manifest.py --check
+
+      - name: Notebooks match their specs
+        # They are generated from tools/notebook_specs/. A committed notebook that has drifted
+        # means the spec is no longer the source of truth, and the next regeneration would
+        # silently revert whoever edited the JSON.
+        run: python tools/build_notebooks.py --check
+
+      - name: Notebooks carry no stored outputs
+        # Outputs bloat the repo, make diffs unreadable, and carry kernel paths and usernames
+        # into a tree the anonymity gate then has to scrub. Keep them clean at the door.
+        run: |
+          python - <<'EOF'
+          import json, pathlib, sys
+          dirty = []
+          for nb in pathlib.Path("notebooks").rglob("*.ipynb"):
+              doc = json.loads(nb.read_text())
+              for cell in doc.get("cells", []):
+                  if cell.get("outputs") or cell.get("execution_count") is not None:
+                      dirty.append(str(nb))
+                      break
+          if dirty:
+              print("notebooks with stored outputs:", *dirty, sep="\n  ")
+              print("\nRun: pip install nbstripout && nbstripout notebooks/*.ipynb")
+              sys.exit(1)
+          print("notebooks clean")
+          EOF

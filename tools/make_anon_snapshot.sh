@@ -34,18 +34,30 @@ done
 
 # Paths that must not exist in the artifact. Release engineering, site config, and
 # agent tooling are all irrelevant to a reviewer and all carry identity.
+# Drop the RELEASE tooling, not all of tools/. `tools/` began as the identity toolchain alone,
+# so dropping it wholesale was right; it now also holds builders a reviewer legitimately wants --
+# the toy dataset the T0 demo runs on, the notebook generator, the artifact manifest, the link
+# checker. Dropping those would hand over a tree whose own regeneration instructions point at
+# files that are not there.
+#
+# Anything named here must also have its tests named below, or the snapshot ships tests that
+# error on a missing file.
 DROP=(
-  tools
+  tools/check_identity.py
+  tools/make_anon_snapshot.sh
+  tools/identity_allowlist.txt
+  tools/identity_denylist.txt
+  tools/anon_templates
+  tools/review
+  tools/harvest        # reads the research tree by path; useless without it, and names it
   cluster
   .claude
   .github/workflows/identity.yml
   CITATION.cff
-  CLAUDE.md
   docs/ANONYMITY.md
-  # These test the release tooling in tools/, which the snapshot drops -- shipping
-  # them would hand a reviewer tests that error on a missing directory. Named
-  # individually rather than dropping tests/ wholesale, so method tests ship as soon
-  # as they exist.
+  # These test the release tooling dropped above -- shipping them would hand a reviewer tests
+  # that error on a missing file. Named individually rather than dropping tests/ wholesale, so
+  # method tests ship.
   tests/test_check_identity.py
   tests/test_make_anon_snapshot.py
 )
@@ -68,9 +80,36 @@ rm_robust "$OUT"; mkdir -p "$OUT"
 git -C "$REPO" archive HEAD | tar -x -C "$OUT"
 
 echo "==> dropping non-shipping paths"
+# A DROP entry that matches nothing is NOT harmless: a typo in an identity-bearing path would
+# silently ship that file while the build reported success. So a drop that does nothing is an
+# error -- but only when the file was actually THERE to drop.
+#
+# The precise condition is "tracked at HEAD, yet still present after dropping". That fails
+# exactly when something that should have been removed was not, and it passes naturally on a
+# repository that simply does not contain a given path (a minimal test fixture, or a checkout
+# with no cluster/ directory). Listing exceptions by hand would drift; asking git does not.
+drop_failed=()
 for p in "${DROP[@]}"; do
-  if [ -e "$OUT/$p" ]; then rm -rf "$OUT/$p"; echo "    - $p"; fi
+  if [ -e "$OUT/$p" ]; then
+    rm -rf "$OUT/$p"
+    echo "    - $p"
+    # Removed above, so anything still here is a removal that did not take.
+    [ -e "$OUT/$p" ] && drop_failed+=("$p (removal failed)")
+  elif git -C "$REPO" ls-files --error-unmatch "$p" >/dev/null 2>&1; then
+    # Tracked at HEAD but absent from the staged tree: the archive and the list disagree.
+    drop_failed+=("$p (tracked at HEAD but not staged)")
+  else
+    echo "    . $p (not in this repository)"
+  fi
 done
+if [ ${#drop_failed[@]} -gt 0 ]; then
+  echo >&2
+  echo "ABORT: DROP did not do what it says:" >&2
+  for p in "${drop_failed[@]}"; do echo "  $p" >&2; done
+  echo >&2
+  echo "An identity-bearing file may be shipping. Fix the path or the removal." >&2
+  exit 1
+fi
 
 echo "==> substituting identity-bearing files"
 # LICENSE is verbatim Apache-2.0 and identity-free -- it is NOT substituted.
