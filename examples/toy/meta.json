@@ -1,0 +1,13 @@
+{
+ "model": "toy",
+ "reward_name": "qed",
+ "reward_description": "RDKit QED -- a stand-in for a target-specific oracle",
+ "log_z": 11.347815,
+ "higher_is_better": true,
+ "n_trajectories": 432,
+ "strip_stereo": true,
+ "generated_by": "tools/make_toy_dataset.py",
+ "seed": 20260912,
+ "synthetic": true,
+ "caveat": "Molecules, reactions and routes are real (RDKit fired every template). The reward is QED standing in for an oracle, and the policy log-probabilities are generated from a self-consistent model of a trained GFlowNet rather than recovered from one. Numbers from this dataset illustrate the mechanism; none is a scientific claim."
+}
