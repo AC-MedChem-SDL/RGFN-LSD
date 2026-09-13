@@ -22,9 +22,6 @@ import time
 from typing import List, Optional, Tuple
 
 import torch
-
-from hubbatching.records import FlowRecord
-from hubbatching.adapters.rgfn_extract import extract_flow_records
 from rgfn.api.trajectories import Trajectories
 from rgfn.gfns.reaction_gfn.api.data_structures import Molecule
 from rgfn.gfns.reaction_gfn.api.reaction_api import (
@@ -34,6 +31,9 @@ from rgfn.gfns.reaction_gfn.api.reaction_api import (
     ReactionStateC,
     ReactionStateTerminal,
 )
+
+from hubbatching.adapters.rgfn_extract import extract_flow_records
+from hubbatching.records import FlowRecord
 
 
 def _is_stop(action) -> bool:
@@ -212,9 +212,7 @@ def enumerate_terminal_children(
         # The last micro-step of every path is the ReactionActionC that produced the child, and it
         # carries input_molecule / input_reaction / input_fragments / output_molecule — exactly the
         # step schema the route assembler expects.
-        from .rgfn_extract import (
-            _stripped_key,  # the project's ONE stereo-key rule (§6)
-        )
+        from .rgfn_extract import _stripped_key  # the project's ONE stereo-key rule (§6)
         from .route_steps import reaction_step as _rxn_step
 
         for _p in paths:

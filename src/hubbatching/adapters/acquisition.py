@@ -44,18 +44,15 @@ from typing import Dict, List, Optional
 
 import gin
 import torch
+from rgfn.gfns.reaction_gfn.api.reaction_api import ReactionStateTerminal
 
+from hubbatching.adapters.rgfn_enumerate import enumerate_terminal_children, hub_state_from_smiles
+from hubbatching.adapters.rgfn_extract import extract_flow_records
 from hubbatching.adapters.route import extract_route
 from hubbatching.child_select import ChildSelectionPolicy, make_child_policy
 from hubbatching.dag import LiteHubDAG
 from hubbatching.hubs.ucb import UcbHubStrategy
 from hubbatching.mode_select import DiverseThresholdModeSelector
-from hubbatching.adapters.rgfn_enumerate import (
-    enumerate_terminal_children,
-    hub_state_from_smiles,
-)
-from hubbatching.adapters.rgfn_extract import extract_flow_records
-from rgfn.gfns.reaction_gfn.api.reaction_api import ReactionStateTerminal
 
 try:  # RDKit present in-env; degrade to the raw SMILES key if a round-trip fails.
     from rdkit import Chem

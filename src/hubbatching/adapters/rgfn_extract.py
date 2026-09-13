@@ -1,11 +1,11 @@
 """RGFN-native flow extraction: a sampled ``Trajectories`` -> ``FlowRecord``s.
 
-This is the one place the ``docs/LSD_FLOW_PROPOSAL.md`` §2 log-terms are read out of the
+This is the one place the ``docs/METHOD.md`` §2 log-terms are read out of the
 real RGFN objects, and it is shared by both project axes: the production AL path calls it on the
 trajectories the loop already sampled, and the validation RGFN adapter
-(``validation/hubbatching/adapters/rgfn_adapter.py``) calls it to emit canonical records for the
+(``hubbatching/adapters/rgfn_adapter.py``) calls it to emit canonical records for the
 cross-model DAG. It lives in ``hubbatching.adapters`` because it imports ``rgfn`` and must be
-callable from the single-env loop without any ``validation/`` dependency.
+callable from the single-env loop with no analysis-layer dependency.
 
 The mapping (from the RGFN micro-step state machine — see
 ``rgfn/gfns/reaction_gfn/api/reaction_api.py`` and ``.../policies/reaction_*_policy.py``):
@@ -37,12 +37,9 @@ from __future__ import annotations
 from typing import Dict, List, Optional, Tuple
 
 import torch
+from rgfn.gfns.reaction_gfn.api.reaction_api import ReactionStateA, ReactionStateTerminal
 
 from hubbatching.records import FlowRecord
-from rgfn.gfns.reaction_gfn.api.reaction_api import (
-    ReactionStateA,
-    ReactionStateTerminal,
-)
 
 try:  # RDKit is present in the rgfn env; degrade gracefully if a caller lacks it.
     from rdkit import Chem

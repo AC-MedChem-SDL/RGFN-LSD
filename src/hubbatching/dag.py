@@ -1,12 +1,12 @@
 """``LiteHubDAG`` — the lightweight, in-env hub aggregation for the AL path.
 
-``docs/LSD_FLOW_PROPOSAL.md`` §3b/§4a: the active-learning acquisition builds a *lightweight*
+``docs/METHOD.md`` §3b/§4a: the active-learning acquisition builds a *lightweight*
 HubDAG from the trajectories the loop already sampled (no adapter, single env). This is that
 object. It is a pure aggregation over :class:`~hubbatching.records.FlowRecord`s —
 no ``networkx``, no persistence, no RDKit — so it is cheap to build every AL round.
 
-The heavier cross-env / persisted / analysis DAG lives in ``validation/hubbatching/dag`` and
-exposes the same protocol (§6), so the selection strategies work on either unchanged.
+A heavier persisted / analysis DAG can expose the same protocol (§6), so the selection
+strategies work on either unchanged.
 
 Aggregation choices (documented because they affect ``U(h)`` — §2):
   * **children are deduplicated by their canonical (stereo-stripped) key.** A hub's terminal
@@ -23,8 +23,7 @@ from __future__ import annotations
 
 from typing import Dict, Iterable, List, Optional, Sequence
 
-from hubbatching import flow
-from hubbatching import uncertainty
+from hubbatching import flow, uncertainty
 from hubbatching.records import FlowRecord
 
 
@@ -160,9 +159,7 @@ class LiteHubDAG:
         return len(self._hubs)
 
     def log_visitation(self, hub: Hub) -> float:
-        return flow.log_visitation_estimate(
-            hub.visit_count, self.total_trajectories, self.log_z
-        )
+        return flow.log_visitation_estimate(hub.visit_count, self.total_trajectories, self.log_z)
 
     # -- construction ----------------------------------------------------------------
     @classmethod

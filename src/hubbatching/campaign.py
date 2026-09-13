@@ -70,6 +70,28 @@ class EnumChild:
     added_promoted: Tuple[str, ...] = ()  # promoted fragments attached in the final reaction
 
 
+@dataclass(frozen=True)
+class RxChild(EnumChild):
+    """An enumerated child that also knows the reaction that made it.
+
+    Subclasses rather than replaces :class:`EnumChild` so the strategy code -- which reads only
+    ``smiles`` / ``reward`` / ``added_promoted`` -- is untouched and a selection made over these
+    is byte-identical to one made over plain ``EnumChild``. The extra fields are what turns a
+    selected library into a bench plan (:mod:`hubbatching.export`); nothing in the selection
+    path reads them.
+    """
+
+    named: str = "?"  # human-readable reaction name, e.g. "amide coupling"
+    template_id: str = ""
+    reagents: Tuple[str, ...] = ()  # building blocks consumed by the final step
+    # The final step's own ``input`` -- the STEREO-AWARE substrate. ``source_hub`` on an accepted
+    # mode is the stereo-STRIPPED key, so this is the identity that distinguishes two
+    # stereoisomeric hubs which would otherwise collide.
+    parent_input: str = ""
+    template: str = ""  # the raw template string, for the route tree's metadata
+    product: str = ""  # the stereo-aware product; the only record of the child's stereo form
+
+
 @dataclass
 class EnumeratedHub:
     """A pre-ranked, pre-enumerated hub (hub-batching input). ``children`` already scored.
@@ -196,7 +218,9 @@ def _finalize(
     # max() silently reported the WORST qualifying molecule on every docking cell -- e.g. rxnflow_clpp
     # showed best_reward -8.0 (exactly the gate bar) beside median -8.9, i.e. a "best" worse than the
     # median. Cost metrics and mode counts were unaffected, but the field is quoted in summaries.
-    result.best_reward = (max(rewards) if higher_is_better else min(rewards)) if rewards else float("nan")
+    result.best_reward = (
+        (max(rewards) if higher_is_better else min(rewards)) if rewards else float("nan")
+    )
     result.median_reward = statistics.median(rewards) if rewards else float("nan")
     result.n_scaffolds = _count_scaffolds([p.smiles for p in result.accepted])
     return result
