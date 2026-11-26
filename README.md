@@ -1,5 +1,11 @@
 # hub-batching
 
+<!-- IDENTITY:BEGIN -->
+**[Read the GEM @ NeurIPS 2026 workshop paper (PDF)](RGFN_HB_NeurIPS_workshop_paper.pdf)**
+
+*Synthesizability is per-molecule; cost is per-library: Hub-Batching for Reaction-GFlowNets.*
+<!-- IDENTITY:END -->
+
 **Library cost, not per-molecule synthesizability.** A trained reaction-grounded GFlowNet's flow
 field already identifies which intermediates a screening library should be batched around.
 Reading it post-hoc — no retraining, no reward change — produces libraries that deliver more

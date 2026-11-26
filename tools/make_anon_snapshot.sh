@@ -54,6 +54,7 @@ DROP=(
   .claude
   .github/workflows/identity.yml
   CITATION.cff
+  RGFN_HB_NeurIPS_workshop_paper.pdf
   docs/ANONYMITY.md
   # These test the release tooling dropped above -- shipping them would hand a reviewer tests
   # that error on a missing file. Named individually rather than dropping tests/ wholesale, so

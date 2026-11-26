@@ -43,7 +43,7 @@ artifact*, not by scrubbing files.
 ### The load-bearing assertion
 
 This repo permits identity in a few files (`NOTICE`, `CITATION.cff`, `README.md`,
-plus the deny-list itself and vendored upstream licences — see
+the named workshop PDF, plus the deny-list itself and vendored upstream licences — see
 `tools/identity_allowlist.txt`). The snapshot permits it **nowhere**: the build
 re-runs the linter against the staged tree with an *empty* allowlist and refuses
 to produce anything if a single finding survives.
@@ -65,7 +65,9 @@ is concentrated. Four rules concentrate it:
    cannot interpolate environment variables, so job payloads carry no directives:
    a single submit wrapper assembles them from `site.env`. The snapshot drops the
    whole directory.
-3. **Identity lives in three files, and nowhere else.** Everything else — code,
+3. **Named identity is concentrated and allowlisted.** Routine authorship lives in
+   `NOTICE`, `CITATION.cff`, and marked README blocks; the named workshop PDF is the
+   one binary exception and is dropped from the anonymous build. Everything else — code,
    configs, docs, tests — is identity-free as a matter of policy, not cleanup.
 4. **Identity blocks are delimited.** In text files, wrap author-bearing lines in
    `<!-- IDENTITY:BEGIN -->` / `<!-- IDENTITY:END -->`; the build strips them, so

@@ -81,6 +81,13 @@ def test_notice_is_substituted_and_readme_block_stripped(tmp_path: Path) -> None
     assert "Mark Stevens" not in (out / "README.md").read_text()  # identity-check: ignore
 
 
+def test_named_workshop_paper_is_dropped(tmp_path: Path) -> None:
+    paper = "RGFN_HB_NeurIPS_workshop_paper.pdf"
+    repo = build_repo(tmp_path, {paper: "named workshop paper"})
+    assert run_build(repo).returncode == 0
+    assert not (repo / "build" / "anon" / paper).exists()
+
+
 def test_oversize_artifact_is_refused(tmp_path: Path) -> None:
     """A venue size cap is a hard limit; the build must not hand over an overage."""
     repo = build_repo(tmp_path)

@@ -10,6 +10,8 @@
 NOTICE
 CITATION.cff
 README.md
+# Named workshop paper; dropped from the anonymous snapshot.
+RGFN_HB_NeurIPS_workshop_paper.pdf
 
 # the deny-list has to contain the strings it forbids
 tools/identity_denylist.txt
